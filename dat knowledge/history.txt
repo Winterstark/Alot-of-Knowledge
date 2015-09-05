@@ -1,0 +1,11 @@
+{
+	'Gas lighting': {'Date': 1792, 'Inventor': 'William Murdoch'},
+	'Julio-Claudian dynasty': ['Augustus', 'Tiberius', 'Caligula', 'Claudius', 'Nero'],
+	'The light bulb': {'Date': 1878, 'Inventor': 'Thomas Edison (contemporaneously with Joseph Swan)'},
+	'The Berlin Wall': (1961, 1989),
+	'Serenissima Repubblica di Venezia': {'Dates': (697, 1797), 'Flag': 'history\\flags\\Flag_of_Most_Serene_Republic_of_Venice.svg.png'},
+	'Concio': 'The general assembly of citizens and patricians of Venice from which the Doge was elected; sometimes called Arengo like other similar Italian institutions; C8 - C15.',
+	'Muda': 'An Italian (especially Venetian) trade convoy organized by the state, but led by citizen merchants.',
+	'Medieval commune': 'Originating around C11 in central/northern Italy in places lacking a strong royal/feudal presence, as a result of a minor urban renaissance.',
+	'History of government of the Republic of Venice': ['Ducal phase', 'Commune phase', 'Aristocracy phase'],
+}

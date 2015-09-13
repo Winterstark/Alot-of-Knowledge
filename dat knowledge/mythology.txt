@@ -1,0 +1,5 @@
+{
+	'Tiamat': {'Type': 'Primordial Goddess', 'Patron': 'Ocean', 'Pantheon': 'Mesopotamian'},
+	'Marduk': {'Type': 'God', 'Pantheon': 'Mesopotamian', 'Symbols': 'Dragon; Jupiter', 'Patron': 'City of Babylon', 'Appearance': 'mythology\\Mesopotamian\\Marduk.jpg', 'Other names': 'Bel (Akkadian word for "Lord")'},
+	'Ishtar': {'Type': 'Goddess', 'Pantheon': 'Mesopotamian', 'Symbols': 'Venus', 'Patron': 'Sexual love; War', 'Appearance': 'mythology\\Mesopotamian\\Ishtar.jpg', 'Other names': 'Inana (Sumerian counterpart)'},
+}

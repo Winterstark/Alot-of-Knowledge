@@ -7,8 +7,11 @@ from colorama import init, Fore
 
 DIR = "dat knowledge" #path to the directory containing knowledge files
 GUI = "AlotGUI" + os.sep + "AlotGUI" + os.sep + "bin" + os.sep + "Debug" + os.sep + "AlotGUI.exe" #path to the program used to display images
-CORRECT_SOUND = "sounds" + os.sep + "correct.wav" #sound file played when the user is correct
-WRONG_SOUND = "sounds" + os.sep + "wrong.wav" #sound when the user is wrong
+SOUND_CORRECT = "sounds" + os.sep + "correct.wav" #sounds played after the user answers a question
+SOUND_WRONG = "sounds" + os.sep + "wrong.wav"
+COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
+COLOR_LEARNED = Fore.GREEN
+
 
 Type = Enum("Type", "Number Range String Image Diagram Class List")
 
@@ -257,9 +260,9 @@ def feedback(msg, playSound=True):
 
 	if playSound:
 		if correct:
-			PlaySound(CORRECT_SOUND, SND_FILENAME)
+			PlaySound(SOUND_CORRECT, SND_FILENAME)
 		else:
-			PlaySound(WRONG_SOUND, SND_FILENAME)
+			PlaySound(SOUND_WRONG, SND_FILENAME)
 
 
 def colorPrint(text, color):
@@ -268,9 +271,9 @@ def colorPrint(text, color):
 	print(Fore.RESET, end="")
 
 
-def qType_MultipleChoice(q, a, altA):
+def qType_MultipleChoice(q, a, altA, color):
 	#altA is a pool of values from which alternate answers are randomly selected
-	colorPrint(toString(q) + "\n", Fore.CYAN)
+	colorPrint(toString(q) + "\n", color)
 
 	#get other choices
 	answers = [a]
@@ -308,8 +311,8 @@ def qType_MultipleChoice(q, a, altA):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a):
-	colorPrint(toString(q), Fore.CYAN)
+def qType_EnterAnswer(q, a, color):
+	colorPrint(toString(q), color)
 
 	#construct hint
 	aType = getType(a)
@@ -365,7 +368,7 @@ def qType_EnterAnswer(q, a):
 	return correct, exit, immediately
 
 
-def qType_FillString(q, s, difficulty, corewords):
+def qType_FillString(q, s, difficulty, corewords, color):
 	#split string into parts
 	parts = s.replace("\n", " __NEWLINE__ ").split()
 
@@ -436,7 +439,7 @@ def qType_FillString(q, s, difficulty, corewords):
 		blanks.append(nextIndex)
 
 	#print the string with blanks
-	colorPrint(q + ":", Fore.CYAN)
+	colorPrint(q + ":", color)
 
 	for i in range(len(parts)):
 		if i not in blanks:
@@ -502,7 +505,7 @@ def qType_FillString(q, s, difficulty, corewords):
 	return allCorrect, exit, immediately
 
 
-def qType_RecognizeList(listKey, items):
+def qType_RecognizeList(listKey, items, color):
 	#pick 3 random items
 	randomItems = list(items)
 	random.shuffle(randomItems)
@@ -519,12 +522,12 @@ def qType_RecognizeList(listKey, items):
 		return listKey, exit, immediately
 
 
-def qType_RecognizeItem(listKey, items):
-	colorPrint(listKey, Fore.CYAN)
+def qType_RecognizeItem(listKey, items, color):
+	colorPrint(listKey, color)
 	index = random.randint(0, len(items)-1)
 
 	if random.randint(0, 3) == 0:
-		answer, exit, immediately = checkForExit(input("What is the index of this item: " + toString(items[index]) + " "))
+		answer, exit, immediately = checkForExit(input("What is the index of this item: " + toString(items[index]) + "? "))
 
 		try:
 			if int(answer)-1 == index:
@@ -542,29 +545,33 @@ def qType_RecognizeItem(listKey, items):
 			return toString(items[index]), exit, immediately
 
 
-def qType_OrderItems(listKey, items):
-	colorPrint(listKey, Fore.CYAN)
+def qType_OrderItems(listKey, items, color):
+	colorPrint(listKey, color)
 
 	#shuffle items
 	shuffledItems = list(items)
-	correctOrder = list([i+1 for i in range(len(items))])
+	shuffledIndices = list([i+1 for i in range(len(items))])
 
 	for i in range(len(items)):
 		index = random.randint(i, len(shuffledItems)-1)
+		#correctOrder.append(shuffledIndices[index])
 
 		shuffledItems[i], shuffledItems[index] = shuffledItems[index], shuffledItems[i]
-		correctOrder[i], correctOrder[index] = correctOrder[index], correctOrder[i]
+		shuffledIndices[i], shuffledIndices[index] = shuffledIndices[index], shuffledIndices[i]
 
-	correctOrder = str(correctOrder)[1:-1].replace(',', '')
+	correctOrder = ""
+	for i in range(len(items)):
+		correctOrder += " " + str(shuffledIndices.index(i+1) + 1)
+	correctOrder = correctOrder[1:]
 
 	#get answer from user
-	for item in shuffledItems:
-		print(item)
+	for i in range(len(shuffledItems)):
+		print("{}. {}".format(i+1, removeParentheses(shuffledItems[i])))
 
 	answer, exit, immediately = checkForExit(input("Enter the correct order of these items: "))
 
 	#cleanup answer
-	answer = answer.replace(',', ' ')
+	answer = answer.replace('.', '').replace(',', ' ')
 	while "  " in answer:
 		answer = answer.replace("  ", " ")
 
@@ -574,7 +581,7 @@ def qType_OrderItems(listKey, items):
 		return correctOrder, exit, immediately
 
 
-def qType_Image(imageKey, path):
+def qType_Image(imageKey, path, color):
 	gui = subprocess.Popen(GUI + ' "{}"'.format(path))
 	answer, quit, immediately = checkForExit(input("What is this image associated with? "))
 	gui.terminate()
@@ -585,63 +592,68 @@ def qType_Image(imageKey, path):
 		return imageKey, quit, immediately
 
 
-def quizNumber(catalot, key, step, attribute=""):
+def quizNumber(catalot, key, step, color,  attribute=""):
 	if step == 1:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute))
+			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], list(catalot.values()))
+			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], list(catalot.values()), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]))
+			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, list(catalot.keys()))
+			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, list(catalot.keys()), color)
 	elif step == 3:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute])
+			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
 		else:
-			correct, exit, immediately = qType_EnterAnswer(key, catalot[key])
+			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute])
+			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
 		else:
-			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key)
+			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color)
 
 	return correct, exit, immediately
 
 
-def quizString(catalot, key, step, corewords, attribute=""):
+def quizString(catalot, key, step, corewords, color, attribute=""):
 	if step == 1:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute))
+			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], list(catalot.values()))
+			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], list(catalot.values()), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]))
+			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, list(catalot.keys()))
+			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, list(catalot.keys()), color)
 	elif step == 3:
 		if attribute != "":
-			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, corewords)
+			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, corewords, color)
 		else:
-			correct, exit, immediately = qType_FillString(key, catalot[key], 1, corewords)
+			correct, exit, immediately = qType_FillString(key, catalot[key], 1, corewords, color)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 2, corewords)
+			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 2, corewords, color)
 		else:
-			correct, exit, immediately = qType_FillString(key, catalot[key], 2, corewords)
+			correct, exit, immediately = qType_FillString(key, catalot[key], 2, corewords, color)
 	elif step == 5:
 		if attribute != "":
-			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 3, corewords)
+			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 3, corewords, color)
 		else:
-			correct, exit, immediately = qType_FillString(key, catalot[key], 3, corewords)
+			correct, exit, immediately = qType_FillString(key, catalot[key], 3, corewords, color)
 
 	return correct, exit, immediately
 
 
 def quizList(listKey, items, step, learned=False):
-	colorPrint(listKey + ":", Fore.CYAN)
+	if learned:
+		color = COLOR_LEARNED
+	else:
+		color = COLOR_UNLEARNED
+
+	colorPrint(listKey + ":", color)
 
 	if step <= len(items):
 		for i in range(1, step):
@@ -656,7 +668,7 @@ def quizList(listKey, items, step, learned=False):
 	correct = True
 
 	while type(correct) is bool and step <= len(items):
-		correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]))
+		correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color)
 
 		if immediately:
 			break
@@ -695,35 +707,35 @@ def quiz(category, catalot, metacatalot, corewords):
 		step = meta["step"]
 
 		if not meta["learned"]:
+			color = COLOR_UNLEARNED
 			if entryType is Type.Number or entryType is Type.Range:
-				correct, exit, immediately = quizNumber(catalot, key, step)
+				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
 				gui = subprocess.Popen(GUI + ' "{}"'.format(fullPath(entry[0])))
 				correct, exit, immediately = quizList(key, entry[1], step)
 				gui.terminate()
 			elif entryType is Type.Image:
-				correct, exit, immediately = qType_Image(key, fullPath(entry))
+				correct, exit, immediately = qType_Image(key, fullPath(entry), color)
 			elif entryType is Type.String:
-				correct, exit, immediately = quizString(catalot, key, step, corewords)
+				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
 			elif entryType is Type.Class:
 				#custom class: ask a question for each attribute
 				correct = {}
 				for attribute in entry:
 					attributeType = getType(entry[attribute])
-
 					if isLearned(step[attribute], entry[attribute]):
 						correct[attribute] = "already learned"
 						exit = False
 					elif attributeType is Type.Number or attributeType is Type.Range:
-						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], attribute)
+						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
 					elif attributeType is Type.Diagram:
 						gui = subprocess.Popen(GUI + ' "{}"'.format(entry[attribute][0]))
 						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
 						gui.terminate()
 					elif attributeType is Type.Image:
-						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]))
+						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), color)
 					elif attributeType is Type.String:
-						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, attribute)
+						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
 					elif attributeType is Type.List:
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
 
@@ -732,34 +744,35 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.List:
 				correct, exit, immediately = quizList(key, entry, step)
 		else:
+			color = COLOR_LEARNED
 			if entryType is Type.Number or entryType is Type.Range:
-				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4))
+				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Diagram:
 				gui = subprocess.Popen(GUI + ' "{}"'.format(fullPath(entry[0])))
 				if random.randint(0, 1) == 0:
 					correct, exit, immediately = quizList(key, random.randint(1, len(entry[1])), step)
 				else:
-					correct, exit, immediately = qType_RecognizeItem(key, entry[1])
+					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
 				gui.terminate()
 			elif entryType is Type.Image:
-				correct, exit, immediately = qType_Image(key, fullPath(entry))
+				correct, exit, immediately = qType_Image(key, fullPath(entry), color)
 			elif entryType is Type.String:
-				correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords)
+				correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color)
 			elif entryType is Type.Class:
 				attribute = random.choice(list(entry.keys()))
 				attributeType = getType(entry[attribute])
 
 				if attributeType is Type.Number or attributeType is Type.Range:
-					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), attribute)
+					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
 				elif attributeType is Type.String:
-					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, attribute)
+					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
 				if qType is quizList:	
 					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), True)
 				else:
-					correct, exit, immediately = qType(key, entry)
+					correct, exit, immediately = qType(key, entry, color)
 
 		if not immediately:
 			#log result
@@ -803,8 +816,10 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						feedback("Wrong! Entry unlearned! Correct answer: " + correct)
 						meta["learned"] = False
-						meta["step"] = 1
 						meta["nextTest"] = datetime.now() + timedelta(hours=22)
+
+						for attribute in meta["step"]:
+							meta["step"][attribute] = 1
 			elif type(correct) is int:
 				#quizList returns correct as the new step
 				newStep = correct
@@ -820,9 +835,9 @@ def quiz(category, catalot, metacatalot, corewords):
 					print("Diagram progress @ {}%.".format(100*(newStep-1)//len(entry[1])))
 				
 				if correct:
-					PlaySound(CORRECT_SOUND, SND_FILENAME)
+					PlaySound(SOUND_CORRECT, SND_FILENAME)
 				else:
-					PlaySound(WRONG_SOUND, SND_FILENAME)
+					PlaySound(SOUND_WRONG, SND_FILENAME)
 
 				meta["step"] = newStep
 				meta["nextTest"] = datetime.now() + timedelta(hours=22)
@@ -908,19 +923,23 @@ def mainLoop(alot, metalot, changes):
 		if total > 0:
 			i += 1
 			cats[i] = "all"
-			print(("{0:<8}{1:<" + maxLen + "}{2}\n").format(str(i)+'.', "all", total))
+			cats[i+1] = "exit"
+			print(("{0:<8}{1:<" + maxLen + "}{2}").format(str(i)+'.', "all", total))
+			print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+1)+'.', "exit"))
 
 			choice = ""
 			while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and choice != "all" and choice != "exit":
-				choice = input('Choose a category or type "exit": ')
+				choice = input('Choose a category: ')
 
-			if choice == "all" or choice.isdigit() and cats[int(choice)] == "all":
-				#test all categories one by one
+			if choice.isdigit():
+				choice = cats[int(choice)]
+
+			if choice == "all": #test all categories one by one
 				for category in alot:
 					changes[category] = quiz(category, alot[category], metalot[category], corewords)
-			elif choice.isdigit():
-				category = cats[int(choice)]
-				changes[category] = quiz(category, alot[category], metalot[category], corewords)
+					
+					if len(getReadyKeys(metalot[category])) > 0:
+						break
 			elif choice != "exit":
 				changes[choice] = quiz(choice, alot[choice], metalot[choice], corewords)
 		else:
@@ -931,7 +950,7 @@ def mainLoop(alot, metalot, changes):
 
 
 #MAIN
-print("Alot of Knowlege v0.5")
+print("Alot of Knowlege v0.6")
 
 init() #colorama init
 

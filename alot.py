@@ -125,15 +125,22 @@ def removeTypos(userAnswer, originalCorrectAnswer):
 	return userAnswer
 
 
-#returns keys of entries ready for testing from a specific category
+#returns keys of entries ready for testing from a specific category, as well as the number of ready new and learned entries
 def getReadyKeys(metacatalot):
-	ready = []
+	readyKeys = []
+	nNew = 0
+	nLearned = 0
 
 	for key in metacatalot:
 		if metacatalot[key]["nextTest"] <= datetime.now():
-			ready.append(key)
+			readyKeys.append(key)
 
-	return ready
+			if metacatalot[key]["learned"]:
+				nLearned += 1
+			else:
+				nNew += 1
+
+	return readyKeys, nNew, nLearned
 
 
 def timeUntilAvailable(metacatalot):
@@ -687,9 +694,9 @@ def quizList(listKey, items, step, learned=False):
 		return "False", exit, immediately #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
 
 
-def quiz(category, catalot, metacatalot, corewords):	
-	ready = getReadyKeys(metacatalot)
-	if len(ready) == 0:
+def quiz(category, catalot, metacatalot, corewords):
+	ready, nNew, nLearned = getReadyKeys(metacatalot)
+	if nNew + nLearned == 0:
 		return
 	nCorrect = 0
 	nTested = 0
@@ -906,25 +913,28 @@ def mainLoop(alot, metalot, changes):
 	while choice != "exit":
 		maxLen = getMaxKeyLen(alot)
 		
-		print(("\n\t{0:<" + maxLen + "}Ready entries").format("File"))
-		total = 0
+		print(("\n\t{0:<" + maxLen + "}Ready entries (new / learned)").format("File"))
+		totalNew = 0
+		totalLearned = 0
 		i = 0
 		cats = {}
+
 		for category in alot:
-			n = len(getReadyKeys(metalot[category]))
-			if n > 0:
-				total += n
+			keys, nNew, nLearned = getReadyKeys(metalot[category])
+			if nNew + nLearned > 0:
+				totalNew += nNew
+				totalLearned += nLearned
 				i += 1
 				cats[i] = category
-				print(("{0:<8}{1:<" + maxLen + "}{2}").format(str(i)+'.', category, n))
+				print(("{0:<8}{1:<" + maxLen + "}{2} / {3}").format(str(i)+'.', category, nNew, nLearned))
 			else:
 				print(("\t{0:<" + maxLen + "}Available in {1}").format(category, timeUntilAvailable(metalot[category])))
 
-		if total > 0:
+		if totalNew + totalLearned > 0:
 			i += 1
 			cats[i] = "all"
 			cats[i+1] = "exit"
-			print(("{0:<8}{1:<" + maxLen + "}{2}").format(str(i)+'.', "all", total))
+			print(("{0:<8}{1:<" + maxLen + "}{2} / {3}").format(str(i)+'.', "all", totalNew, totalLearned))
 			print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+1)+'.', "exit"))
 
 			choice = ""
@@ -937,8 +947,8 @@ def mainLoop(alot, metalot, changes):
 			if choice == "all": #test all categories one by one
 				for category in alot:
 					changes[category] = quiz(category, alot[category], metalot[category], corewords)
-					
-					if len(getReadyKeys(metalot[category])) > 0:
+					keys, nNew, nLearned = getReadyKeys(metalot[category])
+					if nNew + nLearned > 0:
 						break
 			elif choice != "exit":
 				changes[choice] = quiz(choice, alot[choice], metalot[choice], corewords)

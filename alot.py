@@ -715,6 +715,7 @@ def quiz(category, catalot, metacatalot, corewords):
 
 		if not meta["learned"]:
 			color = COLOR_UNLEARNED
+
 			if entryType is Type.Number or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
@@ -752,12 +753,13 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = quizList(key, entry, step)
 		else:
 			color = COLOR_LEARNED
+
 			if entryType is Type.Number or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Diagram:
 				gui = subprocess.Popen(GUI + ' "{}"'.format(fullPath(entry[0])))
 				if random.randint(0, 1) == 0:
-					correct, exit, immediately = quizList(key, random.randint(1, len(entry[1])), step)
+					correct, exit, immediately = quizList(key, entry[1], random.randint(1, len(entry[1])), True)
 				else:
 					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
 				gui.terminate()
@@ -771,8 +773,24 @@ def quiz(category, catalot, metacatalot, corewords):
 
 				if attributeType is Type.Number or attributeType is Type.Range:
 					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
+				elif attributeType is Type.Diagram:
+					gui = subprocess.Popen(GUI + ' "{}"'.format(entry[attribute][0]))
+					if random.randint(0, 1) == 0:
+						correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), True)
+					else:
+						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
+					gui.terminate()
+				elif attributeType is Type.Image:
+					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), color)
 				elif attributeType is Type.String:
 					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
+				elif attributeType is Type.List:
+					qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
+
+					if qType is quizList:	
+						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), True)
+					else:
+						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

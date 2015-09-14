@@ -816,7 +816,15 @@ def quiz(category, catalot, metacatalot, corewords):
 							print(("{:<" + maxW + "}Already learned").format(attribute))
 						elif type(correct[attribute]) is bool:
 							feedback(("{:<" + maxW + "}Correct!").format(attribute))
+							
 							meta["step"][attribute] += 1
+							#skip some useless steps for certain types of attributes (the steps that ask the user to type in the name of the entry)
+							attributeType = getType(entry[attribute])
+							if attributeType is Type.String and meta["step"][attribute] == 2:
+								meta["step"][attribute] += 1
+							if (attributeType is Type.Number or attributeType is Type.Range) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
+								meta["step"][attribute] += 1
+
 							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])
 						else:
 							feedback(("{0:<" + maxW + "}Wrong! Correct answer: {1}").format(attribute, correct[attribute]))

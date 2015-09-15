@@ -1,7 +1,8 @@
 Alot of Knowledge
 ==================
 
-[https://raw.githubusercontent.com/Winterstark/Alot-of-Knowledge/master/alot.png](Alot logo)
+![Alot logo](https://raw.githubusercontent.com/Winterstark/Alot-of-Knowledge/master/alot.png)
+
 
 This is a python script that helps the user learn stuff. It's basically the script equivalent of my [https://github.com/Winterstark/Wordy](Wordy) project, but used not just for learning new words, but for any kind of knowledge tidbit.
 
@@ -20,5 +21,5 @@ This project is not meant to reach Wordy's scale and user-friendliness - for exa
 Credits
 --------
 
-* [https://pypi.python.org/pypi/colorama](Colorama)
-* Name and logo from [http://hyperboleandahalf.blogspot.com/2010/04/alot-is-better-than-you-at-everything.html](Hyperbole and a half)
+* [Colorama](https://pypi.python.org/pypi/colorama)
+* Name and logo from [Hyperbole and a half](http://hyperboleandahalf.blogspot.com/2010/04/alot-is-better-than-you-at-everything.html)

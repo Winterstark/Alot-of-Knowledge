@@ -561,7 +561,6 @@ def qType_OrderItems(listKey, items, color):
 
 	for i in range(len(items)):
 		index = random.randint(i, len(shuffledItems)-1)
-		#correctOrder.append(shuffledIndices[index])
 
 		shuffledItems[i], shuffledItems[index] = shuffledItems[index], shuffledItems[i]
 		shuffledIndices[i], shuffledIndices[index] = shuffledIndices[index], shuffledIndices[i]
@@ -588,15 +587,29 @@ def qType_OrderItems(listKey, items, color):
 		return correctOrder, exit, immediately
 
 
-def qType_Image(imageKey, path, color):
-	gui = subprocess.Popen(GUI + ' "{}"'.format(path))
-	answer, quit, immediately = checkForExit(input("What is this image associated with? "))
+def qType_Image(imageKey, path, learned=False):
+	if learned:
+		color = COLOR_LEARNED
+	else:
+		color = COLOR_UNLEARNED
+
+	if not learned or learned and random.randint(0, 1) == 0:
+		#choose correct image
+		correctAnswer = str(random.randint(1, 6))
+		gui = subprocess.Popen(GUI + ' "{0}" /choose {1}'.format(path, correctAnswer))
+		answer, quit, immediately = checkForExit(input("Which image represents {}? ".format(imageKey)))
+	else:
+		#identify image
+		correctAnswer = imageKey
+		gui = subprocess.Popen(GUI + ' "{}"'.format(path))
+		answer, quit, immediately = checkForExit(input("What is this image associated with? "))
+
 	gui.terminate()
 
-	if answer.lower() == imageKey.lower():
+	if answer.lower() == correctAnswer.lower():
 		return True, quit, immediately
 	else:
-		return imageKey, quit, immediately
+		return correctAnswer, quit, immediately
 
 
 def quizNumber(catalot, key, step, color,  attribute=""):
@@ -723,7 +736,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = quizList(key, entry[1], step)
 				gui.terminate()
 			elif entryType is Type.Image:
-				correct, exit, immediately = qType_Image(key, fullPath(entry), color)
+				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
 			elif entryType is Type.Class:
@@ -741,7 +754,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
 						gui.terminate()
 					elif attributeType is Type.Image:
-						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), color)
+						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False)
 					elif attributeType is Type.String:
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
 					elif attributeType is Type.List:
@@ -764,7 +777,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
 				gui.terminate()
 			elif entryType is Type.Image:
-				correct, exit, immediately = qType_Image(key, fullPath(entry), color)
+				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color)
 			elif entryType is Type.Class:
@@ -781,7 +794,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
 					gui.terminate()
 				elif attributeType is Type.Image:
-					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), color)
+					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
 				elif attributeType is Type.String:
 					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
 				elif attributeType is Type.List:

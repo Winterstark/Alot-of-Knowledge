@@ -875,7 +875,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				meta["step"] = newStep
 				meta["nextTest"] = datetime.now() + timedelta(hours=22)
 			else:
-				#standard entry type (int, tuple, str), or quizList that returned True or "False"
+				#standard entry type (int, tuple, str) or quizList that returned True or "False" or learned class that only tests 1 attribute
 				if not meta["learned"]:
 					if type(correct) is bool:
 						feedback("Correct!")
@@ -898,7 +898,12 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						if correct is not "False": #if it is "False" then quizList has already printed the correct answer
 							feedback("Wrong! Correct answer: " + correct)
-						print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))
+						
+						if entryType is Type.List:
+							print("Entry progress @ 100%.")
+						else:
+							print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))
+
 						meta["nextTest"] = datetime.now() + timedelta(hours=22)
 				else:
 					if type(correct) is bool:
@@ -908,8 +913,13 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						feedback("Wrong! Entry unlearned! Correct answer: " + correct)
 						meta["learned"] = False
-						meta["step"] = 1
 						meta["nextTest"] = datetime.now() + timedelta(hours=22)
+
+						if entryType is Type.Class:
+							for attribute in meta["step"]:
+								meta["step"][attribute] = 1
+						else:
+							meta["step"] = 1
 
 			meta["lastTest"] = datetime.now()
 			nTested += 1

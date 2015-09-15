@@ -4,7 +4,7 @@ Alot of Knowledge
 ![Alot logo](https://raw.githubusercontent.com/Winterstark/Alot-of-Knowledge/master/alot.png)
 
 
-This is a python script that helps the user learn stuff. It's basically the script equivalent of my [https://github.com/Winterstark/Wordy](Wordy) project, but used not just for learning new words, but for any kind of knowledge tidbit.
+This is a python script that helps the user learn stuff. It's basically the script equivalent of my [Wordy](https://github.com/Winterstark/Wordy) project, but used not just for learning new words, but for any kind of knowledge tidbit.
 
 It supports the following data types:
 * Number/date

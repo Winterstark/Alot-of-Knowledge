@@ -1,11 +1,7 @@
 Alot of Knowledge
 ==================
 
-[...](Alot logo)
-
-README STILL BEING WRITTEN
-
-
+[https://raw.githubusercontent.com/Winterstark/Alot-of-Knowledge/master/alot.png](Alot logo)
 
 This is a python script that helps the user learn stuff. It's basically the script equivalent of my [https://github.com/Winterstark/Wordy](Wordy) project, but used not just for learning new words, but for any kind of knowledge tidbit.
 
@@ -17,6 +13,8 @@ It supports the following data types:
 * Diagram
 * List (of any of the previous types)
 * Class (consisting of any number of the previous types)
+
+This project is not meant to reach Wordy's scale and user-friendliness - for example, the user has to add new entries by manually editing text files (or using the add.py script). Since I doubt many people will be interested in using the script I won't go into explaining the details of how it works. If, however, there happen to be any interested people, send me a message and I'll write a decent README.
 
 
 Credits

@@ -129,6 +129,16 @@ namespace AlotGUI
                 int i = 0;
                 string folder = Path.GetDirectoryName(imgs[0]), prevFolder = folder;
 
+                if (imgs.Length > 1)
+                {
+                    //if there are multiple correct images choose a random one to display
+                    imgs[0] = imgs[new Random((int)DateTime.Now.Ticks).Next(imgs.Length)];
+
+                    //and don't use the other ones as alternatives, so move to the parent folder
+                    prevFolder = folder;
+                    folder = Directory.GetParent(folder).FullName;
+                }
+
                 while (i < 5 && folder.Contains(IMG_DIR)) //don't search beyond the top-most images directory
                 {
                     string[] files = Directory.GetFiles(folder);
@@ -150,6 +160,7 @@ namespace AlotGUI
                                     break;
                             }
 
+                    prevFolder = folder;
                     folder = Directory.GetParent(folder).FullName;
                 }
 

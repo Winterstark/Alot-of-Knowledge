@@ -593,7 +593,7 @@ def qType_Image(imageKey, path, learned=False):
 	else:
 		color = COLOR_UNLEARNED
 
-	if not learned or learned and random.randint(0, 1) == 0:
+	if not learned or random.randint(0, 1) == 0:
 		#choose correct image
 		correctAnswer = str(random.randint(1, 6))
 		gui = subprocess.Popen(GUI + ' "{0}" /choose {1}'.format(path, correctAnswer))

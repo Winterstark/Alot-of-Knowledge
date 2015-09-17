@@ -276,9 +276,9 @@ def feedback(msg, playSound=True):
 			PlaySound(SOUND_WRONG, SND_FILENAME)
 
 
-def colorPrint(text, color):
+def colorPrint(text, color, endline="\n"):
 	print(color, end="")
-	print(text)
+	print(text, end=endline)
 	print(Fore.RESET, end="")
 
 
@@ -1044,7 +1044,10 @@ def mainLoop(alot, metalot, changes):
 				totalLearned += nLearned
 				i += 1
 				cats[i] = category
-				print(("{0:<8}{1:<" + maxLen + "}{2} / {3}").format(str(i)+'.', category, nNew, nLearned))
+				print(("{0:<8}{1:<" + maxLen + "}").format(str(i)+'.', category), end="")
+				colorPrint(nNew, COLOR_UNLEARNED, endline="")
+				print(" / ", end="")
+				colorPrint(nLearned, COLOR_LEARNED)
 			else:
 				print(("\t{0:<" + maxLen + "}Available in {1}").format(category, timeUntilAvailable(metalot[category])))
 
@@ -1052,7 +1055,12 @@ def mainLoop(alot, metalot, changes):
 			i += 1
 			cats[i] = "all"
 			cats[i+1] = "exit"
-			print(("{0:<8}{1:<" + maxLen + "}{2} / {3}").format(str(i)+'.', "all", totalNew, totalLearned))
+
+			print(("{0:<8}{1:<" + maxLen + "}").format(str(i)+'.', "all"), end="")
+			colorPrint(totalNew, COLOR_UNLEARNED, endline="")
+			print(" / ", end="")
+			colorPrint(totalLearned, COLOR_LEARNED)
+
 			print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+1)+'.', "exit"))
 
 			choice = ""

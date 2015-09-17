@@ -776,7 +776,6 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n\n")
 
 		key = random.choice(ready)
-		key = "Colonies of the German Empire"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]

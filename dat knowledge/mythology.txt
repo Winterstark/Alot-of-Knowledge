@@ -1,6 +1,6 @@
 {
-	'Ishtar': {'Type': 'Goddess', 'Patron': {'Sexual love', 'War'}, 'Symbols': {'Venus'}, 'Pantheon': 'Mesopotamian', 'Other names': 'Inana (Sumerian counterpart)', 'Appearance': 'mythology\\Mesopotamian\\Ishtar.jpg'},
-	'Marduk': {'Type': 'God', 'Patron': {'City of Babylon'}, 'Symbols': {'Dragon', 'Jupiter'}, 'Pantheon': 'Mesopotamian', 'Other names': 'Bel (Akkadian word for "Lord")', 'Appearance': 'mythology\\Mesopotamian\\Marduk.jpg'},
-	'Tiamat': {'Pantheon': 'Mesopotamian', 'Patron': {'Ocean'}, 'Type': 'Primordial Goddess'},
-	'Lamassu': {'Type': 'Protective deity', 'Other names': 'Shedu', 'Pantheon': 'Mesopotamian', 'Appearance': 'mythology\\Mesopotamian\\Lamassu.jpg'},
+	'Tiamat': {'Pantheon': 'Mesopotamian', 'Type': 'Primordial Goddess', 'Patron': {'Ocean'}},
+	'Lamassu': {'Other names': 'Shedu', 'Pantheon': 'Mesopotamian', 'Type': 'Protective deity', 'Appearance': 'mythology\\Mesopotamian\\Lamassu.jpg'},
+	'Ishtar': {'Symbols': {'Venus'}, 'Other names': 'Inana (Sumerian counterpart)', 'Appearance': 'mythology\\Mesopotamian\\Ishtar.jpg', 'Type': 'Goddess', 'Pantheon': 'Mesopotamian', 'Patron': {'War', 'Sexual love'}},
+	'Marduk': {'Symbols': {'Jupiter', 'Dragon'}, 'Other names': 'Bel (Akkadian word for "Lord")', 'Appearance': 'mythology\\Mesopotamian\\Marduk.jpg', 'Type': 'God', 'Pantheon': 'Mesopotamian', 'Patron': {'City of Babylon'}},
 }

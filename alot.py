@@ -814,9 +814,9 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
 					elif attributeType is Type.List:
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
-					elif entryType is Type.Set:
+					elif attributeType is Type.Set:
 						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
-
+					
 					if exit:
 						break
 			elif entryType is Type.List:

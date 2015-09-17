@@ -13,7 +13,7 @@ COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
 
-Type = Enum("Type", "Number Range String Image Diagram Class List")
+Type = Enum("Type", "Number Range String Image Diagram Class List Set")
 
 
 def parseFile(path):
@@ -170,6 +170,8 @@ def maxSteps(answer):
 		return 5
 	elif answerType is Type.Image:
 		return 1
+	elif answerType is Type.Set:
+		return 2
 
 
 def getType(entry):
@@ -189,6 +191,8 @@ def getType(entry):
 		return Type.List
 	elif entryType is dict:
 		return Type.Class
+	elif entryType is set:
+		return Type.Set
 
 
 def getMaxKeyLen(dictionary):
@@ -278,6 +282,41 @@ def colorPrint(text, color):
 	print(Fore.RESET, end="")
 
 
+def constructHint(a):
+	aType = getType(a)
+
+	if aType is Type.Range:
+		key = str(a[0]) + " - " + str(a[1])
+		hint = '_' * len(str(a[0])) + " - " + '_' * len(str(a[1]))
+	else:
+		key = str(a)
+		hint = ""
+
+		insideParentheses = False
+		showFirstLetters = aType is Type.String
+		firstLetter = True
+
+		for i in range(len(key)):
+			if key[i].isalnum():
+				if (showFirstLetters and firstLetter) or insideParentheses:
+					hint += key[i]
+					firstLetter = False
+				else:
+					hint += '_'
+			elif key[i] == ' ':
+				hint += ' '
+				firstLetter = True
+			else: #punctuation
+				hint += key[i]
+				firstLetter = True
+				if key[i] == '(':
+					insideParentheses = True
+				elif key[i] == ')':
+					insideParentheses = False
+
+	return hint
+
+
 def qType_MultipleChoice(q, a, altA, color):
 	#altA is a pool of values from which alternate answers are randomly selected
 	colorPrint(toString(q) + "\n", color)
@@ -321,40 +360,8 @@ def qType_MultipleChoice(q, a, altA, color):
 def qType_EnterAnswer(q, a, color):
 	colorPrint(toString(q), color)
 
-	#construct hint
-	aType = getType(a)
-
-	if aType is Type.Range:
-		key = str(a[0]) + " - " + str(a[1])
-		hint = '_' * len(str(a[0])) + " - " + '_' * len(str(a[1]))
-	else:
-		key = str(a)
-		hint = ""
-
-		showFirstLetters = aType is Type.String
-		firstLetter = True
-		insideParentheses = False
-
-		for i in range(len(key)):
-			if key[i].isalnum():
-				if (showFirstLetters and firstLetter) or insideParentheses:
-					hint += key[i]
-					firstLetter = False
-				else:
-					hint += '_'
-			elif key[i] == ' ':
-				hint += ' '
-				firstLetter = True
-			else: #punctuation
-				hint += key[i]
-				firstLetter = True
-				if key[i] == '(':
-					insideParentheses = True
-				elif key[i] == ')':
-					insideParentheses = False
-
 	#wait for user's answer
-	answer, exit, immediately = checkForExit(input("> " + hint + "\n> "))
+	answer, exit, immediately = checkForExit(input("> " + constructHint(a) + "\n> "))
 
 	#ignore segments in parentheses
 	answer = removeParentheses(answer)
@@ -521,7 +528,11 @@ def qType_RecognizeList(listKey, items, color):
 	for item in randomItems:
 		print(item)
 
-	answer, exit, immediately = checkForExit(input("What list do these items belong to? "))
+	if type(items) is Type.List:
+		itemsType = "list"
+	else:
+		itemsType = "set"
+	answer, exit, immediately = checkForExit(input("What {} do these items belong to? ".format(itemsType)))
 
 	if answer.lower() == listKey.lower():
 		return True, exit, immediately
@@ -707,6 +718,50 @@ def quizList(listKey, items, step, learned=False):
 		return "False", exit, immediately #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
 
 
+def quizSet(setKey, items, step, color):
+	colorPrint(setKey + ":", color)
+
+	if step == 1: #print hints
+		for item in items:
+			print(constructHint(item))
+
+	itemsCopy = list(items)
+	itemsLCaseWithoutParentheses = list(itemsCopy)
+	itemsLCaseWithoutParentheses = [removeParentheses(item.lower()) for item in itemsLCaseWithoutParentheses]
+	correct = True
+
+	while len(itemsLCaseWithoutParentheses) > 0:
+		answer, exit, immediately = checkForExit(input("Enter an item in this set: "))
+		answer = removeParentheses(answer.lower())
+
+		if exit:
+			break
+		elif answer in itemsLCaseWithoutParentheses:
+			index = itemsLCaseWithoutParentheses.index(answer)
+
+			if len(itemsCopy[index]) != len(itemsLCaseWithoutParentheses[index]):
+				fullAnswer = "Full answer: " + itemsCopy[index] + ". "
+			else:
+				fullAnswer = ""
+
+			del itemsLCaseWithoutParentheses[index]
+			del itemsCopy[index]
+			
+			print("Correct! {0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
+
+			if step == 1: #print hints
+				for item in itemsCopy:
+					print(constructHint(item))
+		else:
+			correct = ""
+			for item in itemsCopy:
+				correct += item + "\n"
+			correct = correct[:-1]
+			break
+
+	return correct, exit, immediately
+
+
 def quiz(category, catalot, metacatalot, corewords):
 	ready, nNew, nLearned = getReadyKeys(metacatalot)
 	if nNew + nLearned == 0:
@@ -721,6 +776,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n\n")
 
 		key = random.choice(ready)
+		key = "Colonies of the German Empire"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]
@@ -759,11 +815,15 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
 					elif attributeType is Type.List:
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
+					elif entryType is Type.Set:
+						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
 
 					if exit:
 						break
 			elif entryType is Type.List:
 				correct, exit, immediately = quizList(key, entry, step)
+			elif entryType is Type.Set:
+				correct, exit, immediately = quizSet(key, entry, step, color)
 		else:
 			color = COLOR_LEARNED
 
@@ -804,6 +864,11 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), True)
 					else:
 						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
+				elif attributeType is Type.Set:
+					if random.randint(0, 1) == 0:
+						correct, exit, immediately = quizSet(key, entry[attribute], 1, color)
+					else:
+						correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
@@ -811,6 +876,11 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), True)
 				else:
 					correct, exit, immediately = qType(key, entry, color)
+			elif entryType is Type.Set:
+				if random.randint(0, 1) == 0:
+					correct, exit, immediately = quizSet(key, entry, 1, color)
+				else:
+					correct, exit, immediately = qType_RecognizeList(key, entry, color)
 
 		if not immediately:
 			#log result

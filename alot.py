@@ -1045,9 +1045,15 @@ def mainLoop(alot, metalot, changes):
 				i += 1
 				cats[i] = category
 				print(("{0:<8}{1:<" + maxLen + "}").format(str(i)+'.', category), end="")
-				colorPrint(nNew, COLOR_UNLEARNED, endline="")
+				if nNew > 0:
+					colorPrint(nNew, COLOR_UNLEARNED, endline="")
+				else:
+					print(0, end="")
 				print(" / ", end="")
-				colorPrint(nLearned, COLOR_LEARNED)
+				if nLearned > 0:
+					colorPrint(nLearned, COLOR_LEARNED)
+				else:
+					print(0)
 			else:
 				print(("\t{0:<" + maxLen + "}Available in {1}").format(category, timeUntilAvailable(metalot[category])))
 
@@ -1057,9 +1063,15 @@ def mainLoop(alot, metalot, changes):
 			cats[i+1] = "exit"
 
 			print(("{0:<8}{1:<" + maxLen + "}").format(str(i)+'.', "all"), end="")
-			colorPrint(totalNew, COLOR_UNLEARNED, endline="")
+			if totalNew > 0:
+				colorPrint(totalNew, COLOR_UNLEARNED, endline="")
+			else:
+				print(0, end="")
 			print(" / ", end="")
-			colorPrint(totalLearned, COLOR_LEARNED)
+			if totalLearned > 0:
+				colorPrint(totalLearned, COLOR_LEARNED)
+			else:
+				print(0)
 
 			print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+1)+'.', "exit"))
 

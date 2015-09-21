@@ -1,6 +1,7 @@
-import os, sys, subprocess, traceback, random
+import os, sys, subprocess, traceback, random, struct
 from enum import Enum
 from datetime import datetime, timedelta
+from time import sleep
 from winsound import PlaySound, SND_FILENAME
 from colorama import init, Fore
 
@@ -14,6 +15,11 @@ COLOR_LEARNED = Fore.GREEN
 
 
 Type = Enum("Type", "Number Range String Image Diagram Class List Set")
+
+
+def msgGUI(msg):
+    pipe.write(struct.pack('I', len(msg)) + bytes(msg, "UTF-8"))
+    pipe.seek(0)
 
 
 def parseFile(path):
@@ -607,15 +613,15 @@ def qType_Image(imageKey, path, learned=False):
 	if not learned or random.randint(0, 1) == 0:
 		#choose correct image
 		correctAnswer = str(random.randint(1, 6))
-		gui = subprocess.Popen(GUI + ' "{0}" /choose {1}'.format(path, correctAnswer))
+		msgGUI("C{0} {1}".format(correctAnswer, path))
 		answer, quit, immediately = checkForExit(input("Which image represents {}? ".format(imageKey)))
 	else:
 		#identify image
 		correctAnswer = imageKey
-		gui = subprocess.Popen(GUI + ' "{}"'.format(path))
+		msgGUI("I {}".format(path))
 		answer, quit, immediately = checkForExit(input("What is this image associated with? "))
 
-	gui.terminate()
+	msgGUI("logo")
 
 	if answer.lower() == correctAnswer.lower():
 		return True, quit, immediately
@@ -780,6 +786,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		entryType = getType(entry)
 		meta = metacatalot[key]
 		step = meta["step"]
+		usedGUI = False
 
 		if not meta["learned"]:
 			color = COLOR_UNLEARNED
@@ -787,15 +794,23 @@ def quiz(category, catalot, metacatalot, corewords):
 			if entryType is Type.Number or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
-				gui = subprocess.Popen(GUI + ' "{}"'.format(fullPath(entry[0])))
+				msgGUI("I {}".format(fullPath(entry[0])))
 				correct, exit, immediately = quizList(key, entry[1], step)
-				gui.terminate()
+				msgGUI("logo")
 			elif entryType is Type.Image:
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
 			elif entryType is Type.Class:
-				#custom class: ask a question for each attribute
+				#custom class
+				#if the class has an image and it has been learned already, show it
+				for attribute in entry:
+					if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
+						msgGUI("I {}".format(fullPath(entry[attribute])))
+						usedGUI = True
+						break
+
+				#ask a question for each attribute
 				correct = {}
 				for attribute in entry:
 					attributeType = getType(entry[attribute])
@@ -805,9 +820,9 @@ def quiz(category, catalot, metacatalot, corewords):
 					elif attributeType is Type.Number or attributeType is Type.Range:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
 					elif attributeType is Type.Diagram:
-						gui = subprocess.Popen(GUI + ' "{}"'.format(entry[attribute][0]))
+						msgGUI("I {}".format(fullPath(entry[attribute][0])))
 						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
-						gui.terminate()
+						msgGUI("logo")
 					elif attributeType is Type.Image:
 						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False)
 					elif attributeType is Type.String:
@@ -829,12 +844,12 @@ def quiz(category, catalot, metacatalot, corewords):
 			if entryType is Type.Number or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Diagram:
-				gui = subprocess.Popen(GUI + ' "{}"'.format(fullPath(entry[0])))
+				msgGUI("I {}".format(fullPath(entry[0])))
 				if random.randint(0, 1) == 0:
 					correct, exit, immediately = quizList(key, entry[1], random.randint(1, len(entry[1])), True)
 				else:
 					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
-				gui.terminate()
+				msgGUI("logo")
 			elif entryType is Type.Image:
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
 			elif entryType is Type.String:
@@ -843,15 +858,23 @@ def quiz(category, catalot, metacatalot, corewords):
 				attribute = random.choice(list(entry.keys()))
 				attributeType = getType(entry[attribute])
 
+				if attributeType is not Type.Image and attributeType is not Type.Diagram:
+					#show class image (if any)
+					for attribute in entry:
+						if getType(entry[attribute]) is Type.Image:
+							msgGUI("I {}".format(fullPath(entry[attribute])))
+							usedGUI = True
+							break
+
 				if attributeType is Type.Number or attributeType is Type.Range:
 					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
 				elif attributeType is Type.Diagram:
-					gui = subprocess.Popen(GUI + ' "{}"'.format(entry[attribute][0]))
+					msgGUI("I {}".format(fullPath(entry[attribute][0])))
 					if random.randint(0, 1) == 0:
 						correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), True)
 					else:
 						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
-					gui.terminate()
+					msgGUI("logo")
 				elif attributeType is Type.Image:
 					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
 				elif attributeType is Type.String:
@@ -880,6 +903,9 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately = quizSet(key, entry, 1, color)
 				else:
 					correct, exit, immediately = qType_RecognizeList(key, entry, color)
+
+		if usedGUI:
+			msgGUI("logo")
 
 		if not immediately:
 			#log result
@@ -1098,7 +1124,7 @@ def mainLoop(alot, metalot, changes):
 
 
 #MAIN
-print("Alot of Knowlege v0.6")
+print("Alot of Knowlege v0.7")
 
 init() #colorama init
 
@@ -1134,6 +1160,12 @@ for filename in os.listdir(DIR):
 			if nDel > 0:
 				print(str(nDel) + " deletions")
 
+#init GUI
+gui = subprocess.Popen(GUI)
+sleep(0.1) #give gui time to start the pipe
+
+pipe = open(r'\\.\pipe\NPtest', 'r+b', 0)
+
 #show "main menu"
 try:
 	immediately = mainLoop(alot, metalot, changes)
@@ -1149,3 +1181,5 @@ finally: #save changes
 if not immediately:
 	print("Press Enter to exit...")
 	input()
+
+gui.terminate()

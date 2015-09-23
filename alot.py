@@ -398,6 +398,17 @@ def listMatchingAttributes(catalot, attribute):
 	return attribs
 
 
+def listKeys(catalot, targetKey):
+	keys = []
+	tType = getType(catalot[targetKey])
+
+	for key in catalot:
+		if getType(catalot[key]) is tType:
+			keys.append(key)
+
+	return keys
+
+
 #returns a list of dictionary keys whose attribute value is different than parameter value
 def listKeysWithUniqueAttribute(catalot, attribute, value):
 	keys = list(catalot.keys())
@@ -796,7 +807,7 @@ def qType_Image(imageKey, path, learned=False):
 		return correctAnswer, quit, immediately
 
 
-def quizNumber(catalot, key, step, color,  attribute=""):
+def quizNumber(catalot, key, step, color, attribute=""):
 	if step == 1:
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
@@ -806,7 +817,7 @@ def quizNumber(catalot, key, step, color,  attribute=""):
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, list(catalot.keys()), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, listKeys(catalot, key), color)
 	elif step == 3:
 		if attribute != "":
 			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
@@ -831,7 +842,7 @@ def quizString(catalot, key, step, corewords, color, attribute=""):
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, list(catalot.keys()), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, listKeys(catalot, key), color)
 	elif step == 3:
 		if attribute != "":
 			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, corewords, color)

@@ -1,7 +1,7 @@
 import os, sys, subprocess, traceback, random, struct
 from enum import Enum
 from datetime import datetime, timedelta
-from time import sleep
+from time import sleep, strptime
 from winsound import PlaySound, SND_FILENAME
 from colorama import init, Fore
 
@@ -14,7 +14,154 @@ COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
 
-Type = Enum("Type", "Number Range String Image Diagram Class List Set")
+Type = Enum("Type", "Number Date Range String Image Diagram Class List Set")
+
+
+#a custom class instead of DateTime allows for greater flexibility, e.g. 11 November 1918, 322 BC, 5th century, 3rd millennium BC
+class Date:
+	def __init__(self, value):
+		if type(value) is int:
+			self.M = -1 #millennium
+			self.c = -1
+			self.y = value
+			self.m = -1
+			self.d = -1
+
+			if self.y < 0:
+				self.y *= -1
+				self.bc = True
+			else:
+				self.bc = False
+		else: #is str
+			if value[0] == '-': #b.c. year
+				value = value[1:]
+				self.bc = True
+			else:
+				self.bc = False
+
+			if value[-2:] == "c.":
+				self.prefix, value = Date.extractPrefix(value)
+
+				self.M = -1
+				self.c = int(value[:-2])
+				self.y = -1
+				self.m = -1
+				self.d = -1
+			elif value[-2:] == "m.":
+				self.prefix, value = Date.extractPrefix(value)
+
+				self.M = int(value[:-2])
+				self.c = -1
+				self.y = -1
+				self.m = -1
+				self.d = -1
+			else:
+				self.M = -1
+				self.c = -1
+				
+				parts = value.split('-')
+
+				if len(parts) == 1:
+					self.y = int(parts[0])
+					self.m = -1
+					self.d = -1
+				elif len(parts) == 2:
+					self.y = int(parts[0])
+					self.m = int(parts[1])
+					self.d = -1
+				else: #== 3
+					self.y = int(parts[0])
+					self.m = int(parts[1])
+					self.d = int(parts[2])
+
+	def __str__(self):
+		if self.M != -1:
+			s = self.prefix + Date.convertToOrdinal(self.M) + " millennium"
+		elif self.c != -1:
+			s = self.prefix + Date.convertToOrdinal(self.c) + " century"
+		else:
+			s = str(self.y)
+
+			if self.m != -1:
+				s = datetime(1, int(self.m), 1).strftime("%B") + " " + s
+			if self.d != -1:
+				s = str(self.d) + " " + s
+
+		if self.bc:
+			s += " BC"
+
+		return s
+
+	def __repr__(self):
+		if self.M != -1:
+			s = self.prefix + " " + str(self.M) + "m."
+		elif self.c != -1:
+			s = self.prefix + " " + str(self.M) + "c."
+		else:
+			s = str(self.y)
+			if self.m != -1:
+				s += "-" + str(self.m)
+			if self.d != -1:
+				s += "-" + str(self.d)
+
+		if self.bc:
+			s = "-" + s
+
+		return "'" + s + "'"
+
+	#checks if entry represents a date
+	def isValid(entry):
+		eType = type(entry)
+
+		if eType is int and entry < 2100:
+			return True
+		elif eType is str:
+			prefix, entry = Date.extractPrefix(entry)
+
+			if entry[-2:] == "c." or entry[-2:] == "m.":
+				try:
+					int(entry[:-2])
+					return True
+				except:
+					pass
+
+			try:
+				strptime(entry, "%Y")
+			except:
+				try:
+					strptime(entry, "%Y-%m")
+				except:
+					try:
+						strptime(entry, "%Y-%m-%d")
+					except:
+						return False
+			return True
+		else:
+			return False
+
+	def convertToOrdinal(num):
+		s = str(num)
+
+		if s[-1] == '1':
+			s += "st"
+		elif s[-1] == '2':
+			s += "nd"
+		elif s[-1] == '3':
+			s += "rd"
+		else:
+			s += "th"
+
+		return s
+
+	def extractPrefix(entry):
+		if "early " in entry:
+			return "Early ", entry.replace("early ", "")
+		elif "mid " in entry:
+			return "Mid ", entry.replace("mid ", "")
+		elif "late " in entry:
+			return "Late ", entry.replace("late ", "")
+		else:
+			return "", entry
 
 
 def msgGUI(msg):
@@ -25,6 +172,19 @@ def msgGUI(msg):
 def parseFile(path):
 	with open(path) as f:
 		data = eval(f.read()) #using eval instead of the safer ast.literal_eval because ast's version can't parse datetime objects
+
+	#convert date representations to Date objects
+	for key in data:
+		if Date.isValid(data[key]):
+			data[key] = Date(data[key])
+		elif getType(data[key]) is Type.Range:
+			data[key] = (Date(data[key][0]), Date(data[key][1]))
+		elif getType(data[key]) is Type.Class:
+			for attribute in data[key]:
+				if Date.isValid(data[key][attribute]):
+					data[key][attribute] = Date(data[key][attribute])
+				elif getType(data[key][attribute]) is Type.Range:
+					data[key][attribute] = (Date(data[key][attribute][0]), Date(data[key][attribute][1]))
 
 	#load metadata
 	metapath = path.replace(DIR, DIR + os.sep + "!METADATA")
@@ -41,6 +201,7 @@ def parseFile(path):
 	nNew = 0
 	for key in data:
 		if key not in metadata:
+			#init metadata entry
 			metadata[key] = {
 				"learned": False,
 				"step": 1,
@@ -48,7 +209,7 @@ def parseFile(path):
 				"nextTest": datetime.now() + timedelta(hours=22)
 			}
 
-			if type(data[key]) is dict: #each attribute needs its own learning step tracker
+			if getType(data[key]) is Type.Class: #each attribute needs its own learning step tracker
 				metadata[key]["step"] = {}
 				for attribute in data[key]:
 					metadata[key]["step"][attribute] = 1
@@ -170,7 +331,7 @@ def isLearned(step, answer):
 def maxSteps(answer):
 	answerType = getType(answer)
 
-	if answerType is Type.Number or answerType is Type.Range:
+	if answerType is Type.Number or answerType is Type.Date or answerType is Type.Range:
 		return 4
 	elif answerType is Type.String:
 		return 5
@@ -185,20 +346,26 @@ def getType(entry):
 
 	if entryType is int:
 		return Type.Number
-	elif entryType is tuple and type(entry[0]) is int:
-		return Type.Range
-	elif entryType is tuple and type(entry[0]) is str:
-		return Type.Diagram
-	elif entryType is str and os.path.exists(fullPath(entry)):
-		return Type.Image
+	elif entryType is Date:
+		return Type.Date
+	elif entryType is tuple:
+		if type(entry[1]) is list:
+			return Type.Diagram
+		else:
+			return Type.Range
 	elif entryType is str:
-		return Type.String
+		if os.path.exists(fullPath(entry)):
+			return Type.Image
+		else:
+			return Type.String
 	elif entryType is list:
 		return Type.List
 	elif entryType is dict:
 		return Type.Class
 	elif entryType is set:
 		return Type.Set
+	else:
+		print("UNRECOGNIZED ENTRY TYPE:", entryType)
 
 
 def getMaxKeyLen(dictionary):
@@ -336,7 +503,7 @@ def qType_MultipleChoice(q, a, altA, color):
 		nextA = random.choice(altA)
 		altA.remove(nextA)
 
-		if type(nextA) == type(a) and nextA not in answers:
+		if getType(nextA) is getType(a) and nextA not in answers:
 			answers.insert(random.randint(0, len(answers)), nextA)
 
 	#print choices
@@ -534,7 +701,7 @@ def qType_RecognizeList(listKey, items, color):
 	for item in randomItems:
 		print(item)
 
-	if type(items) is Type.List:
+	if getType(items) is Type.List:
 		itemsType = "list"
 	else:
 		itemsType = "set"
@@ -791,7 +958,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		if not meta["learned"]:
 			color = COLOR_UNLEARNED
 
-			if entryType is Type.Number or entryType is Type.Range:
+			if entryType is Type.Number or entryType is Type.Date or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
@@ -817,7 +984,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					if isLearned(step[attribute], entry[attribute]):
 						correct[attribute] = "already learned"
 						exit = False
-					elif attributeType is Type.Number or attributeType is Type.Range:
+					elif attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
@@ -841,7 +1008,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		else:
 			color = COLOR_LEARNED
 
-			if entryType is Type.Number or entryType is Type.Range:
+			if entryType is Type.Number or entryType is Type.Date or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
@@ -866,7 +1033,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							usedGUI = True
 							break
 
-				if attributeType is Type.Number or attributeType is Type.Range:
+				if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
 					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
 				elif attributeType is Type.Diagram:
 					msgGUI("I {}".format(fullPath(entry[attribute][0])))
@@ -930,7 +1097,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							attributeType = getType(entry[attribute])
 							if attributeType is Type.String and meta["step"][attribute] == 2:
 								meta["step"][attribute] += 1
-							if (attributeType is Type.Number or attributeType is Type.Range) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
+							if (attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
 								meta["step"][attribute] += 1
 
 							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])
@@ -1001,7 +1168,7 @@ def quiz(category, catalot, metacatalot, corewords):
 								meta["learned"] = True
 								meta["nextTest"] = datetime.now() + timedelta(days=6, hours=22)
 							else:
-								print("Entry progress @ {}%.".format(100*meta["step"]//maxSteps(entry)))
+								print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))
 								meta["nextTest"] = datetime.now() + timedelta(hours=22)
 					else:
 						if correct is not "False": #if it is "False" then quizList has already printed the correct answer
@@ -1124,7 +1291,7 @@ def mainLoop(alot, metalot, changes):
 
 
 #MAIN
-print("Alot of Knowlege v0.7")
+print("Alot of Knowlege v0.8")
 
 init() #colorama init
 
@@ -1162,9 +1329,9 @@ for filename in os.listdir(DIR):
 
 #init GUI
 gui = subprocess.Popen(GUI)
-sleep(0.1) #give gui time to start the pipe
+sleep(0.2) #give gui time to start the pipe
 
-pipe = open(r'\\.\pipe\NPtest', 'r+b', 0)
+pipe = open(r'\\.\pipe\alotPipe', 'r+b', 0)
 
 #show "main menu"
 try:

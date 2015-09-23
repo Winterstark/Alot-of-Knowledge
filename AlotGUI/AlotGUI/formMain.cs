@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
+using System.Collections.Generic;
 
 namespace AlotGUI
 {
@@ -24,7 +25,7 @@ namespace AlotGUI
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var server = new NamedPipeServerStream("NPtest");
+            var server = new NamedPipeServerStream("alotPipe");
 
             updateStatus("Waiting for connection from alot.py...");
             server.WaitForConnection();
@@ -102,6 +103,8 @@ namespace AlotGUI
                         folder = Directory.GetParent(folder).FullName;
                     }
 
+                    Queue<string> unvisitedFolders = new Queue<string>();
+
                     while (i < 5 && folder.Contains(IMG_DIR)) //don't search beyond the top-most images directory
                     {
                         string[] files = Directory.GetFiles(folder);
@@ -114,6 +117,7 @@ namespace AlotGUI
                             foreach (string dir in Directory.GetDirectories(folder))
                                 if (dir != prevFolder)
                                 {
+                                    unvisitedFolders.Enqueue(dir);
                                     files = Directory.GetFiles(dir);
 
                                     for (int j = 0; j < files.Length && i < 5; j++, i++)
@@ -125,6 +129,19 @@ namespace AlotGUI
 
                         prevFolder = folder;
                         folder = Directory.GetParent(folder).FullName;
+                    }
+
+                    //need more images?
+                    while (i < 5 && unvisitedFolders.Count > 0)
+                    {
+                        string dir = unvisitedFolders.Dequeue();
+
+                        foreach (string file in Directory.GetFiles(dir))
+                            if (!arrayContainsString(multipleChoiceImages, file))
+                                multipleChoiceImages[i++] = file;
+
+                        foreach (string subDir in Directory.GetDirectories(dir))
+                            unvisitedFolders.Enqueue(subDir);
                     }
 
                     //insert correct image
@@ -213,6 +230,15 @@ namespace AlotGUI
                 }
 
             return visMosaic;
+        }
+
+        bool arrayContainsString(string[] array, string s)
+        {
+            for (int i = 0; i < array.Length; i++)
+                if (array[i] == s)
+                    return true;
+
+            return false;
         }
 
 

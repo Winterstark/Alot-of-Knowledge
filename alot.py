@@ -1466,9 +1466,21 @@ for filename in os.listdir(DIR):
 
 #init GUI
 gui = subprocess.Popen(GUI)
-sleep(0.2) #give gui time to start the pipe
+sleepInterval = 0.125
 
-pipe = open(r'\\.\pipe\alotPipe', 'r+b', 0)
+print("Establishing connection to AlotGUI...", end="")
+
+while "pipe" not in locals():
+	try:
+		pipe = open(r'\\.\pipe\alotPipe', 'r+b', 0)
+	except:
+		#give gui time to start the pipe
+		print("\rFailed to establish connection to AlotGUI. Next attempt in {}s...".format(sleepInterval), end="")
+		sleep(sleepInterval)
+		sleepInterval *= 2
+
+print("\r\t\t\t\t\t\t\t\t\t", end="") #erase previous line
+print("\rEstablished connection to AlotGUI.")
 
 #show "main menu"
 try:

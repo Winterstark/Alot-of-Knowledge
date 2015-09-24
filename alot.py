@@ -17,8 +17,11 @@ COLOR_LEARNED = Fore.GREEN
 Type = Enum("Type", "Number Date Range String Image Diagram Class List Set")
 
 
+
 #a custom class instead of DateTime allows for greater flexibility, e.g. 11 November 1918, 322 BC, 5th century, 3rd millennium BC
 class Date:
+	ZERO = datetime(1, 1, 1)
+
 	def __init__(self, value):
 		if type(value) is int:
 			self.M = -1 #millennium
@@ -74,6 +77,7 @@ class Date:
 					self.m = int(parts[1])
 					self.d = int(parts[2])
 
+
 	def __str__(self):
 		if self.M != -1:
 			s = self.prefix + Date.convertToOrdinal(self.M) + " millennium"
@@ -92,6 +96,7 @@ class Date:
 
 		return s
 
+
 	def __repr__(self):
 		if self.M != -1:
 			s = self.prefix + " " + str(self.M) + "m."
@@ -108,6 +113,50 @@ class Date:
 			s = "-" + s
 
 		return "'" + s + "'"
+
+
+	def totalDays(self):
+		if self.M != -1:
+			year = self.c * 1000
+			month = 6
+			day = 15
+		elif self.c != -1:
+			year = self.c * 100
+			month = 6
+			day = 15
+		else:
+			year = self.y
+			if self.m != -1:
+				month = self.m
+			else:
+				month = 6
+			if self.d != -1:
+				day = self.d
+			else:
+				day = 15
+
+		if self.bc:
+			return -((year-1)*365 + (month-1)*30 + day) #datetime doesn't support BC dates, so this is an estimation
+		else:
+			return (datetime(year, month, day) - Date.ZERO).days
+
+
+	def dayDifference(self, days):
+		return abs(self.totalDays() - days)
+
+
+	def precision(self):
+		if self.M != -1:
+			return "M"
+		elif self.c != -1:
+			return "c"
+		elif self.d != -1:
+			return "d"
+		elif self.m != -1:
+			return "m"
+		else:
+			return "y"
+
 
 	#checks if entry represents a date
 	def isValid(entry):
@@ -139,6 +188,7 @@ class Date:
 		else:
 			return False
 
+
 	def convertToOrdinal(num):
 		s = str(num)
 
@@ -153,6 +203,7 @@ class Date:
 
 		return s
 
+
 	def extractPrefix(entry):
 		if "early " in entry:
 			return "Early ", entry.replace("early ", "")
@@ -162,6 +213,7 @@ class Date:
 			return "Late ", entry.replace("late ", "")
 		else:
 			return "", entry
+
 
 
 def msgGUI(msg):
@@ -398,15 +450,84 @@ def listMatchingAttributes(catalot, attribute):
 	return attribs
 
 
+def listValues(catalot, targetKey):
+	values = []
+	tType = getType(catalot[targetKey])
+
+	for key in catalot:
+		if key is not targetKey and catalot[key] not in values and getType(catalot[key]) is tType:
+			values.append(catalot[key])
+
+	if tType is Type.Date:
+		#select the 5 closest unique dates (put them at the start of the array)
+		diff = {}
+		toDel = []
+		targetTotalDays = catalot[targetKey].totalDays()
+		targetPrecision = catalot[targetKey].precision()
+
+		for value in values:
+			days = value.dayDifference(targetTotalDays)
+
+			if days == 0 or value.precision() != targetPrecision: #discard duplicate values and those with a different precision
+				toDel.append(value)
+			else:
+				diff[value] = days
+
+		for value in toDel:
+			values.remove(value)
+
+		for i in range(5):
+			minDiff = sys.maxsize
+			for j in range(i, len(values)):
+				if diff[values[j]] < minDiff:
+					minDiff = diff[values[j]]
+					closestValueAt = j
+
+			values[i], values[closestValueAt] = values[closestValueAt], values[i]
+	else:
+		random.shuffle(values)
+
+	return values[:5]
+
+
 def listKeys(catalot, targetKey):
 	keys = []
 	tType = getType(catalot[targetKey])
 
 	for key in catalot:
-		if getType(catalot[key]) is tType:
+		if key is not targetKey and key not in keys and getType(catalot[key]) is tType:
 			keys.append(key)
 
-	return keys
+	if tType is Type.Date:
+		#select the 5 closest unique dates
+		diff = {}
+		toDel = []
+		targetTotalDays = catalot[targetKey].totalDays()
+		targetPrecision = catalot[targetKey].precision()
+
+		for key in keys:
+			days = catalot[key].dayDifference(targetTotalDays)
+
+			if days == 0 or catalot[key].precision() != targetPrecision: #discard duplicate values and those with a different precision
+				toDel.append(key)
+			else:
+				diff[key] = days
+
+		for key in toDel:
+			keys.remove(key)
+
+		for i in range(5):
+			minDiff = sys.maxsize
+			for j in range(i, len(keys)):
+				if diff[keys[j]] < minDiff:
+					minDiff = diff[keys[j]]
+					closestValueAt = j
+
+			keys[i], keys[closestValueAt] = keys[closestValueAt], keys[i]
+	else:
+		random.shuffle(keys)
+
+	return keys[:5]
 
 
 #returns a list of dictionary keys whose attribute value is different than parameter value
@@ -501,21 +622,26 @@ def constructHint(a):
 	return hint
 
 
-def qType_MultipleChoice(q, a, altA, color):
+def qType_MultipleChoice(q, a, answers, color):
 	#altA is a pool of values from which alternate answers are randomly selected
 	colorPrint(toString(q) + "\n", color)
 
-	#get other choices
-	answers = [a]
-	if a in altA:
-		altA.remove(a)
+	##get other choices
+	#answers = [a]
+	#if a in altA:
+		#altA.remove(a)
 
-	while len(answers) < 6 and len(altA) > 0:
-		nextA = random.choice(altA)
-		altA.remove(nextA)
+	#while len(answers) < 6 and len(altA) > 0:
+		#nextA = random.choice(altA)
+		#altA.remove(nextA)
 
-		if getType(nextA) is getType(a) and nextA not in answers:
-			answers.insert(random.randint(0, len(answers)), nextA)
+		#if getType(nextA) is getType(a) and nextA not in answers:
+			#answers.insert(random.randint(0, len(answers)), nextA)
+
+	if len(answers) != 5:
+		print("!!! len(answers):" + str(len(answers)))
+
+	answers.insert(random.randint(0, len(answers)), a)
 
 	#print choices
 	i = 1
@@ -812,7 +938,7 @@ def quizNumber(catalot, key, step, color, attribute=""):
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], list(catalot.values()), color)
+			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], listValues(catalot, key), color)
 	elif step == 2:
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
@@ -837,7 +963,7 @@ def quizString(catalot, key, step, corewords, color, attribute=""):
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], list(catalot.values()), color)
+			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], listValues(catalot, key), color)
 	elif step == 2:
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)

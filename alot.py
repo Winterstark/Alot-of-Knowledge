@@ -36,6 +36,8 @@ class Date:
 			else:
 				self.bc = False
 		else: #is str
+			value = value.lower()
+
 			if value[0] == '-': #b.c. year
 				value = value[1:]
 				self.bc = True
@@ -99,9 +101,9 @@ class Date:
 
 	def __repr__(self):
 		if self.M != -1:
-			s = self.prefix + " " + str(self.M) + "m."
+			s = self.prefix + str(self.M) + "m."
 		elif self.c != -1:
-			s = self.prefix + " " + str(self.M) + "c."
+			s = self.prefix + str(self.c) + "c."
 		else:
 			s = str(self.y)
 			if self.m != -1:
@@ -459,23 +461,37 @@ def listValues(catalot, targetKey):
 			values.append(catalot[key])
 
 	if tType is Type.Date:
-		#select the 5 closest unique dates (put them at the start of the array)
+		print("asdkccjfaskldjf")
+		#find difference in days between dates; discard duplicate values
 		diff = {}
 		toDel = []
 		targetTotalDays = catalot[targetKey].totalDays()
-		targetPrecision = catalot[targetKey].precision()
-
+		
 		for value in values:
 			days = value.dayDifference(targetTotalDays)
 
-			if days == 0 or value.precision() != targetPrecision: #discard duplicate values and those with a different precision
+			if days == 0:
 				toDel.append(value)
 			else:
 				diff[value] = days
 
 		for value in toDel:
 			values.remove(value)
+		
+		#discard dates with different precision (e.g. only year instead of full date)
+		toDel.clear()
+		targetPrecision = catalot[targetKey].precision()
+		
+		for value in values:
+			if value.precision() != targetPrecision:
+				toDel.append(value)
 
+		for value in toDel:
+			if len(keys) <= 5:
+				break #keep at least 5 keys whatever their precision
+			values.remove(value)
+
+		#select the 5 closest unique dates (put them at the start of the array)
 		for i in range(5):
 			minDiff = sys.maxsize
 			for j in range(i, len(values)):
@@ -495,20 +511,25 @@ def listKeys(catalot, targetKey):
 	tType = getType(catalot[targetKey])
 
 	for key in catalot:
-		if key is not targetKey and key not in keys and getType(catalot[key]) is tType:
+		if key != targetKey and key not in keys and getType(catalot[key]) is tType:
 			keys.append(key)
 
+	if len(keys) < 5 and len(catalot) > 5:
+		#add keys even if they have different value types to get at least 5
+		for key in catalot:
+			if key != targetKey and key not in keys:
+				keys.append(key)		
+	
 	if tType is Type.Date:
-		#select the 5 closest unique dates
+		#find difference in days between dates; discard duplicate values
 		diff = {}
 		toDel = []
 		targetTotalDays = catalot[targetKey].totalDays()
-		targetPrecision = catalot[targetKey].precision()
 
 		for key in keys:
 			days = catalot[key].dayDifference(targetTotalDays)
 
-			if days == 0 or catalot[key].precision() != targetPrecision: #discard duplicate values and those with a different precision
+			if days == 0:
 				toDel.append(key)
 			else:
 				diff[key] = days
@@ -516,6 +537,20 @@ def listKeys(catalot, targetKey):
 		for key in toDel:
 			keys.remove(key)
 
+		#discard dates with different precision (e.g. only year instead of full date)
+		toDel.clear()
+		targetPrecision = catalot[targetKey].precision()
+
+		for key in keys:
+			if catalot[key].precision() != targetPrecision:
+				toDel.append(key)
+
+		for key in toDel:
+			if len(keys) <= 5:
+				break #keep at least 5 keys whatever their precision
+			keys.remove(key)
+
+		#select the 5 closest dates
 		for i in range(5):
 			minDiff = sys.maxsize
 			for j in range(i, len(keys)):

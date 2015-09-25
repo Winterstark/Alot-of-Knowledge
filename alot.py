@@ -447,11 +447,10 @@ def listValues(catalot, targetKey):
 	tType = getType(catalot[targetKey])
 
 	for key in catalot:
-		if key is not targetKey and catalot[key] not in values and getType(catalot[key]) is tType:
+		if key != targetKey and catalot[key] not in values and getType(catalot[key]) is tType:
 			values.append(catalot[key])
 
 	if tType is Type.Date:
-		print("targetKey:", targetKey)
 		#find difference in days between dates; discard duplicate values
 		diff = {}
 		toDel = []
@@ -482,6 +481,45 @@ def listValues(catalot, targetKey):
 			values.remove(value)
 
 		#select the 5 closest unique dates (put them at the start of the array)
+		for i in range(5):
+			minDiff = sys.maxsize
+			for j in range(i, len(values)):
+				if diff[values[j]] < minDiff:
+					minDiff = diff[values[j]]
+					closestValueAt = j
+
+			values[i], values[closestValueAt] = values[closestValueAt], values[i]
+	elif tType is Type.Range:
+		#find difference in days between ranges; discard duplicate values
+		diff = {}
+		toDel = []
+		targetTotalDays = (catalot[targetKey][0].totalDays() + catalot[targetKey][1].totalDays()) / 2 #take the midpoint date of the range
+		
+		for value in values:
+			days = (value[0].dayDifference(targetTotalDays) + value[1].dayDifference(targetTotalDays)) / 2
+
+			if days == 0:
+				toDel.append(value)
+			else:
+				diff[value] = days
+
+		for value in toDel:
+			values.remove(value)
+		
+		#discard ranges with different precision (e.g. only year instead of full date)
+		toDel.clear()
+		targetPrecision = catalot[targetKey][0].precision()
+		
+		for value in values:
+			if value[0].precision() != targetPrecision:
+				toDel.append(value)
+
+		for value in toDel:
+			if len(values) <= 5:
+				break #keep at least 5 values whatever their precision
+			values.remove(value)
+
+		#select the 5 closest unique ranges (put them at the start of the array)
 		for i in range(5):
 			minDiff = sys.maxsize
 			for j in range(i, len(values)):
@@ -541,6 +579,45 @@ def listKeys(catalot, targetKey):
 			keys.remove(key)
 
 		#select the 5 closest dates
+		for i in range(5):
+			minDiff = sys.maxsize
+			for j in range(i, len(keys)):
+				if diff[keys[j]] < minDiff:
+					minDiff = diff[keys[j]]
+					closestValueAt = j
+
+			keys[i], keys[closestValueAt] = keys[closestValueAt], keys[i]
+	elif tType is Type.Range:
+		#find difference in days between ranges; discard duplicate keys
+		diff = {}
+		toDel = []
+		targetTotalDays = (catalot[targetKey][0].totalDays() + catalot[targetKey][1].totalDays()) / 2 #take the midpoint date of the range
+
+		for key in keys:
+			days = (catalot[key][0].dayDifference(targetTotalDays) + catalot[key][1].dayDifference(targetTotalDays)) / 2
+
+			if days == 0:
+				toDel.append(key)
+			else:
+				diff[key] = days
+
+		for key in toDel:
+			keys.remove(key)
+
+		#discard ranges with different precision (e.g. only year instead of full date)
+		toDel.clear()
+		targetPrecision = catalot[targetKey][0].precision()
+
+		for key in keys:
+			if catalot[key][0].precision() != targetPrecision:
+				toDel.append(key)
+
+		for key in toDel:
+			if len(keys) <= 5:
+				break #keep at least 5 keys whatever their precision
+			keys.remove(key)
+
+		#select the 5 closest ranges
 		for i in range(5):
 			minDiff = sys.maxsize
 			for j in range(i, len(keys)):
@@ -697,6 +774,7 @@ def qType_EnterAnswer(q, a, color):
 	colorPrint(toString(q), color)
 
 	if getType(a) is Type.Date:
+		aIsDate = True
 		precision = a.precision()
 		prefixed = a.prefix != ""
 
@@ -719,6 +797,7 @@ def qType_EnterAnswer(q, a, color):
 		elif precision == "d":
 			prompt = "> Year-Month-Day?\n> "
 	else:
+		aIsDate = False
 		prompt = "> " + constructHint(a) + "\n> "
 
 	#wait for user's answer
@@ -735,6 +814,11 @@ def qType_EnterAnswer(q, a, color):
 	#check answer
 	if getType(a) is Type.String:
 		answer = removeTypos(answer, correctAnswer)
+
+	if aIsDate:
+		#ensure the same format
+		answer = answer.replace("-0", "-")
+		correctAnswer = correctAnswer.replace("-0", "-")
 
 	correct = answer == correctAnswer
 	if not correct:
@@ -1249,7 +1333,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
-				if qType is quizList:	
+				if qType == quizList:	
 					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), True)
 				else:
 					correct, exit, immediately = qType(key, entry, color)
@@ -1359,7 +1443,7 @@ def quiz(category, catalot, metacatalot, corewords):
 								print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))
 								meta["nextTest"] = datetime.now() + timedelta(hours=22)
 					else:
-						if correct is not "False": #if it is "False" then quizList has already printed the correct answer
+						if correct != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback("Wrong! Correct answer: " + correct)
 						
 						if entryType is Type.List:

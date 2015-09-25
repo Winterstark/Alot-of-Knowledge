@@ -36,8 +36,6 @@ class Date:
 			else:
 				self.bc = False
 		else: #is str
-			value = value.lower()
-
 			if value[0] == '-': #b.c. year
 				value = value[1:]
 				self.bc = True
@@ -61,6 +59,7 @@ class Date:
 				self.m = -1
 				self.d = -1
 			else:
+				self.prefix = ""
 				self.M = -1
 				self.c = -1
 				
@@ -160,7 +159,7 @@ class Date:
 			return "y"
 
 
-	#checks if entry represents a date
+	#checks if string represents a Date (short form, e.g. "18c.")
 	def isValid(entry):
 		eType = type(entry)
 
@@ -168,7 +167,6 @@ class Date:
 			return True
 		elif eType is str:
 			prefix, entry = Date.extractPrefix(entry)
-
 			if entry[-2:] == "c." or entry[-2:] == "m.":
 				try:
 					int(entry[:-2])
@@ -207,6 +205,8 @@ class Date:
 
 
 	def extractPrefix(entry):
+		entry = entry.lower()
+
 		if "early " in entry:
 			return "Early ", entry.replace("early ", "")
 		elif "mid " in entry:
@@ -442,16 +442,6 @@ def toString(answer):
 	else:
 		return str(answer)
 
-
-def listMatchingAttributes(catalot, attribute):
-	attribs = []
-	for key in catalot:
-		if getType(catalot[key]) is Type.Class and attribute in catalot[key]:
-			attribs.append(catalot[key][attribute])
-
-	return attribs
-
-
 def listValues(catalot, targetKey):
 	values = []
 	tType = getType(catalot[targetKey])
@@ -461,7 +451,7 @@ def listValues(catalot, targetKey):
 			values.append(catalot[key])
 
 	if tType is Type.Date:
-		print("asdkccjfaskldjf")
+		print("targetKey:", targetKey)
 		#find difference in days between dates; discard duplicate values
 		diff = {}
 		toDel = []
@@ -487,8 +477,8 @@ def listValues(catalot, targetKey):
 				toDel.append(value)
 
 		for value in toDel:
-			if len(keys) <= 5:
-				break #keep at least 5 keys whatever their precision
+			if len(values) <= 5:
+				break #keep at least 5 values whatever their precision
 			values.remove(value)
 
 		#select the 5 closest unique dates (put them at the start of the array)
@@ -521,7 +511,7 @@ def listKeys(catalot, targetKey):
 				keys.append(key)		
 	
 	if tType is Type.Date:
-		#find difference in days between dates; discard duplicate values
+		#find difference in days between dates; discard duplicate keys
 		diff = {}
 		toDel = []
 		targetTotalDays = catalot[targetKey].totalDays()
@@ -569,7 +559,7 @@ def listKeys(catalot, targetKey):
 def listKeysWithUniqueAttribute(catalot, attribute, value):
 	keys = list(catalot.keys())
 	toDel = []
-
+	
 	for key in keys:
 		if getType(catalot[key]) is not Type.Class or attribute not in catalot[key] or catalot[key][attribute] == value:
 			toDel.append(key)
@@ -577,7 +567,20 @@ def listKeysWithUniqueAttribute(catalot, attribute, value):
 	for key in toDel:
 		keys.remove(key)
 
-	return keys
+	#select 5 random keys
+	random.shuffle(keys)
+	return keys[:5]
+
+
+def listMatchingAttributes(catalot, attribute):
+	attribs = []
+	for key in catalot:
+		if getType(catalot[key]) is Type.Class and attribute in catalot[key]:
+			attribs.append(catalot[key][attribute])
+
+	#select 5 random attributes
+	random.shuffle(attribs)
+	return attribs[:5]
 
 
 def removeParentheses(s):
@@ -661,18 +664,6 @@ def qType_MultipleChoice(q, a, answers, color):
 	#altA is a pool of values from which alternate answers are randomly selected
 	colorPrint(toString(q) + "\n", color)
 
-	##get other choices
-	#answers = [a]
-	#if a in altA:
-		#altA.remove(a)
-
-	#while len(answers) < 6 and len(altA) > 0:
-		#nextA = random.choice(altA)
-		#altA.remove(nextA)
-
-		#if getType(nextA) is getType(a) and nextA not in answers:
-			#answers.insert(random.randint(0, len(answers)), nextA)
-
 	if len(answers) != 5:
 		print("!!! len(answers):" + str(len(answers)))
 
@@ -705,8 +696,33 @@ def qType_MultipleChoice(q, a, answers, color):
 def qType_EnterAnswer(q, a, color):
 	colorPrint(toString(q), color)
 
+	if getType(a) is Type.Date:
+		precision = a.precision()
+		prefixed = a.prefix != ""
+
+		a = repr(a)
+
+		if precision == "M":
+			if not prefixed:
+				prompt = "> Millennium?\n> "
+			else:
+				prompt = "> Early/Mid/Late Millennium?\n> "
+		elif precision == "c":
+			if not prefixed:
+				prompt = "> Century?\n> "
+			else:
+				prompt = "> Early/Mid/Late Century?\n> "
+		elif precision == "y":
+			prompt = "> Year?\n> "
+		elif precision == "m":
+			prompt = "> Year-Month?\n> "
+		elif precision == "d":
+			prompt = "> Year-Month-Day?\n> "
+	else:
+		prompt = "> " + constructHint(a) + "\n> "
+
 	#wait for user's answer
-	answer, exit, immediately = checkForExit(input("> " + constructHint(a) + "\n> "))
+	answer, exit, immediately = checkForExit(input(prompt))
 
 	#ignore segments in parentheses
 	answer = removeParentheses(answer)

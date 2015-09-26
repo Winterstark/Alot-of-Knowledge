@@ -807,18 +807,18 @@ def qType_EnterAnswer(q, a, color):
 	answer = removeParentheses(answer)
 	correctAnswer = removeParentheses(toString(a))
 
+	if aIsDate:
+		#ensure the same format
+		answer = answer.replace("-0", "-")
+		correctAnswer = correctAnswer.replace("-0", "-")
+	
 	#ignore punctuation
 	answer = ''.join(e for e in answer.lower() if e.isalnum())
 	correctAnswer = ''.join(e for e in correctAnswer.lower() if e.isalnum())
 
 	#check answer
-	if getType(a) is Type.String:
+	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer)
-
-	if aIsDate:
-		#ensure the same format
-		answer = answer.replace("-0", "-")
-		correctAnswer = correctAnswer.replace("-0", "-")
 
 	correct = answer == correctAnswer
 	if not correct:

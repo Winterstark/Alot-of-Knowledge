@@ -796,6 +796,29 @@ def qType_EnterAnswer(q, a, color):
 			prompt = "> Year-Month?\n> "
 		elif precision == "d":
 			prompt = "> Year-Month-Day?\n> "
+	elif getType(a) is Type.Range:
+		aIsDate = True
+		precision = a[0].precision()
+		prefixed = a[0].prefix != ""
+
+		a = (repr(a[0]), repr(a[1]))
+
+		if precision == "M":
+			if not prefixed:
+				prompt = "> Millennium - Millennium?\n> "
+			else:
+				prompt = "> Early/Mid/Late Millennium - Early/Mid/Late Millennium?\n> "
+		elif precision == "c":
+			if not prefixed:
+				prompt = "> Century - Century?\n> "
+			else:
+				prompt = "> Early/Mid/Late Century - Early/Mid/Late Century?\n> "
+		elif precision == "y":
+			prompt = "> Year - Year?\n> "
+		elif precision == "m":
+			prompt = "> Year-Month - Year-Month?\n> "
+		elif precision == "d":
+			prompt = "> Year-Month-Day - Year-Month-Day?\n> "
 	else:
 		aIsDate = False
 		prompt = "> " + constructHint(a) + "\n> "

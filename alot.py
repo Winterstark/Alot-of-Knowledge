@@ -442,222 +442,143 @@ def toString(answer):
 	else:
 		return str(answer)
 
-def listValues(catalot, targetKey):
-	values = []
-	tType = getType(catalot[targetKey])
+
+def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute=""):
+	if key != targetKey and catalot[key] not in answers.values() and getType(catalot[key]) is getType(catalot[targetKey]):
+		if attribute == "":
+			return True
+		else:
+			if attribute in catalot[key] and catalot[key][attribute] != catalot[targetKey][attribute]:
+				return True
+			else:
+				return False
+	else:
+		return False
+
+
+def isEntryOrAttributeDate(entry, attribute):
+	if attribute == "":
+		return getType(entry) is Type.Date or getType(entry) is Type.Range
+	else:
+		return getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.Range
+
+
+def getDatePrecision(entry, attribute):
+	if attribute == "":
+		if getType(entry) is Type.Date:
+			return entry.precision()
+		else:
+			return entry[0].precision()
+	else:
+		if getType(entry[attribute]) is Type.Date:
+			return entry[attribute].precision()
+		else:
+			return entry[attribute][0].precision()
+
+
+def getDateTotalDays(entry, attribute):
+	if attribute == "":
+		if getType(entry) is Type.Date:
+			return entry.totalDays()
+		else:
+			return (entry[0].totalDays() + entry[1].totalDays()) / 2 #take the midpoint date of the range
+	else:
+		if getType(entry[attribute]) is Type.Date:
+			return entry[attribute].totalDays()
+		else:
+			return (entry[attribute][0].totalDays() + entry[attribute][1].totalDays()) / 2
+
+
+def getDateDayDifference(entry, attribute, targetTotalDays):
+	if attribute == "":
+		if getType(entry) is Type.Date:
+			return entry.dayDifference(targetTotalDays)
+		else:
+			return (entry[0].dayDifference(targetTotalDays) + entry[1].dayDifference(targetTotalDays)) / 2
+	else:
+		if getType(entry[attribute]) is Type.Date:
+			return entry[attribute].dayDifference(targetTotalDays)
+		else:
+			return (entry[attribute][0].dayDifference(targetTotalDays) + entry[attribute][1].dayDifference(targetTotalDays)) / 2
+
+
+def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
+	answers = {}
 
 	for key in catalot:
-		if key != targetKey and catalot[key] not in values and getType(catalot[key]) is tType:
-			values.append(catalot[key])
+		if isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
+			answers[key] = catalot[key]
 
-	if tType is Type.Date:
-		#find difference in days between dates; discard duplicate values
+	if isEntryOrAttributeDate(catalot[targetKey], attribute):
+		#find difference in days between dates/ranges; discard duplicate answers
 		diff = {}
 		toDel = []
-		targetTotalDays = catalot[targetKey].totalDays()
+		targetTotalDays = getDateTotalDays(catalot[targetKey], attribute)
 		
-		for value in values:
-			days = value.dayDifference(targetTotalDays)
+		for key in answers:
+			days = getDateDayDifference(answers[key], attribute, targetTotalDays)
 
 			if days == 0:
-				toDel.append(value)
+				toDel.append(key)
 			else:
-				diff[value] = days
+				diff[key] = days
 
-		for value in toDel:
-			values.remove(value)
+		for key in toDel:
+			del answers[key]
 		
 		#discard dates with different precision (e.g. only year instead of full date)
 		toDel.clear()
-		targetPrecision = catalot[targetKey].precision()
+		targetPrecision = getDatePrecision(catalot[targetKey], attribute)
 		
-		for value in values:
-			if value.precision() != targetPrecision:
-				toDel.append(value)
+		for key in answers:
+			if getDatePrecision(answers[key], attribute) != targetPrecision:
+				toDel.append(key)
 
-		for value in toDel:
-			if len(values) <= 5:
-				break #keep at least 5 values whatever their precision
-			values.remove(value)
+		for key in toDel:
+			if len(answers) <= 5:
+				break #keep at least 5 answers whatever their precision
+			del answers[key]
 
 		#select the 5 closest unique dates (put them at the start of the array)
-		for i in range(5):
-			minDiff = sys.maxsize
-			for j in range(i, len(values)):
-				if diff[values[j]] < minDiff:
-					minDiff = diff[values[j]]
-					closestValueAt = j
+		minDiffs = [sys.maxsize] * 5
+		finalAnswers = [""] * 5
 
-			values[i], values[closestValueAt] = values[closestValueAt], values[i]
-	elif tType is Type.Range:
-		#find difference in days between ranges; discard duplicate values
-		diff = {}
-		toDel = []
-		targetTotalDays = (catalot[targetKey][0].totalDays() + catalot[targetKey][1].totalDays()) / 2 #take the midpoint date of the range
-		
-		for value in values:
-			days = (value[0].dayDifference(targetTotalDays) + value[1].dayDifference(targetTotalDays)) / 2
+		for key in answers:
+			i = 0
+			while i < 5 and diff[key] >= minDiffs[i]:
+				i += 1
 
-			if days == 0:
-				toDel.append(value)
-			else:
-				diff[value] = days
+			if i < 5:
+				for j in range(4, i, -1):
+					minDiffs[j] = minDiffs[j-1]
+					finalAnswers[j] = finalAnswers[j-1]
 
-		for value in toDel:
-			values.remove(value)
-		
-		#discard ranges with different precision (e.g. only year instead of full date)
-		toDel.clear()
-		targetPrecision = catalot[targetKey][0].precision()
-		
-		for value in values:
-			if value[0].precision() != targetPrecision:
-				toDel.append(value)
+				minDiffs[i] = diff[key]
+				finalAnswers[i] = key
 
-		for value in toDel:
-			if len(values) <= 5:
-				break #keep at least 5 values whatever their precision
-			values.remove(value)
-
-		#select the 5 closest unique ranges (put them at the start of the array)
-		for i in range(5):
-			minDiff = sys.maxsize
-			for j in range(i, len(values)):
-				if diff[values[j]] < minDiff:
-					minDiff = diff[values[j]]
-					closestValueAt = j
-
-			values[i], values[closestValueAt] = values[closestValueAt], values[i]
+		if not returnKeys:
+			for i in range(len(finalAnswers)):
+				if attribute == "":
+					finalAnswers[i] = answers[finalAnswers[i]]
+				else:
+					finalAnswers[i] = answers[finalAnswers[i]][attribute]
 	else:
-		random.shuffle(values)
+		finalAnswers = []
 
-	return values[:5]
+		while len(finalAnswers) < 5 and len(answers) > 0:
+			nextA = random.choice(list(answers.keys()))
 
-
-def listKeys(catalot, targetKey):
-	keys = []
-	tType = getType(catalot[targetKey])
-
-	for key in catalot:
-		if key != targetKey and key not in keys and getType(catalot[key]) is tType:
-			keys.append(key)
-
-	if len(keys) < 5 and len(catalot) > 5:
-		#add keys even if they have different value types to get at least 5
-		for key in catalot:
-			if key != targetKey and key not in keys:
-				keys.append(key)		
-	
-	if tType is Type.Date:
-		#find difference in days between dates; discard duplicate keys
-		diff = {}
-		toDel = []
-		targetTotalDays = catalot[targetKey].totalDays()
-
-		for key in keys:
-			days = catalot[key].dayDifference(targetTotalDays)
-
-			if days == 0:
-				toDel.append(key)
+			if returnKeys:
+				finalAnswers.append(nextA)
 			else:
-				diff[key] = days
+				if attribute == "":
+					finalAnswers.append(answers[nextA])
+				else:
+					finalAnswers.append(answers[nextA][attribute])
+			
+			del answers[nextA]
 
-		for key in toDel:
-			keys.remove(key)
-
-		#discard dates with different precision (e.g. only year instead of full date)
-		toDel.clear()
-		targetPrecision = catalot[targetKey].precision()
-
-		for key in keys:
-			if catalot[key].precision() != targetPrecision:
-				toDel.append(key)
-
-		for key in toDel:
-			if len(keys) <= 5:
-				break #keep at least 5 keys whatever their precision
-			keys.remove(key)
-
-		#select the 5 closest dates
-		for i in range(5):
-			minDiff = sys.maxsize
-			for j in range(i, len(keys)):
-				if diff[keys[j]] < minDiff:
-					minDiff = diff[keys[j]]
-					closestValueAt = j
-
-			keys[i], keys[closestValueAt] = keys[closestValueAt], keys[i]
-	elif tType is Type.Range:
-		#find difference in days between ranges; discard duplicate keys
-		diff = {}
-		toDel = []
-		targetTotalDays = (catalot[targetKey][0].totalDays() + catalot[targetKey][1].totalDays()) / 2 #take the midpoint date of the range
-
-		for key in keys:
-			days = (catalot[key][0].dayDifference(targetTotalDays) + catalot[key][1].dayDifference(targetTotalDays)) / 2
-
-			if days == 0:
-				toDel.append(key)
-			else:
-				diff[key] = days
-
-		for key in toDel:
-			keys.remove(key)
-
-		#discard ranges with different precision (e.g. only year instead of full date)
-		toDel.clear()
-		targetPrecision = catalot[targetKey][0].precision()
-
-		for key in keys:
-			if catalot[key][0].precision() != targetPrecision:
-				toDel.append(key)
-
-		for key in toDel:
-			if len(keys) <= 5:
-				break #keep at least 5 keys whatever their precision
-			keys.remove(key)
-
-		#select the 5 closest ranges
-		for i in range(5):
-			minDiff = sys.maxsize
-			for j in range(i, len(keys)):
-				if diff[keys[j]] < minDiff:
-					minDiff = diff[keys[j]]
-					closestValueAt = j
-
-			keys[i], keys[closestValueAt] = keys[closestValueAt], keys[i]
-	else:
-		random.shuffle(keys)
-
-	return keys[:5]
-
-
-#returns a list of dictionary keys whose attribute value is different than parameter value
-def listKeysWithUniqueAttribute(catalot, attribute, value):
-	keys = list(catalot.keys())
-	toDel = []
-	
-	for key in keys:
-		if getType(catalot[key]) is not Type.Class or attribute not in catalot[key] or catalot[key][attribute] == value:
-			toDel.append(key)
-
-	for key in toDel:
-		keys.remove(key)
-
-	#select 5 random keys
-	random.shuffle(keys)
-	return keys[:5]
-
-
-def listMatchingAttributes(catalot, attribute):
-	attribs = []
-	for key in catalot:
-		if getType(catalot[key]) is Type.Class and attribute in catalot[key]:
-			attribs.append(catalot[key][attribute])
-
-	#select 5 random attributes
-	random.shuffle(attribs)
-	return attribs[:5]
+	return finalAnswers
 
 
 def removeParentheses(s):
@@ -740,9 +661,6 @@ def constructHint(a):
 def qType_MultipleChoice(q, a, answers, color):
 	#altA is a pool of values from which alternate answers are randomly selected
 	colorPrint(toString(q) + "\n", color)
-
-	if len(answers) != 5:
-		print("!!! len(answers):" + str(len(answers)))
 
 	answers.insert(random.randint(0, len(answers)), a)
 
@@ -1094,14 +1012,14 @@ def qType_Image(imageKey, path, learned=False):
 def quizNumber(catalot, key, step, color, attribute=""):
 	if step == 1:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
+			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], listValues(catalot, key), color)
+			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], getAltAnswers(catalot, key, False), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
+			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, listKeys(catalot, key), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
 			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
@@ -1109,7 +1027,7 @@ def quizNumber(catalot, key, step, color, attribute=""):
 			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
+			correct, exit, immediately = qType_EnterAnswer(catalot[key][attribute], key, color)
 		else:
 			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color)
 
@@ -1119,14 +1037,14 @@ def quizNumber(catalot, key, step, color, attribute=""):
 def quizString(catalot, key, step, corewords, color, attribute=""):
 	if step == 1:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], listMatchingAttributes(catalot, attribute), color)
+			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], listValues(catalot, key), color)
+			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], getAltAnswers(catalot, key, False), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, listKeysWithUniqueAttribute(catalot, attribute, catalot[key][attribute]), color)
+			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, listKeys(catalot, key), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
 			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, corewords, color)
@@ -1163,7 +1081,6 @@ def quizList(listKey, items, step, learned=False):
 		finalStep = True
 		step = 1
 
-	#print("Enter the next item in the list:")
 	correct = True
 
 	while type(correct) is bool and step <= len(items):
@@ -1340,7 +1257,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				elif attributeType is Type.Image:
 					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
 				elif attributeType is Type.String:
-					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
+					correct, exit, immediately = quizString(catalot, key, 1, corewords, color, attribute)
 				elif attributeType is Type.List:
 					qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

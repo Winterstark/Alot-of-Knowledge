@@ -1239,9 +1239,9 @@ def quiz(category, catalot, metacatalot, corewords):
 
 				if attributeType is not Type.Image and attributeType is not Type.Diagram:
 					#show class image (if any)
-					for attribute in entry:
-						if getType(entry[attribute]) is Type.Image:
-							msgGUI("I {}".format(fullPath(entry[attribute])))
+					for attr in entry:
+						if getType(entry[attr]) is Type.Image:
+							msgGUI("I {}".format(fullPath(entry[attr])))
 							usedGUI = True
 							break
 
@@ -1257,7 +1257,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				elif attributeType is Type.Image:
 					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
 				elif attributeType is Type.String:
-					correct, exit, immediately = quizString(catalot, key, 1, corewords, color, attribute)
+					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
 				elif attributeType is Type.List:
 					qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

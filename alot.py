@@ -453,6 +453,9 @@ def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute=""):
 			return True
 		else:
 			if attribute in catalot[key] and catalot[key][attribute] != catalot[targetKey][attribute]:
+				for k in answers: #don't accept the answer if its value is already in answers
+					if catalot[key][attribute] == answers[k][attribute]:
+						return False
 				return True
 			else:
 				return False

@@ -21,6 +21,7 @@ Type = Enum("Type", "Number Date Range String Image Diagram Class List Set")
 #a custom class instead of DateTime allows for greater flexibility, e.g. 11 November 1918, 322 BC, 5th century, 3rd millennium BC
 class Date:
 	ZERO = datetime(1, 1, 1)
+	PREFIXES = [("early ", "Early "), ("mid ", "Mid "), ("late ", "Late "), ("1. half ", "First half of the "), ("2. half ", "Second half of the ")]
 
 	def __init__(self, value):
 		if type(value) is int:
@@ -44,7 +45,6 @@ class Date:
 
 			if value[-2:] == "c.":
 				self.prefix, value = Date.extractPrefix(value)
-
 				self.M = -1
 				self.c = int(value[:-2])
 				self.y = -1
@@ -99,10 +99,19 @@ class Date:
 
 
 	def __repr__(self):
+		if self.prefix == "":
+			outputPrefix = ""
+		else:
+			#convert prefix back to short form
+			for prefix in Date.PREFIXES:
+				if prefix[1] == self.prefix:
+					outputPrefix = prefix[0]
+					break
+
 		if self.M != -1:
-			s = self.prefix + str(self.M) + "m."
+			s = outputPrefix + str(self.M) + "m."
 		elif self.c != -1:
-			s = self.prefix + str(self.c) + "c."
+			s = outputPrefix + str(self.c) + "c."
 		else:
 			s = str(self.y)
 			if self.m != -1:
@@ -205,16 +214,11 @@ class Date:
 
 
 	def extractPrefix(entry):
-		entry = entry.lower()
+		for prefix in Date.PREFIXES:
+			if prefix[0] in entry:
+				return prefix[1], entry.replace(prefix[0], "")
 
-		if "early " in entry:
-			return "Early ", entry.replace("early ", "")
-		elif "mid " in entry:
-			return "Mid ", entry.replace("mid ", "")
-		elif "late " in entry:
-			return "Late ", entry.replace("late ", "")
-		else:
-			return "", entry
+		return "", entry #no prefix found
 
 
 
@@ -577,6 +581,39 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 					finalAnswers.append(answers[nextA][attribute])
 			
 			del answers[nextA]
+
+	if len(finalAnswers) < 5:
+		if returnKeys and len(catalot) > 5:
+			#grab some random keys whatever their type
+			for key in catalot:
+				if key not in finalAnswers:
+					finalAnswers.append(key)
+					if len(finalAnswers) == 5:
+						break
+
+			random.shuffle(finalAnswers)
+		elif getType(catalot[targetKey]) is Type.Number:
+			#generate some random numbers
+			finalAnswers.append(catalot[targetKey]) #temporarily add the correct answer
+
+			baseJump = sum(finalAnswers) // len(finalAnswers) // 10
+			if baseJump < 0:
+				baseJump = 1
+
+			while len(finalAnswers) < 6:
+				num = random.choice(finalAnswers)
+
+				if random.randint(0, 1) == 0:
+					jump = baseJump
+				else:
+					jump = -baseJump
+
+				while num in finalAnswers:
+					num += jump
+
+				finalAnswers.append(num)
+
+			finalAnswers.remove(catalot[targetKey])
 
 	return finalAnswers
 

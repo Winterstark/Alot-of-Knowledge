@@ -233,16 +233,31 @@ def parseFile(path):
 
 	#convert date representations to Date objects
 	for key in data:
+		kType = getType(data[key])
+
 		if Date.isValid(data[key]):
 			data[key] = Date(data[key])
-		elif getType(data[key]) is Type.Range:
+		elif kType is Type.Range:
 			data[key] = (Date(data[key][0]), Date(data[key][1]))
-		elif getType(data[key]) is Type.Class:
+		elif kType is Type.Class:
 			for attribute in data[key]:
 				if Date.isValid(data[key][attribute]):
 					data[key][attribute] = Date(data[key][attribute])
 				elif getType(data[key][attribute]) is Type.Range:
 					data[key][attribute] = (Date(data[key][attribute][0]), Date(data[key][attribute][1]))
+		elif kType is Type.List:
+			for i in range(len(data[key])):
+				l = list(data[key][i])
+				containsDate = False
+
+				for j in range(len(l)):
+					if Date.isValid(l[j]):
+						l[j] = Date(l[j])
+						containsDate = True
+
+				if containsDate:
+					data[key][i] = tuple(l)
+
 
 	#load metadata
 	metapath = path.replace(DIR, DIR + os.sep + "!METADATA")
@@ -1139,7 +1154,21 @@ def quizList(listKey, items, step, learned=False):
 	correct = True
 
 	while type(correct) is bool and step <= len(items):
-		correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color)
+		if type(items[step-1]) is not tuple:
+			correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color)
+		else:
+			correct = True
+			for item in items[step-1]:
+				if getType(item) is Type.Date:
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), item, color) #pass Dates without converting them to string
+				else:
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(item), color)	
+
+				if type(itemCorrect) is not bool:
+					correct = itemCorrect
+					break
+				if exit:
+					break
 
 		if immediately:
 			break

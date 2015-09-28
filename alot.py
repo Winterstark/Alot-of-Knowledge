@@ -695,8 +695,7 @@ def constructHint(a):
 	return hint
 
 
-def qType_MultipleChoice(q, a, answers, color):
-	#altA is a pool of values from which alternate answers are randomly selected
+def qType_MultipleChoice(catalot, q, a, answers, color):
 	colorPrint(toString(q) + "\n", color)
 
 	answers.insert(random.randint(0, len(answers)), a)
@@ -715,12 +714,28 @@ def qType_MultipleChoice(q, a, answers, color):
 	choice, exit, immediately = checkForExit(choice)
 
 	try:
-		correct = answers[int(choice)-1] == a
+		userA = answers[int(choice)-1]
+		correct = userA == a
 	except:
+		userA = ""
 		correct = False
 
-	if not correct:
+	if not correct and userA != "":
 		correct = toString(a)
+
+		#find the value (or key) associated with the user's wrong answer
+		if userA in catalot:
+			userAValue = toString(catalot[userA]).replace("\n   ", ", ")
+			correct += "\n({0} -> {1})".format(userA, userAValue)
+		elif userA in catalot.values():
+			userAKey = list(catalot)[list(catalot.values()).index(userA)]
+			correct += "\n({0} -> {1})".format(toString(userA), userAKey)
+		else:
+			#check classes
+			for key in catalot:
+				if getType(catalot[key]) is Type.Class and userA in catalot[key].values():
+					correct += "\n({0} -> {1})".format(toString(userA), key)
+					break
 
 	return correct, exit, immediately
 
@@ -1049,14 +1064,14 @@ def qType_Image(imageKey, path, learned=False):
 def quizNumber(catalot, key, step, color, attribute=""):
 	if step == 1:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], getAltAnswers(catalot, key, False), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, key, catalot[key], getAltAnswers(catalot, key, False), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True, attribute), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, getAltAnswers(catalot, key, True), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
 			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
@@ -1074,14 +1089,14 @@ def quizNumber(catalot, key, step, color, attribute=""):
 def quizString(catalot, key, step, corewords, color, attribute=""):
 	if step == 1:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(key, catalot[key], getAltAnswers(catalot, key, False), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, key, catalot[key], getAltAnswers(catalot, key, False), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True), color)
 		else:
-			correct, exit, immediately = qType_MultipleChoice(catalot[key], key, getAltAnswers(catalot, key, True), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
 			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, corewords, color)
@@ -1351,7 +1366,7 @@ def quiz(category, catalot, metacatalot, corewords):
 
 							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])
 						else:
-							feedback(("{0:<" + maxW + "}Wrong! Correct answer: {1}").format(attribute, correct[attribute]))
+							feedback(("{0:<" + maxW + "}Wrong! Correct answer: {1}").format(attribute, correct[attribute].replace("\n", "\n" + " "*int(maxW))))
 							allLearned = False
 							anyMistakes = True
 

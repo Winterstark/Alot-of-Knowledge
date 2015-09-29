@@ -1,7 +1,7 @@
 import os, sys, subprocess, traceback, random, struct
 from enum import Enum
 from datetime import datetime, timedelta
-from time import sleep, strptime
+from time import sleep
 from winsound import PlaySound, SND_FILENAME
 from colorama import init, Fore
 
@@ -175,7 +175,11 @@ class Date:
 		if eType is int and entry < 2100:
 			return True
 		elif eType is str:
+			if entry[0] == '-':
+				entry = entry[1:]
+
 			prefix, entry = Date.extractPrefix(entry)
+
 			if entry[-2:] == "c." or entry[-2:] == "m.":
 				try:
 					int(entry[:-2])
@@ -184,16 +188,27 @@ class Date:
 					pass
 
 			try:
-				strptime(entry, "%Y")
+				parts = entry.split()
+				if len(parts) > 3:
+					return False
+
+				y = int(parts[0])
+				if y == 0:
+					return False
+
+				if len(parts) > 1:
+					m = int(parts[1])
+
+					if len(parts) > 2:
+						d = int(parts[1])
+					else:
+						d = 1
+
+					datetime(2015, m, d) #check if month/day combination is valid
+
+				return True
 			except:
-				try:
-					strptime(entry, "%Y-%m")
-				except:
-					try:
-						strptime(entry, "%Y-%m-%d")
-					except:
-						return False
-			return True
+				return False
 		else:
 			return False
 
@@ -257,7 +272,6 @@ def parseFile(path):
 
 				if containsDate:
 					data[key][i] = tuple(l)
-
 
 	#load metadata
 	metapath = path.replace(DIR, DIR + os.sep + "!METADATA")

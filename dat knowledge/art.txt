@@ -5,7 +5,7 @@
 	'Architrave': 'A main beam resting across the tops of columns.',
 	'Frescoes in the Cappella Scrovegni': {'Artist': 'Giotto', 'Style': 'Late Gothic', 'Picture': 'art\\Giotto - Frescoes in the Cappella Scrovegni', 'Location': 'Padua', 'Date': '1300'},
 	'The Third of May 1808': {'By': 'Goya', 'Picture': 'art\\Goya - The Third of May 1808.jpg', 'Location': 'Madrid', 'Date': '1814'},
-	'Great Pyramids of Giza': [('P', 'y', 'r', 'a', 'm', 'i', 'd', ' ', 'o', 'f', ' ', 'K', 'h', 'u', 'f', 'u', ' ', '(', '1', '3', '9', 'm', ')'), ('P', 'y', 'r', 'a', 'm', 'i', 'd', ' ', 'o', 'f', ' ', 'K', 'h', 'a', 'f', 'r', 'e', ' ', '(', '1', '3', '6', 'm', ')'), ('P', 'y', 'r', 'a', 'm', 'i', 'd', ' ', 'o', 'f', ' ', 'M', 'e', 'n', 'k', 'a', 'u', 'r', 'e', ' ', '(', '6', '5', 'm', ')')],
+	'Pyramids of Giza': ['Pyramid of Khufu (139m)', 'Pyramid of Khafre (136m)', 'Pyramid of Menkaure (65m)'],
 	'Flute': 'An ornamental vertical groove in a column.',
 	'Triglyph': 'A tablet in a Doric frieze with three vertical grooves alternating with metopes.',
 	'Frieze': 'A broad horizontal band of sculpted or painted decoration, especially on a wall near the ceiling.',

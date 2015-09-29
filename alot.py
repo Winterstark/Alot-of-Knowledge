@@ -262,16 +262,17 @@ def parseFile(path):
 					data[key][attribute] = (Date(data[key][attribute][0]), Date(data[key][attribute][1]))
 		elif kType is Type.List:
 			for i in range(len(data[key])):
-				l = list(data[key][i])
-				containsDate = False
+				if type(data[key][i]) is tuple:
+					l = list(data[key][i])
+					containsDate = False
 
-				for j in range(len(l)):
-					if Date.isValid(l[j]):
-						l[j] = Date(l[j])
-						containsDate = True
+					for j in range(len(l)):
+						if Date.isValid(l[j]):
+							l[j] = Date(l[j])
+							containsDate = True
 
-				if containsDate:
-					data[key][i] = tuple(l)
+					if containsDate:
+						data[key][i] = tuple(l)
 
 	#load metadata
 	metapath = path.replace(DIR, DIR + os.sep + "!METADATA")

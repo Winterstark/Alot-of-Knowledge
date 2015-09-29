@@ -188,19 +188,19 @@ class Date:
 					pass
 
 			try:
-				parts = entry.split()
+				parts = entry.split('-')
 				if len(parts) > 3:
 					return False
 
 				y = int(parts[0])
 				if y == 0:
 					return False
-
+				
 				if len(parts) > 1:
 					m = int(parts[1])
 
 					if len(parts) > 2:
-						d = int(parts[1])
+						d = int(parts[2])
 					else:
 						d = 1
 

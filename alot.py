@@ -1159,7 +1159,16 @@ def quizList(listKey, items, step, learned=False):
 
 	if step <= len(items):
 		for i in range(1, step):
-			print("{0}. {1}".format(i, items[i-1]))
+			if type(items[i-1]) is not tuple:
+				print("{0}. {1}".format(i, items[i-1]))
+			else:
+				item = "{0}. ".format(i)
+				for el in items[i-1]:
+					item += str(el) + ", "
+				item = item[:-2]
+
+				print(item)
+
 		finalStep = False 
 	else:
 		#this is the final step, which demands the user to enter every list item
@@ -1221,27 +1230,41 @@ def quizSet(setKey, items, step, color):
 		if exit:
 			break
 		elif answer in itemsLCaseWithoutParentheses:
-			index = itemsLCaseWithoutParentheses.index(answer)
-
-			if len(itemsCopy[index]) != len(itemsLCaseWithoutParentheses[index]):
-				fullAnswer = "Full answer: " + itemsCopy[index] + ". "
-			else:
-				fullAnswer = ""
-
-			del itemsLCaseWithoutParentheses[index]
-			del itemsCopy[index]
-			
-			print("Correct! {0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
-
-			if step == 1: #print hints
-				for item in itemsCopy:
-					print(constructHint(item))
+			pass #continue to process correct answer
 		else:
-			correct = ""
+			#check for typos
+			typos = False
+
+			for item in itemsLCaseWithoutParentheses:
+				correctedAnswer = removeTypos(answer, item)
+				if correctedAnswer != answer:
+					typos = True
+					answer = correctedAnswer
+					break
+
+			if not typos:
+				correct = ""
+				for item in itemsCopy:
+					correct += item + "\n"
+				correct = correct[:-1]
+				break
+
+		#process correct answer
+		index = itemsLCaseWithoutParentheses.index(answer)
+
+		if len(itemsCopy[index]) != len(itemsLCaseWithoutParentheses[index]):
+			fullAnswer = "Full answer: " + itemsCopy[index] + ". "
+		else:
+			fullAnswer = ""
+
+		del itemsLCaseWithoutParentheses[index]
+		del itemsCopy[index]
+		
+		print("Correct! {0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
+
+		if step == 1: #print hints
 			for item in itemsCopy:
-				correct += item + "\n"
-			correct = correct[:-1]
-			break
+				print(constructHint(item))
 
 	return correct, exit, immediately
 

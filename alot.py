@@ -787,12 +787,12 @@ def qType_EnterAnswer(q, a, color):
 			if not prefixed:
 				prompt = "> Millennium?\n> "
 			else:
-				prompt = "> Early/Mid/Late Millennium?\n> "
+				prompt = "> Part of Millennium?\n> "
 		elif precision == "c":
 			if not prefixed:
 				prompt = "> Century?\n> "
 			else:
-				prompt = "> Early/Mid/Late Century?\n> "
+				prompt = "> Part of Century?\n> "
 		elif precision == "y":
 			prompt = "> Year?\n> "
 		elif precision == "m":
@@ -810,12 +810,12 @@ def qType_EnterAnswer(q, a, color):
 			if not prefixed:
 				prompt = "> Millennium - Millennium?\n> "
 			else:
-				prompt = "> Early/Mid/Late Millennium - Early/Mid/Late Millennium?\n> "
+				prompt = "> Part of Millennium - Part of Millennium?\n> "
 		elif precision == "c":
 			if not prefixed:
 				prompt = "> Century - Century?\n> "
 			else:
-				prompt = "> Early/Mid/Late Century - Early/Mid/Late Century?\n> "
+				prompt = "> Part of Century - Part of Century?\n> "
 		elif precision == "y":
 			prompt = "> Year - Year?\n> "
 		elif precision == "m":

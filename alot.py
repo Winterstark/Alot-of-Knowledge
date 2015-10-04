@@ -25,6 +25,7 @@ class Date:
 
 	def __init__(self, value):
 		if type(value) is int:
+			self.prefix = ""
 			self.M = -1 #millennium
 			self.c = -1
 			self.y = value

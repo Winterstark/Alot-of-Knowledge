@@ -132,6 +132,10 @@ class Date:
 			return False
 
 
+	def __hash__(self):
+		return hash(str(self))
+
+
 	def totalDays(self):
 		if self.M != -1:
 			year = self.c * 1000

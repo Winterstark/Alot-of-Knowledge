@@ -125,6 +125,13 @@ class Date:
 		return "'" + s + "'"
 
 
+	def __eq__(self, other):
+		if isinstance(other, self.__class__):
+			return self.__dict__ == other.__dict__
+		else:
+			return False
+
+
 	def totalDays(self):
 		if self.M != -1:
 			year = self.c * 1000

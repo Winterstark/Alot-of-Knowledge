@@ -490,7 +490,7 @@ def toString(answer):
 
 
 def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute=""):
-	if key != targetKey and catalot[key] not in answers.values() and getType(catalot[key]) is getType(catalot[targetKey]):
+	if key != targetKey and catalot[key] != catalot[targetKey] and catalot[key] not in answers.values() and getType(catalot[key]) is getType(catalot[targetKey]):
 		if attribute == "":
 			return True
 		else:
@@ -557,6 +557,8 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 	for key in catalot:
 		if isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 			answers[key] = catalot[key]
+
+	print("Battle of Stalingrad (Volgograd)" in answers)
 
 	if isEntryOrAttributeDate(catalot[targetKey], attribute):
 		#find difference in days between dates/ranges; discard duplicate answers

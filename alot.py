@@ -558,8 +558,6 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		if isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 			answers[key] = catalot[key]
 
-	print("Battle of Stalingrad (Volgograd)" in answers)
-
 	if isEntryOrAttributeDate(catalot[targetKey], attribute):
 		#find difference in days between dates/ranges; discard duplicate answers
 		diff = {}

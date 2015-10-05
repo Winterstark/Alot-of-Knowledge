@@ -89,7 +89,7 @@ class Date:
 			s = str(self.y)
 
 			if self.m != -1:
-				s = datetime(1, int(self.m), 1).strftime("%B") + " " + s
+				s = Date.fullMonthName(self.m) + " " + s
 			if self.d != -1:
 				s = str(self.d) + " " + s
 
@@ -223,6 +223,10 @@ class Date:
 				return False
 		else:
 			return False
+
+
+	def fullMonthName(m):
+		return datetime(1, int(m), 1).strftime("%B")
 
 
 	def convertToOrdinal(num):
@@ -482,6 +486,18 @@ def toString(answer):
 	answerType = getType(answer)
 
 	if answerType is Type.Range:
+		if getType(answer[0]) is Type.Date:
+			#return the Date range without any redundant data, e.g. "May - June 1940" when the year is the same
+			if answer[0].precision() == 'm':
+				if answer[0].y == answer[1].y:
+					return Date.fullMonthName(answer[0].m) + " - " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
+			if answer[0].precision() == 'd':
+				if answer[0].y == answer[1].y:
+					if answer[0].m == answer[1].m:
+						return str(answer[0].d) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[0].m) + " " + str(answer[0].y)
+					else:
+						return str(answer[0].d) + " " + Date.fullMonthName(answer[0].m) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
+		
 		return str(answer[0]) + " - " + str(answer[1])
 	elif answerType is Type.Class:
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "")

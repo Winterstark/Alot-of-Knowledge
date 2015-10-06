@@ -1554,7 +1554,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						if correct != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback("Wrong! Correct answer: " + correct)
 						
-						if entryType is Type.List:
+						if entryType is Type.List or entryType is Type.Diagram:
 							print("Entry progress @ 100%.")
 						else:
 							print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))

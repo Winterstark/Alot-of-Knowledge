@@ -485,6 +485,22 @@ def getMaxKeyLen(dictionary):
 def toString(answer):
 	answerType = getType(answer)
 
+	if answerType is Type.Number:
+		#make the number more readable
+		s = str(answer)
+
+		if s[-12:] == "000000000000":
+			return s[:-12] + " trillion"
+		elif s[-9:] == "000000000":
+			return s[:-9] + " billion"
+		elif s[-6:] == "000000":
+			return s[:-6] + " million"
+		else:
+			#insert a space every 3 digits
+			for i in range(len(s)-3, 0, -3):
+				s = s[:i] + ' ' + s[i:]
+
+			return s
 	if answerType is Type.Range:
 		if getType(answer[0]) is Type.Date:
 			#return the Date range without any redundant data, e.g. "May - June 1940" when the year is the same
@@ -1312,7 +1328,6 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n\n")
 
 		key = random.choice(ready)
-		key = "Anubis"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]
@@ -1373,7 +1388,8 @@ def quiz(category, catalot, metacatalot, corewords):
 			color = COLOR_LEARNED
 
 			if entryType is Type.Number or entryType is Type.Date or entryType is Type.Range:
-				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
+				#correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
+				correct, exit, immediately = quizNumber(catalot, key, 1, color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
 				if random.randint(0, 1) == 0:

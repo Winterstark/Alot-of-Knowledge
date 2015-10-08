@@ -24,60 +24,46 @@ class Date:
 	PREFIXES = [("early ", "Early "), ("mid ", "Mid "), ("late ", "Late "), ("1. half ", "First half of the "), ("2. half ", "Second half of the ")]
 
 	def __init__(self, value):
-		if type(value) is int:
-			self.prefix = ""
-			self.M = -1 #millennium
-			self.c = -1
-			self.y = value
+		if value[0] == '-': #b.c. year
+			value = value[1:]
+			self.bc = True
+		else:
+			self.bc = False
+
+		if value[-2:] == "c.":
+			self.prefix, value = Date.extractPrefix(value)
+			self.M = -1
+			self.c = int(value[:-2])
+			self.y = -1
 			self.m = -1
 			self.d = -1
+		elif value[-2:] == "m.":
+			self.prefix, value = Date.extractPrefix(value)
 
-			if self.y < 0:
-				self.y *= -1
-				self.bc = True
-			else:
-				self.bc = False
-		else: #is str
-			if value[0] == '-': #b.c. year
-				value = value[1:]
-				self.bc = True
-			else:
-				self.bc = False
+			self.M = int(value[:-2])
+			self.c = -1
+			self.y = -1
+			self.m = -1
+			self.d = -1
+		else:
+			self.prefix = ""
+			self.M = -1
+			self.c = -1
+			
+			parts = value.split('-')
 
-			if value[-2:] == "c.":
-				self.prefix, value = Date.extractPrefix(value)
-				self.M = -1
-				self.c = int(value[:-2])
-				self.y = -1
+			if len(parts) == 1:
+				self.y = int(parts[0])
 				self.m = -1
 				self.d = -1
-			elif value[-2:] == "m.":
-				self.prefix, value = Date.extractPrefix(value)
-
-				self.M = int(value[:-2])
-				self.c = -1
-				self.y = -1
-				self.m = -1
+			elif len(parts) == 2:
+				self.y = int(parts[0])
+				self.m = int(parts[1])
 				self.d = -1
-			else:
-				self.prefix = ""
-				self.M = -1
-				self.c = -1
-				
-				parts = value.split('-')
-
-				if len(parts) == 1:
-					self.y = int(parts[0])
-					self.m = -1
-					self.d = -1
-				elif len(parts) == 2:
-					self.y = int(parts[0])
-					self.m = int(parts[1])
-					self.d = -1
-				else: #== 3
-					self.y = int(parts[0])
-					self.m = int(parts[1])
-					self.d = int(parts[2])
+			else: #== 3
+				self.y = int(parts[0])
+				self.m = int(parts[1])
+				self.d = int(parts[2])
 
 
 	def __str__(self):
@@ -184,9 +170,7 @@ class Date:
 	def isValid(entry):
 		eType = type(entry)
 
-		if eType is int and entry < 2100:
-			return True
-		elif eType is str:
+		if eType is str:
 			if entry[0] == '-':
 				entry = entry[1:]
 

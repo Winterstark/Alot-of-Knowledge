@@ -466,10 +466,10 @@ def getMaxKeyLen(dictionary):
 	return str(maxLen + 8)
 
 
-def toString(answer):
+def toString(answer, makeMoreReadable=True):
 	answerType = getType(answer)
 
-	if answerType is Type.Number:
+	if answerType is Type.Number and makeMoreReadable:
 		#make the number more readable
 		s = str(answer)
 
@@ -859,7 +859,7 @@ def qType_EnterAnswer(q, a, color):
 
 	#ignore segments in parentheses
 	answer = removeParentheses(answer)
-	correctAnswer = removeParentheses(toString(a))
+	correctAnswer = removeParentheses(toString(a, False))
 
 	if aIsDate:
 		#ensure the same format

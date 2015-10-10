@@ -1272,6 +1272,8 @@ def quizSet(setKey, items, step, color):
 					break
 
 			if not typos:
+				print("Wrong! {0} items unanswered.".format(len(itemsCopy)))
+
 				correct = ""
 				for item in itemsCopy:
 					correct += item + "\n"

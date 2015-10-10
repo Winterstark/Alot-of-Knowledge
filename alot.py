@@ -804,6 +804,9 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 def qType_EnterAnswer(q, a, color):
 	colorPrint(toString(q), color)
 
+	aStr = toString(a, False)
+	showHint = len(aStr.split()) > 5 or len(aStr) > 30 #don't show the hint for simple answers
+
 	if getType(a) is Type.Date:
 		aIsDate = True
 		precision = a.precision()
@@ -852,14 +855,21 @@ def qType_EnterAnswer(q, a, color):
 			prompt = "> Year-Month-Day - Year-Month-Day?\n> "
 	else:
 		aIsDate = False
-		prompt = "> " + constructHint(a) + "\n> "
+
+		if showHint:
+			prompt = "> " + constructHint(a) + "\n> "
+		else:
+			prompt = "> "
 
 	#wait for user's answer
 	answer, exit, immediately = checkForExit(input(prompt))
 
 	#ignore segments in parentheses
 	answer = removeParentheses(answer)
-	correctAnswer = removeParentheses(toString(a, False))
+	correctAnswer = removeParentheses(aStr)
+
+	if not showHint and len(aStr) != len(correctAnswer):
+		print("Full answer: " + aStr)
 
 	if aIsDate:
 		#ensure the same format
@@ -939,9 +949,9 @@ def qType_FillString(q, s, difficulty, corewords, color):
 				insideParentheses = False
 
 	if difficulty == 1:
-		nBlanks = 1
-	elif difficulty == 2:
 		nBlanks = max(len(words) // 2, 1)
+	elif difficulty == 2:
+		nBlanks = len(words)
 	else:
 		nBlanks = len(words)
 
@@ -954,15 +964,21 @@ def qType_FillString(q, s, difficulty, corewords, color):
 	#print the string with blanks
 	colorPrint(q + ":", color)
 
-	for i in range(len(parts)):
-		if i not in blanks:
-			print(parts[i], end="")
-		else:
-			print(parts[i][0] + "_" * (len(parts[i])-1), end="")
+	if difficulty < 3:
+		#print hint
+		for i in range(len(parts)):
+			if i not in blanks:
+				print(parts[i], end="")
+			else:
+				if difficulty == 1:
+					print(parts[i][0] + "_" * (len(parts[i])-1), end="") #reveal the first letter
+				else:
+					print("_" * len(parts[i]), end="") #show only underscores
 
-		if i not in noSpaceAfterThisPart:
-			print(" ", end="")
-	print("\n\nFill in the blanks:")
+			if i not in noSpaceAfterThisPart:
+				print(" ", end="")
+
+		print("\n\nFill in the blanks:")
 
 	#keep asking the user to fill the blank
 	allCorrect = True
@@ -1025,7 +1041,7 @@ def qType_RecognizeList(listKey, items, color):
 	randomItems = randomItems[:min(3, len(randomItems))]
 
 	for item in randomItems:
-		print(item)
+		print(toString(item))
 
 	if getType(items) is Type.List:
 		itemsType = "list"
@@ -1197,7 +1213,7 @@ def quizList(listKey, items, step, learned=False):
 
 				print(item)
 
-		finalStep = False 
+		finalStep = False
 	else:
 		#this is the final step, which demands the user to enter every list item
 		finalStep = True
@@ -1426,6 +1442,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
+				qType = qType_RecognizeList
 
 				if qType == quizList:	
 					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), True)

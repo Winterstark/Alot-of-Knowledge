@@ -1133,12 +1133,8 @@ def qType_Image(imageKey, path, learned=False):
 	msgGUI("logo")
 
 	if answer.lower() == correctAnswer.lower():
-		if not learned:
-			print("Correct!")
 		return True, quit, immediately
 	else:
-		if not learned:
-			print("Wrong!")
 		return correctAnswer, quit, immediately
 
 
@@ -1292,8 +1288,6 @@ def quizSet(setKey, items, step, color):
 					break
 
 			if not typos:
-				print("Wrong! {0} items unanswered.".format(len(itemsCopy)))
-
 				correct = ""
 				for item in itemsCopy:
 					correct += item + "\n"
@@ -1334,6 +1328,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n\n")
 
 		key = random.choice(ready)
+		key = "Atum"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]
@@ -1368,7 +1363,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					attributeType = getType(entry[attribute])
 					if isLearned(step[attribute], entry[attribute]):
 						correct[attribute] = "already learned"
-						exit = False
+						exit = immediately = False
 					elif attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
 					elif attributeType is Type.Diagram:
@@ -1384,6 +1379,13 @@ def quiz(category, catalot, metacatalot, corewords):
 					elif attributeType is Type.Set:
 						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
 					
+					if not immediately:
+						if correct[attribute] == "already learned":
+							print("{}: already learned".format(attribute))
+						elif type(correct[attribute]) is bool:
+							feedback("Correct!")
+						else:
+							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
 					if exit:
 						break
 			elif entryType is Type.List:
@@ -1475,10 +1477,8 @@ def quiz(category, catalot, metacatalot, corewords):
 
 					for attribute in correct:
 						if correct[attribute] == "already learned":
-							print(("{:<" + maxW + "}Already learned").format(attribute))
+							pass
 						elif type(correct[attribute]) is bool:
-							feedback(("{:<" + maxW + "}Correct!").format(attribute))
-							
 							meta["step"][attribute] += 1
 							#skip some useless steps for certain types of attributes (the steps that ask the user to type in the name of the entry)
 							attributeType = getType(entry[attribute])
@@ -1489,7 +1489,6 @@ def quiz(category, catalot, metacatalot, corewords):
 
 							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])
 						else:
-							feedback(("{0:<" + maxW + "}Wrong! Correct answer: {1}").format(attribute, correct[attribute].replace("\n", "\n" + " "*int(maxW))))
 							allLearned = False
 							anyMistakes = True
 

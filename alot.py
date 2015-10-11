@@ -1133,8 +1133,12 @@ def qType_Image(imageKey, path, learned=False):
 	msgGUI("logo")
 
 	if answer.lower() == correctAnswer.lower():
+		if not learned:
+			print("Correct!")
 		return True, quit, immediately
 	else:
+		if not learned:
+			print("Wrong!")
 		return correctAnswer, quit, immediately
 
 

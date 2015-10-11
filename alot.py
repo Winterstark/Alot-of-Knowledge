@@ -757,7 +757,7 @@ def constructHint(a):
 
 
 def qType_MultipleChoice(catalot, q, a, answers, color):
-	colorPrint(toString(q) + "\n", color)
+	colorPrint(toString(q), color)
 
 	answers.insert(random.randint(0, len(answers)), a)
 
@@ -770,7 +770,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	#wait for user's answer
 	choice = ""
 	while (choice == "" or not choice.isdigit() or int(choice) < 1 or int(choice) > len(answers)) and "exit" not in choice:
-		choice = input("\nChoose the correct answer: ")
+		choice = input("> ")
 
 	choice, exit, immediately = checkForExit(choice)
 
@@ -966,6 +966,8 @@ def qType_FillString(q, s, difficulty, corewords, color):
 
 	if difficulty < 3:
 		#print hint
+		print("> ", end="")
+
 		for i in range(len(parts)):
 			if i not in blanks:
 				print(parts[i], end="")
@@ -978,7 +980,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 			if i not in noSpaceAfterThisPart:
 				print(" ", end="")
 
-		print("\n\nFill in the blanks:")
+		print("\n> ", end="")
 
 	#keep asking the user to fill the blank
 	allCorrect = True
@@ -1025,8 +1027,8 @@ def qType_FillString(q, s, difficulty, corewords, color):
 				allCorrect = i == max(blanks) #if this was the last blank part then the answer is allCorrect
 				break
 
-			print(" " * (nPrevChars + len(extraAnswerChars) + 1), end="") #align text
-	print("\n")
+			if i < len(parts) - 1:
+				print(" " * (nPrevChars + len(extraAnswerChars) + 1), end="") #align text
 
 	if not allCorrect:
 		allCorrect = s
@@ -1123,12 +1125,12 @@ def qType_Image(imageKey, path, learned=False):
 		#choose correct image
 		correctAnswer = str(random.randint(1, 6))
 		msgGUI("C{0} {1}".format(correctAnswer, path))
-		answer, quit, immediately = checkForExit(input("Which image represents {}? ".format(imageKey)))
+		answer, quit, immediately = checkForExit(input("Which image represents {}?\n> ".format(imageKey)))
 	else:
 		#identify image
 		correctAnswer = imageKey
 		msgGUI("I {}".format(path))
-		answer, quit, immediately = checkForExit(input("What is this image associated with? "))
+		answer, quit, immediately = checkForExit(input("What is this image associated with?\n> "))
 
 	msgGUI("logo")
 
@@ -1260,7 +1262,7 @@ def quizSet(setKey, items, step, color):
 
 	if step == 1: #print hints
 		for item in items:
-			print(constructHint(item))
+			print("> " + constructHint(item))
 
 	itemsCopy = list(items)
 	itemsLCaseWithoutParentheses = list(itemsCopy)
@@ -1268,7 +1270,7 @@ def quizSet(setKey, items, step, color):
 	correct = True
 
 	while len(itemsLCaseWithoutParentheses) > 0:
-		answer, exit, immediately = checkForExit(input("Enter an item in this set: "))
+		answer, exit, immediately = checkForExit(input("> "))
 		answer = removeParentheses(answer.lower())
 
 		if exit:
@@ -1305,11 +1307,12 @@ def quizSet(setKey, items, step, color):
 		del itemsLCaseWithoutParentheses[index]
 		del itemsCopy[index]
 		
-		print("Correct! {0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
+		if fullAnswer != "" or len(itemsCopy) > 0:
+			print("{0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
 
 		if step == 1: #print hints
 			for item in itemsCopy:
-				print(constructHint(item))
+				print("> " + constructHint(item))
 
 	return correct, exit, immediately
 
@@ -1325,10 +1328,10 @@ def quiz(category, catalot, metacatalot, corewords):
 
 	while len(ready) > 0:
 		#prepare next question
-		print("\n\n")
+		print("\n")
 
 		key = random.choice(ready)
-		key = "Atum"
+		key = "Germany invades Denmark and Norway"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]
@@ -1359,7 +1362,14 @@ def quiz(category, catalot, metacatalot, corewords):
 
 				#ask a question for each attribute
 				correct = {}
+				firstQuestion = True
+
 				for attribute in entry:
+					if firstQuestion:
+						firstQuestion = False
+					else:
+						print("\n")
+
 					attributeType = getType(entry[attribute])
 					if isLearned(step[attribute], entry[attribute]):
 						correct[attribute] = "already learned"
@@ -1381,7 +1391,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					
 					if not immediately:
 						if correct[attribute] == "already learned":
-							print("{}: already learned".format(attribute))
+							colorPrint("{}: already learned".format(attribute), COLOR_LEARNED)
 						elif type(correct[attribute]) is bool:
 							feedback("Correct!")
 						else:
@@ -1396,8 +1406,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			color = COLOR_LEARNED
 
 			if entryType is Type.Number or entryType is Type.Date or entryType is Type.Range:
-				#correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
-				correct, exit, immediately = quizNumber(catalot, key, 1, color)
+				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
 				if random.randint(0, 1) == 0:
@@ -1408,7 +1417,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Image:
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
 			elif entryType is Type.String:
-				correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color)
+				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:
 				attribute = random.choice(list(entry.keys()))
 				attributeType = getType(entry[attribute])
@@ -1462,7 +1471,7 @@ def quiz(category, catalot, metacatalot, corewords):
 
 		if usedGUI:
 			msgGUI("logo")
-
+		
 		if not immediately:
 			#log result
 			#the variable correct will be bool if the user entered the right answer. If he failed, correct will be a string holding the actual correct answer
@@ -1473,7 +1482,8 @@ def quiz(category, catalot, metacatalot, corewords):
 					#advance any attributes that have been correctly answered
 					allLearned = True
 					anyMistakes = False
-					maxW = getMaxKeyLen(correct)
+					entryProgress = 0
+					entryProgressMax = 0
 
 					for attribute in correct:
 						if correct[attribute] == "already learned":
@@ -1492,6 +1502,9 @@ def quiz(category, catalot, metacatalot, corewords):
 							allLearned = False
 							anyMistakes = True
 
+						entryProgress += meta["step"][attribute]
+						entryProgressMax += maxSteps(entry[attribute]) + 1
+
 					if not anyMistakes:
 						nCorrect += 1
 
@@ -1501,6 +1514,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						meta["learned"] = True
 						meta["nextTest"] = datetime.now() + timedelta(days=6, hours=22)
 					else:
+						print("Entry progress @ {}%.".format(100 * entryProgress // entryProgressMax))
 						meta["nextTest"] = datetime.now() + timedelta(hours=22)
 				else:
 					if type(correct) is bool:
@@ -1677,7 +1691,7 @@ def mainLoop(alot, metalot, changes):
 
 
 #MAIN
-print("Alot of Knowlege v0.8")
+print("Alot of Knowlege v0.9")
 
 init() #colorama init
 

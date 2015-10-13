@@ -1409,30 +1409,37 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
 			elif entryType is Type.Class:
 				#custom class
-				#if the class has an image and it has been learned already, show it
-				keepGUIActive = False
-				for attribute in entry:
-					if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
-						msgGUI("I {}".format(fullPath(entry[attribute])))
-						usedGUI = True
-						keepGUIActive = True
-						break
-
-				#ask a question for each attribute
+				#select attributes not yet learned
 				correct = {}
+				unlearnedAttributes = []
+				keepGUIActive = False
+
+				for attribute in entry:
+					if isLearned(step[attribute], entry[attribute]):
+						correct[attribute] = "already learned"
+						colorPrint("{}: already learned".format(attribute), COLOR_LEARNED)
+
+						#if the class has an image and it has been learned already, show it
+						if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
+							msgGUI("I {}".format(fullPath(entry[attribute])))
+							usedGUI = True
+							keepGUIActive = True
+					else:
+						unlearnedAttributes.append(attribute)
+
+				#ask a question for each unlearned attribute
 				firstQuestion = True
 
-				for attribute in entry:
+				#print("unlearned:", unlearnedAttributes)
+				for attribute in unlearnedAttributes:
+					#print("attr:", attribute)
 					if firstQuestion:
 						firstQuestion = False
 					else:
 						print("\n")
 
 					attributeType = getType(entry[attribute])
-					if isLearned(step[attribute], entry[attribute]):
-						correct[attribute] = "already learned"
-						exit = immediately = False
-					elif attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
+					if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
@@ -1448,9 +1455,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
 					
 					if not immediately:
-						if correct[attribute] == "already learned":
-							colorPrint("{}: already learned".format(attribute), COLOR_LEARNED)
-						elif type(correct[attribute]) is bool:
+						if type(correct[attribute]) is bool:
 							feedback("Correct!")
 						else:
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))

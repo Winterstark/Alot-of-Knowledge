@@ -14,7 +14,7 @@ COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
 
-Type = Enum("Type", "Number Date Range String Image Diagram Class List Set")
+Type = Enum("Type", "Number Date Range String Image Diagram Class List Set Tuple")
 
 
 
@@ -238,41 +238,86 @@ class Date:
 
 
 def msgGUI(msg):
-    pipe.write(struct.pack('I', len(msg)) + bytes(msg, "UTF-8"))
-    pipe.seek(0)
+	pipe.write(struct.pack('I', len(msg)) + bytes(msg, "UTF-8"))
+	pipe.seek(0)
+
+
+def convertToDateIfAnyInTuple(tpl):
+	valuesList = list(tpl)
+	containsDate = False
+
+	for i in range(len(valuesList)):
+		if Date.isValid(valuesList[i]):
+			valuesList[i] = Date(valuesList[i])
+			containsDate = True
+		elif getType(valuesList[i]) is Type.Range:
+			valuesList[i] = (Date(valuesList[i][0]), Date(valuesList[i][1]))
+			containsDate = True
+		elif getType(valuesList[i]) is Type.Tuple:
+			newI = convertToDateIfAnyInTuple(valuesList[i])
+			if newI != i:
+				valuesList[i] = newI
+				containsDate = True
+
+	if containsDate:
+		return tuple(valuesList)
+	else:	
+		return tpl
+
+
+def convertToDateIfAny(data):
+	compoundTypes = [Type.Class, Type.List, Type.Set]
+
+	if getType(data) is Type.Class:
+		for key in data:
+			if Date.isValid(data[key]):
+				data[key] = Date(data[key])
+			elif getType(data[key]) is Type.Range:
+				data[key] = (Date(data[key][0]), Date(data[key][1]))
+			elif getType(data[key]) is Type.Tuple:
+				data[key] = convertToDateIfAnyInTuple(data[key])
+			elif getType(data[key]) in compoundTypes:
+				convertToDateIfAny(data[key])
+	elif getType(data) is Type.List:
+		for i in range(len(data)):
+			if Date.isValid(data[i]):
+				data[i] = Date(data[i])
+			elif getType(data[i]) is Type.Range:
+				data[i] = (Date(data[i][0]), Date(data[i][1]))
+			elif getType(data[i]) is Type.Tuple:
+				data[i] = convertToDateIfAnyInTuple(data[i])
+			elif getType(data[i]) in compoundTypes:
+				convertToDateIfAny(data[i])
+	elif getType(data) is Type.Set:
+		toDel = []
+		toAdd = []
+
+		for value in data:
+			if Date.isValid(value):
+				toDel.append(value)
+				toAdd.append(Date(validDate))
+			elif getType(value) is Type.Range:
+				toDel.append(value)
+				toAdd.append((Date(validDate[0]), Date(validDate[1])))
+			elif getType(value) is Type.Tuple:
+				newValue = convertToDateIfAnyInTuple(value)
+				if newValue != value:
+					toDel.append(value)
+					toAdd.append(newValue)
+			elif getType(value) in compoundTypes:
+				convertToDateIfAny(value)
+
+		for value in toDel:
+			data.remove(value)
+		for value in toAdd:
+			data.add(value)
 
 
 def parseFile(path):
 	with open(path) as f:
 		data = eval(f.read()) #using eval instead of the safer ast.literal_eval because ast's version can't parse datetime objects
 
-	#convert date representations to Date objects
-	for key in data:
-		kType = getType(data[key])
-
-		if Date.isValid(data[key]):
-			data[key] = Date(data[key])
-		elif kType is Type.Range:
-			data[key] = (Date(data[key][0]), Date(data[key][1]))
-		elif kType is Type.Class:
-			for attribute in data[key]:
-				if Date.isValid(data[key][attribute]):
-					data[key][attribute] = Date(data[key][attribute])
-				elif getType(data[key][attribute]) is Type.Range:
-					data[key][attribute] = (Date(data[key][attribute][0]), Date(data[key][attribute][1]))
-		elif kType is Type.List:
-			for i in range(len(data[key])):
-				if type(data[key][i]) is tuple:
-					l = list(data[key][i])
-					containsDate = False
-
-					for j in range(len(l)):
-						if Date.isValid(l[j]):
-							l[j] = Date(l[j])
-							containsDate = True
-
-					if containsDate:
-						data[key][i] = tuple(l)
+	convertToDateIfAny(data) #convert date representations to Date objects
 
 	#load metadata
 	metapath = path.replace(DIR, DIR + os.sep + "!METADATA")
@@ -439,8 +484,10 @@ def getType(entry):
 	elif entryType is tuple:
 		if type(entry[1]) is list:
 			return Type.Diagram
-		else:
+		elif len(entry) == 2 and type(entry[0]) is type(entry[1]) is Date:
 			return Type.Range
+		else:
+			return Type.Tuple
 	elif entryType is str:
 		if os.path.exists(fullPath(entry)):
 			return Type.Image
@@ -485,20 +532,30 @@ def toString(answer, makeMoreReadable=True):
 				s = s[:i] + ' ' + s[i:]
 
 			return s
-	if answerType is Type.Range:
-		if getType(answer[0]) is Type.Date:
+	elif answerType is Type.Date:
+		if makeMoreReadable:
+			return str(answer)
+		else:
+			return repr(answer)
+	elif answerType is Type.Range:
+		if makeMoreReadable:
 			#return the Date range without any redundant data, e.g. "May - June 1940" when the year is the same
 			if answer[0].precision() == 'm':
 				if answer[0].y == answer[1].y:
 					return Date.fullMonthName(answer[0].m) + " - " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
-			if answer[0].precision() == 'd':
+			elif answer[0].precision() == 'd':
 				if answer[0].y == answer[1].y:
 					if answer[0].m == answer[1].m:
 						return str(answer[0].d) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[0].m) + " " + str(answer[0].y)
 					else:
 						return str(answer[0].d) + " " + Date.fullMonthName(answer[0].m) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
-		
-		return str(answer[0]) + " - " + str(answer[1])
+			
+			return str(answer[0]) + " - " + str(answer[1])
+		#elif makeMoreReadable:
+		#else:
+			#return str(answer[0]) + " - " + str(answer[1])
+		else:
+			return repr(answer[0]) + " - " + repr(answer[1])
 	elif answerType is Type.Class:
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "")
 	else:
@@ -801,11 +858,12 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color):
+def qType_EnterAnswer(q, a, color, alwaysShowHint=False):
 	colorPrint(toString(q), color)
 
 	aStr = toString(a, False)
-	showHint = len(aStr.split()) > 5 or len(aStr) > 30 #don't show the hint for simple answers
+	aStrReadable = toString(a)
+	showHint = alwaysShowHint or len(aStr.split()) > 5 or len(aStr) > 30 #don't show the hint for simple answers
 
 	if getType(a) is Type.Date:
 		aIsDate = True
@@ -886,7 +944,7 @@ def qType_EnterAnswer(q, a, color):
 
 	correct = answer == correctAnswer
 	if not correct:
-		correct = toString(a)
+		correct = aStrReadable
 
 	return correct, exit, immediately
 
@@ -1027,8 +1085,8 @@ def qType_FillString(q, s, difficulty, corewords, color):
 				allCorrect = i == max(blanks) #if this was the last blank part then the answer is allCorrect
 				break
 
-			if i < len(parts) - 1:
-				print(" " * (nPrevChars + len(extraAnswerChars) + 1), end="") #align text
+			print(" " * (nPrevChars + len(extraAnswerChars) + 1), end="") #align text
+	print() #go to a new line because the output might be aligned to the right
 
 	if not allCorrect:
 		allCorrect = s
@@ -1132,8 +1190,6 @@ def qType_Image(imageKey, path, learned=False):
 		msgGUI("I {}".format(path))
 		answer, quit, immediately = checkForExit(input("What is this image associated with?\n> "))
 
-	msgGUI("logo")
-
 	if answer.lower() == correctAnswer.lower():
 		return True, quit, immediately
 	else:
@@ -1210,7 +1266,7 @@ def quizList(listKey, items, step, learned=False):
 			else:
 				item = "{0}. ".format(i)
 				for el in items[i-1]:
-					item += str(el) + ", "
+					item += toString(el) + ", "
 				item = item[:-2]
 
 				print(item)
@@ -1225,14 +1281,15 @@ def quizList(listKey, items, step, learned=False):
 
 	while type(correct) is bool and step <= len(items):
 		if type(items[step-1]) is not tuple:
-			correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color)
+			correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color, not finalStep)
 		else:
 			correct = True
 			for item in items[step-1]:
-				if getType(item) is Type.Date:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), item, color) #pass Dates without converting them to string
+				iType = getType(item)
+				if iType is Type.Date or iType is Type.Range:
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), item, color, not finalStep) #pass Dates without converting them to string
 				else:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(item), color)	
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(item), color, not finalStep)
 
 				if type(itemCorrect) is not bool:
 					correct = itemCorrect
@@ -1331,7 +1388,6 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 
 		key = random.choice(ready)
-		key = "Germany invades Denmark and Norway"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]
@@ -1345,8 +1401,8 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
+				usedGUI = True
 				correct, exit, immediately = quizList(key, entry[1], step)
-				msgGUI("logo")
 			elif entryType is Type.Image:
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
 			elif entryType is Type.String:
@@ -1354,10 +1410,12 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Class:
 				#custom class
 				#if the class has an image and it has been learned already, show it
+				keepGUIActive = False
 				for attribute in entry:
 					if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
 						msgGUI("I {}".format(fullPath(entry[attribute])))
 						usedGUI = True
+						keepGUIActive = True
 						break
 
 				#ask a question for each attribute
@@ -1378,8 +1436,8 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
+						usedGUI = True
 						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
-						msgGUI("logo")
 					elif attributeType is Type.Image:
 						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False)
 					elif attributeType is Type.String:
@@ -1396,6 +1454,11 @@ def quiz(category, catalot, metacatalot, corewords):
 							feedback("Correct!")
 						else:
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
+
+						if usedGUI and not keepGUIActive:
+							msgGUI("logo")
+							usedGUI = False
+
 					if exit:
 						break
 			elif entryType is Type.List:
@@ -1409,11 +1472,11 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
+				usedGUI = True
 				if random.randint(0, 1) == 0:
 					correct, exit, immediately = quizList(key, entry[1], random.randint(1, len(entry[1])), True)
 				else:
 					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
-				msgGUI("logo")
 			elif entryType is Type.Image:
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
 			elif entryType is Type.String:
@@ -1434,11 +1497,11 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
 				elif attributeType is Type.Diagram:
 					msgGUI("I {}".format(fullPath(entry[attribute][0])))
+					usedGUI = True
 					if random.randint(0, 1) == 0:
 						correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), True)
 					else:
 						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
-					msgGUI("logo")
 				elif attributeType is Type.Image:
 					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
 				elif attributeType is Type.String:
@@ -1457,7 +1520,6 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
-				qType = qType_RecognizeList
 
 				if qType == quizList:	
 					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), True)

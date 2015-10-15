@@ -1520,9 +1520,9 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 				elif attributeType is Type.Set:
 					if random.randint(0, 1) == 0:
-						correct, exit, immediately = quizSet(key, entry[attribute], 1, color)
+						correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color)
 					else:
-						correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color)
+						correct, exit, immediately = qType_RecognizeList(key + ", " + attribute, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

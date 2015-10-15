@@ -216,11 +216,11 @@ class Date:
 	def convertToOrdinal(num):
 		s = str(num)
 
-		if s[-1] == '1':
+		if s[-1] == '1' and s[-2] != '1':
 			s += "st"
-		elif s[-1] == '2':
+		elif s[-1] == '2' and s[-2] != '1':
 			s += "nd"
-		elif s[-1] == '3':
+		elif s[-1] == '3' and s[-2] != '1':
 			s += "rd"
 		else:
 			s += "th"

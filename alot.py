@@ -1400,6 +1400,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				usedGUI = True
 				correct, exit, immediately = quizList(key, entry[1], step)
 			elif entryType is Type.Image:
+				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
@@ -1442,6 +1443,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						usedGUI = True
 						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
 					elif attributeType is Type.Image:
+						usedGUI = True
 						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False)
 					elif attributeType is Type.String:
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
@@ -1479,6 +1481,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				else:
 					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
 			elif entryType is Type.Image:
+				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty
@@ -1504,6 +1507,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
 				elif attributeType is Type.Image:
+					usedGUI = True
 					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
 				elif attributeType is Type.String:
 					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)

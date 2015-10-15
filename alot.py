@@ -1367,10 +1367,6 @@ def quizSet(setKey, items, step, color):
 		if fullAnswer != "" or len(itemsCopy) > 0:
 			print("{0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
 
-		if step == 1: #print hints
-			for item in itemsCopy:
-				print("> " + constructHint(item))
-
 	return correct, exit, immediately
 
 

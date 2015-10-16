@@ -1349,8 +1349,8 @@ def quizSet(setKey, items, step, color):
 			if not typos:
 				correct = ""
 				for item in itemsCopy:
-					correct += item + "\n"
-				correct = correct[:-1]
+					correct += item + ", "
+				correct = correct[:-2]
 				break
 
 		#process correct answer
@@ -1364,7 +1364,7 @@ def quizSet(setKey, items, step, color):
 		del itemsLCaseWithoutParentheses[index]
 		del itemsCopy[index]
 		
-		if fullAnswer != "" or len(itemsCopy) > 0:
+		if fullAnswer != "" or (len(itemsCopy) > 0 and step != 1):
 			print("{0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
 
 	return correct, exit, immediately
@@ -1427,9 +1427,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				#ask a question for each unlearned attribute
 				firstQuestion = True
 
-				#print("unlearned:", unlearnedAttributes)
 				for attribute in unlearnedAttributes:
-					#print("attr:", attribute)
 					if firstQuestion:
 						firstQuestion = False
 					else:

@@ -562,7 +562,7 @@ def toString(answer, makeMoreReadable=True):
 		return str(answer)
 
 
-def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute=""):
+def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 	if key != targetKey and catalot[key] != catalot[targetKey] and catalot[key] not in answers.values() and getType(catalot[key]) is getType(catalot[targetKey]):
 		if attribute == "":
 			return True
@@ -576,6 +576,15 @@ def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute=""):
 				return False
 	else:
 		return False
+
+
+#used only to select alternate keys if the strict selection found too few of them; ignores answer type
+def isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
+	if key not in finalAnswers:
+		if attribute == "":
+			return catalot[key] != catalot[targetKey]
+		else:
+			return attribute not in catalot[key] or catalot[key][attribute] != catalot[targetKey][attribute]
 
 
 def isEntryOrAttributeDate(entry, attribute):
@@ -704,7 +713,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		if returnKeys and len(catalot) > 5:
 			#grab some random keys whatever their type
 			for key in catalot:
-				if key not in finalAnswers:
+				if isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
 					finalAnswers.append(key)
 					if len(finalAnswers) == 5:
 						break
@@ -1229,7 +1238,7 @@ def quizString(catalot, key, step, corewords, color, attribute=""):
 			correct, exit, immediately = qType_MultipleChoice(catalot, key, catalot[key], getAltAnswers(catalot, key, False), color)
 	elif step == 2:
 		if attribute != "":
-			correct, exit, immediately = qType_MultipleChoice(catalot, attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True), color)
+			correct, exit, immediately = qType_MultipleChoice(catalot, attribute + ", " + toString(catalot[key][attribute]), key, getAltAnswers(catalot, key, True, attribute), color)
 		else:
 			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:

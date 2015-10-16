@@ -1324,9 +1324,10 @@ def quizList(listKey, items, step, learned=False):
 
 
 def quizSet(setKey, items, step, color):
-	colorPrint(setKey + ":", color)
-
-	if step == 1: #print hints
+	if step != 1:
+		colorPrint("{0} ({1} items):".format(setKey, len(items)), color)
+	else:
+		#print hints
 		for item in items:
 			print("> " + constructHint(item))
 
@@ -1373,8 +1374,8 @@ def quizSet(setKey, items, step, color):
 		del itemsLCaseWithoutParentheses[index]
 		del itemsCopy[index]
 		
-		if fullAnswer != "" or (len(itemsCopy) > 0 and step != 1):
-			print("{0}{1} items remaining.".format(fullAnswer, len(itemsCopy)))
+		if fullAnswer != "":
+			print(fullAnswer)
 
 	return correct, exit, immediately
 

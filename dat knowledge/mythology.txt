@@ -6,7 +6,7 @@
 	'Hathor': {'Type': 'Goddess', 'Other names': {'Nebethepet', 'Aphrodite (Greek)', 'Venus (Roman)', 'Hesat'}, 'Symbols': {'Sun disk', 'Cow', 'Wedjat eye'}, 'Pantheon': 'Egyptian', 'Appearance': 'mythology\\Egyptian\\Hathor.png', 'Patron': {'Joy', 'Love', 'Beauty', 'Sky', 'Fertility'}},
 	'Tiamat': {'Type': 'Primordial Goddess', 'Pantheon': 'Mesopotamian', 'Patron': {'Ocean'}},
 	'Horus': {'Type': 'God', 'Pantheon': 'Egyptian', 'Symbols': {'Falcon', 'Wedjat eye'}, 'Appearance': 'mythology\\Egyptian\\Horus.png', 'Patron': {'Kingship', 'Sky'}},
-	'Serapis': {'Type': 'God', 'Other names': {'Osiris-Apis'}, 'Symbols': {'Modius (headdress)'}, 'Pantheon': 'Egypto-Hellenistic', 'Appearance': 'mythology\\Egyptian\\Serapis.png', 'Patron': {'Healing', 'Afterlife', 'Fertility'}},
+	'Serapis': {'Type': 'God', 'Other names': {'Osiris-Apis'}, 'Symbols': {'Modius (headdress)'}, 'Pantheon': 'Egypto-Hellenistic', 'Appearance': 'mythology\\Egyptian\\Serapis.jpg', 'Patron': {'Healing', 'Afterlife', 'Fertility'}},
 	'Apep': {'Type': 'Deity', 'Other names': 'Apophis', 'Symbols': {'Snake'}, 'Pantheon': 'Egyptian', 'Appearance': 'mythology\\Egyptian\\Apep.jpg', 'Patron': {'Chaos'}},
 	'Atum': {'Type': 'God', 'Pantheon': 'Egyptian', 'Symbols': {'Snake'}, 'Appearance': 'mythology\\Egyptian\\Atum.png', 'Patron': {'Creation'}},
 	'Osiris': {'Type': 'God', 'Pantheon': 'Egyptian', 'Symbols': {'Crook and flail', 'Atef crown (White Crown of Upper Egypt with two ostrich feathers)'}, 'Appearance': 'mythology\\Egyptian\\Osiris.png', 'Patron': {'Death', 'Life', 'Resurrection', 'Afterlife'}},

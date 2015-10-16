@@ -18,9 +18,9 @@ namespace AlotGUI
         delegate void SetTextCallback(string text);
 
         Image logo;
-        Bitmap mosaic = null;
         string[] imgs, multipleChoiceImages;
         int imgIndex, correctAnswer;
+        bool mosaic;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -58,6 +58,7 @@ namespace AlotGUI
             if (msg == "logo")
             {
                 this.BackgroundImage = logo;
+                mosaic = false;
             }
             else
             {
@@ -81,8 +82,11 @@ namespace AlotGUI
                 }
 
                 if (msg[0] == 'I')
+                {
                     //question type: identify
                     this.BackgroundImage = Image.FromFile(imgs[imgIndex]);
+                    mosaic = false;
+                }
                 else if (msg[0] == 'C')
                 {
                     //question type: choose
@@ -152,6 +156,7 @@ namespace AlotGUI
 
                     //generate composite image
                     this.BackgroundImage = combineImages(multipleChoiceImages);
+                    mosaic = true;
                 }
             }
         }
@@ -273,14 +278,14 @@ namespace AlotGUI
             switch (e.KeyCode)
             {
                 case Keys.Left:
-                    if (mosaic == null)
+                    if (!mosaic)
                     {
                         imgIndex = imgIndex == 0 ? imgs.Length - 1 : imgIndex - 1;
                         this.BackgroundImage = Image.FromFile(imgs[imgIndex]);
                     }
                     break;
                 case Keys.Right:
-                    if (mosaic == null)
+                    if (!mosaic)
                     {
                         imgIndex = imgIndex == imgs.Length - 1 ? 0 : imgIndex + 1;
                         this.BackgroundImage = Image.FromFile(imgs[imgIndex]);

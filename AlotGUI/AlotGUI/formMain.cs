@@ -199,7 +199,7 @@ namespace AlotGUI
                     gfx = Graphics.FromImage(visMosaic);
 
                     int resizedW, resizedH;
-                    if (visuals[ind].Width > visuals[ind].Height)
+                    if ((float)visuals[ind].Width / visuals[ind].Height > (float)w / h)
                     {
                         resizedW = w;
                         resizedH = (int)((float)visuals[ind].Height / visuals[ind].Width * w);

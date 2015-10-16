@@ -1327,6 +1327,8 @@ def quizSet(setKey, items, step, color):
 	if step != 1:
 		colorPrint("{0} ({1} items):".format(setKey, len(items)), color)
 	else:
+		colorPrint(setKey, color)
+
 		#print hints
 		for item in items:
 			print("> " + constructHint(item))

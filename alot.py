@@ -238,11 +238,11 @@ class Date:
 	def convertToOrdinal(num):
 		s = str(num)
 
-		if s[-1] == '1' and s[-2] != '1':
+		if s[-1] == '1' and (len(s) == 1 or s[-2] != '1'):
 			s += "st"
-		elif s[-1] == '2' and s[-2] != '1':
+		elif s[-1] == '2' and (len(s) == 1 or s[-2] != '1'):
 			s += "nd"
-		elif s[-1] == '3' and s[-2] != '1':
+		elif s[-1] == '3' and (len(s) == 1 or s[-2] != '1'):
 			s += "rd"
 		else:
 			s += "th"
@@ -889,7 +889,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, alwaysShowHint=False):
+def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
 	colorPrint(toString(q), color)
 
 	aStr = toString(a, False)
@@ -912,7 +912,32 @@ def qType_EnterAnswer(q, a, color, alwaysShowHint=False):
 			prompt = "> "
 
 	#wait for user's answer
-	answer, exit, immediately = checkForExit(input(prompt))
+	tryAgain = True
+	while tryAgain:
+		answer, exit, immediately = checkForExit(input(prompt))
+		tryAgain = False
+
+		if isAnswerCorrect(answer, a, aIsDate, showHint):
+			correct = True
+		else:
+			if catalot != None and a in catalot:
+				#check if the user's answer is correct, even if it isn't the target answer
+				for key in catalot:
+					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate, showHint):
+						print("Your answer is not wrong, but another entry is the expected answer. Please try again.")
+						tryAgain = True
+						break
+
+			if tryAgain:
+				continue
+			else:
+				correct = aStrReadable
+
+	return correct, exit, immediately
+
+
+def isAnswerCorrect(answer, a, aIsDate, showHint):
+	aStr = toString(a, False)
 
 	#ignore segments in parentheses
 	answer = removeParentheses(answer)
@@ -934,11 +959,7 @@ def qType_EnterAnswer(q, a, color, alwaysShowHint=False):
 	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer)
 
-	correct = answer == correctAnswer
-	if not correct:
-		correct = aStrReadable
-
-	return correct, exit, immediately
+	return answer == correctAnswer
 
 
 def qType_FillString(q, s, difficulty, corewords, color):
@@ -1201,14 +1222,14 @@ def quizNumber(catalot, key, step, color, attribute=""):
 			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color)
+			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color, catalot=catalot)
 		else:
-			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color)
+			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color, catalot=catalot)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(catalot[key][attribute], key, color)
+			correct, exit, immediately = qType_EnterAnswer(catalot[key][attribute], key, color, catalot=catalot)
 		else:
-			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color)
+			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color, catalot=catalot)
 
 	return correct, exit, immediately
 
@@ -1273,15 +1294,15 @@ def quizList(listKey, items, step, learned=False):
 
 	while type(correct) is bool and step <= len(items):
 		if type(items[step-1]) is not tuple:
-			correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color, not finalStep)
+			correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color, alwaysShowHint=not finalStep)
 		else:
 			correct = True
 			for item in items[step-1]:
 				iType = getType(item)
 				if iType is Type.Date or iType is Type.Range:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), item, color, not finalStep) #pass Dates without converting them to string
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), item, color, alwaysShowHint=not finalStep) #pass Dates without converting them to string
 				else:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(item), color, not finalStep)
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(item), color, alwaysShowHint=not finalStep)
 
 				if type(itemCorrect) is not bool:
 					correct = itemCorrect

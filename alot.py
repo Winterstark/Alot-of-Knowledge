@@ -166,6 +166,28 @@ class Date:
 			return "y"
 
 
+	def precisionPrompt(self):
+		precision = self.precision()
+		prefixed = self.prefix != ""
+
+		if precision == "M":
+			if not prefixed:
+				return "Millennium"
+			else:
+				return "Part of Millennium"
+		elif precision == "c":
+			if not prefixed:
+				return "Century"
+			else:
+				return "Part of Century"
+		elif precision == "y":
+			return "Year"
+		elif precision == "m":
+			return "Year-Month"
+		elif precision == "d":
+			return "Year-Month-Day"
+
+
 	#checks if string represents a Date (short form, e.g. "18c.")
 	def isValid(entry):
 		eType = type(entry)
@@ -876,53 +898,14 @@ def qType_EnterAnswer(q, a, color, alwaysShowHint=False):
 
 	if getType(a) is Type.Date:
 		aIsDate = True
-		precision = a.precision()
-		prefixed = a.prefix != ""
-
+		prompt = "> {}?\n> ".format(a.precisionPrompt())
 		a = repr(a)
-
-		if precision == "M":
-			if not prefixed:
-				prompt = "> Millennium?\n> "
-			else:
-				prompt = "> Part of Millennium?\n> "
-		elif precision == "c":
-			if not prefixed:
-				prompt = "> Century?\n> "
-			else:
-				prompt = "> Part of Century?\n> "
-		elif precision == "y":
-			prompt = "> Year?\n> "
-		elif precision == "m":
-			prompt = "> Year-Month?\n> "
-		elif precision == "d":
-			prompt = "> Year-Month-Day?\n> "
 	elif getType(a) is Type.Range:
 		aIsDate = True
-		precision = a[0].precision()
-		prefixed = a[0].prefix != ""
-
+		prompt = "> {0} - {1}?\n> ".format(a[0].precisionPrompt(), a[1].precisionPrompt())
 		a = (repr(a[0]), repr(a[1]))
-
-		if precision == "M":
-			if not prefixed:
-				prompt = "> Millennium - Millennium?\n> "
-			else:
-				prompt = "> Part of Millennium - Part of Millennium?\n> "
-		elif precision == "c":
-			if not prefixed:
-				prompt = "> Century - Century?\n> "
-			else:
-				prompt = "> Part of Century - Part of Century?\n> "
-		elif precision == "y":
-			prompt = "> Year - Year?\n> "
-		elif precision == "m":
-			prompt = "> Year-Month - Year-Month?\n> "
-		elif precision == "d":
-			prompt = "> Year-Month-Day - Year-Month-Day?\n> "
 	else:
 		aIsDate = False
-
 		if showHint:
 			prompt = "> " + constructHint(a) + "\n> "
 		else:

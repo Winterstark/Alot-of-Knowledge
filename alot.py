@@ -1490,10 +1490,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
 				usedGUI = True
-				if random.randint(0, 1) == 0:
-					correct, exit, immediately = quizList(key, entry[1], random.randint(1, len(entry[1])), True)
-				else:
-					correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
+				correct, exit, immediately = qType_RecognizeItem(key, entry[1], color)
 			elif entryType is Type.Image:
 				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)

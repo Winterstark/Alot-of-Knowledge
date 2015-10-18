@@ -494,6 +494,11 @@ def maxSteps(answer):
 		return 1
 	elif answerType is Type.Set:
 		return 2
+	else:
+		print("u w0t m8?")
+		print("answer:", answer)
+		print("answerType:", answerType)
+		print("type(answer):", type(answer))
 
 
 def getType(entry):
@@ -917,13 +922,13 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
 		answer, exit, immediately = checkForExit(input(prompt))
 		tryAgain = False
 
-		if isAnswerCorrect(answer, a, aIsDate, showHint):
+		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint):
 			correct = True
 		else:
 			if catalot != None and a in catalot:
 				#check if the user's answer is correct, even if it isn't the target answer
 				for key in catalot:
-					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate, showHint):
+					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate=aIsDate, showFullAnswer=not showHint):
 						print("Your answer is not wrong, but another entry is the expected answer. Please try again.")
 						tryAgain = True
 						break
@@ -936,14 +941,14 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
 	return correct, exit, immediately
 
 
-def isAnswerCorrect(answer, a, aIsDate, showHint):
+def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False):
 	aStr = toString(a, False)
 
 	#ignore segments in parentheses
 	answer = removeParentheses(answer)
 	correctAnswer = removeParentheses(aStr)
 
-	if not showHint and len(aStr) != len(correctAnswer):
+	if showFullAnswer and len(aStr) != len(correctAnswer):
 		print("Full answer: " + aStr)
 
 	if aIsDate:
@@ -1122,7 +1127,7 @@ def qType_RecognizeList(listKey, items, color):
 		itemsType = "set"
 	answer, exit, immediately = checkForExit(input("What {} do these items belong to? ".format(itemsType)))
 
-	if answer.lower() == listKey.lower():
+	if isAnswerCorrect(answer, listKey):
 		return True, exit, immediately
 	else:
 		return listKey, exit, immediately
@@ -1145,7 +1150,7 @@ def qType_RecognizeItem(listKey, items, color):
 	else:
 		answer, exit, immediately = checkForExit(input("What is the {}. item in this list? ".format(index+1)))
 
-		if answer.lower() == toString(items[index]).lower():
+		if isAnswerCorrect(answer, items[index]):
 			return True, exit, immediately
 		else:
 			return toString(items[index]), exit, immediately
@@ -1203,7 +1208,7 @@ def qType_Image(imageKey, path, learned=False):
 		msgGUI("I {}".format(path))
 		answer, quit, immediately = checkForExit(input("What is this image associated with?\n> "))
 
-	if answer.lower() == correctAnswer.lower():
+	if isAnswerCorrect(answer, correctAnswer):
 		return True, quit, immediately
 	else:
 		return correctAnswer, quit, immediately

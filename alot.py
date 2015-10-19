@@ -908,7 +908,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
 	elif getType(a) is Type.Range:
 		aIsDate = True
 		prompt = "> {0} - {1}?\n> ".format(a[0].precisionPrompt(), a[1].precisionPrompt())
-		a = (repr(a[0]), repr(a[1]))
+		a = repr(a[0]) + "-" + repr(a[1])
 	else:
 		aIsDate = False
 		if showHint:

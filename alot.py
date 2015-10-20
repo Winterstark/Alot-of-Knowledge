@@ -447,6 +447,16 @@ def removeTypos(userAnswer, originalCorrectAnswer):
 	return userAnswer
 
 
+def pluralizeIfNecessary(n, s):
+	if abs(n) != 1:
+		if s[-1] != 's':
+			s += 's'
+		else:
+			s += 'es'
+
+	return "{0} {1}".format(n, s)
+
+
 #returns keys of entries ready for testing from a specific category, as well as the number of ready new and learned entries
 def getReadyKeys(metacatalot):
 	readyKeys = []
@@ -1334,7 +1344,8 @@ def quizList(listKey, items, step, learned=False):
 
 def quizSet(setKey, items, step, color):
 	if step != 1:
-		colorPrint("{0} ({1} items):".format(setKey, len(items)), color)
+		colorPrint("{0} ({1}):".format(setKey, pluralizeIfNecessary(len(items), "item")), color)
+
 	else:
 		colorPrint(setKey, color)
 

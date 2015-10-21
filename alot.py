@@ -10,6 +10,7 @@ DIR = "dat knowledge" #path to the directory containing knowledge files
 GUI = "AlotGUI" + os.sep + "AlotGUI" + os.sep + "bin" + os.sep + "Debug" + os.sep + "AlotGUI.exe" #path to the program used to display images
 SOUND_CORRECT = "sounds" + os.sep + "correct.wav" #sounds played after the user answers a question
 SOUND_WRONG = "sounds" + os.sep + "wrong.wav"
+SOUND_LEARNED = "sounds" + os.sep + "learned.wav"
 COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
@@ -812,7 +813,9 @@ def feedback(msg, playSound=True):
 	colorPrint(msg, color)
 
 	if playSound:
-		if correct:
+		if msg == "Entry learned!":
+			PlaySound(SOUND_LEARNED, SND_FILENAME)
+		elif correct:
 			PlaySound(SOUND_CORRECT, SND_FILENAME)
 		else:
 			PlaySound(SOUND_WRONG, SND_FILENAME)

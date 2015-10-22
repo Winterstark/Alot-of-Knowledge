@@ -1468,7 +1468,6 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 
 		key = random.choice(ready)
-		key = "Commanders-in-Chief of the French Army during WWI"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]
@@ -1605,9 +1604,10 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType_RecognizeList(key + ", " + attribute, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
+				qType = quizList
 
 				if qType == quizList:	
-					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), True)
+					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), learned=True)
 				else:
 					correct, exit, immediately = qType(key, entry, color)
 			elif entryType is Type.Set:

@@ -1025,7 +1025,12 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 						tryAgain = True
 						firstAttempt = False
 				else:
-					pass
+					answerRange = answer.split(' - ')
+					if len(answerRange) == 2:
+						if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
+							print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+							tryAgain = True
+							firstAttempt = False
 
 			if tryAgain:
 				continue

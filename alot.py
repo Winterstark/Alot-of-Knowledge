@@ -221,8 +221,10 @@ class Date:
 
 	#checks if string represents a Date (short form, e.g. "18c.")
 	def isValid(entry):
-		eType = type(entry)
+		if entry == "":
+			return False
 
+		eType = type(entry)
 		if eType is str:
 			if entry[0] == '-':
 				entry = entry[1:]

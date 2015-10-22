@@ -506,10 +506,7 @@ def maxSteps(answer):
 	elif answerType is Type.Set:
 		return 2
 	else:
-		print("u w0t m8?")
-		print("answer:", answer)
-		print("answerType:", answerType)
-		print("type(answer):", type(answer))
+		print("TYPE NOT SUPPORTED FOR MAXSTEPS():", answerType)
 
 
 def getType(entry):
@@ -806,11 +803,12 @@ def fullPath(relativePath):
 def feedback(msg, playSound=True):
 	correct = not "Wrong" in msg
 
-	if correct:
-		color = Fore.GREEN
-	else:
-		color = Fore.RED
-	colorPrint(msg, color)
+	if msg != "":
+		if correct:
+			color = Fore.GREEN
+		else:
+			color = Fore.RED
+		colorPrint(msg, color)
 
 	if playSound:
 		if msg == "Entry learned!":
@@ -825,6 +823,34 @@ def colorPrint(text, color, endline="\n"):
 	print(color, end="")
 	print(text, end=endline)
 	print(Fore.RESET, end="")
+
+
+def printList(items, step, indentLevel, color):
+	stepOffset = 0 #takes into account how many sublists have been printed before the current item (so that we know its correct index)
+
+	for i in range(1, step):
+		heading = i < len(items) and type(items[i]) is list
+
+		if type(items[i-1]) is list:
+			printList(items[i-1], len(items[i-1])+1, indentLevel+1, color)
+			stepOffset -= 1
+		elif type(items[i-1]) is tuple:
+			item = "{0}. ".format(i + stepOffset)
+			for el in items[i-1]:
+				item += toString(el) + ", "
+			item = item[:-2]
+
+			if heading:
+				colorPrint('\t'*indentLevel + item, color)
+			else:	
+				print('\t'*indentLevel + item)
+		else:
+			if heading:
+				colorPrint("{0}{1}. {2}".format('\t'*indentLevel, i + stepOffset, items[i-1]), color)
+			else:
+				print("{0}{1}. {2}".format('\t'*indentLevel, i + stepOffset, items[i-1]))
+
+	return stepOffset
 
 
 def constructHint(a):
@@ -907,8 +933,19 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
-	colorPrint(toString(q), color)
+def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLevel=0):
+	#if q is in the format of "<int>.", then it represents the index of a list item
+	if q[-1] == '.':
+		try:
+			int(q[:-1])
+			promptPrefix = q
+		except:
+			promptPrefix = ">"
+	else:
+		promptPrefix = ">"
+
+	if promptPrefix == ">":
+		colorPrint('\t'*indentLevel + toString(q), color)
 
 	aStr = toString(a, False)
 	aStrReadable = toString(a)
@@ -916,18 +953,18 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
 
 	if getType(a) is Type.Date:
 		aIsDate = True
-		prompt = "> {}?\n> ".format(a.precisionPrompt())
+		prompt = "{0}{1} {2}?\n{0}{1} ".format('\t'*indentLevel, promptPrefix, a.precisionPrompt())
 		a = repr(a)
 	elif getType(a) is Type.Range:
 		aIsDate = True
-		prompt = "> {0} - {1}?\n> ".format(a[0].precisionPrompt(), a[1].precisionPrompt())
+		prompt = "{0}{1} {2} - {3}?\n{0}{1} ".format('\t'*indentLevel, promptPrefix, a[0].precisionPrompt(), a[1].precisionPrompt())
 		a = repr(a[0]) + "-" + repr(a[1])
 	else:
 		aIsDate = False
 		if showHint:
-			prompt = "> " + constructHint(a) + "\n> "
+			prompt = "{0}{1} {2}\n{0}{1} ".format('\t'*indentLevel, promptPrefix, constructHint(a))
 		else:
-			prompt = "> "
+			prompt = "{0}{1} ".format('\t'*indentLevel, promptPrefix)
 
 	#wait for user's answer
 	tryAgain = True
@@ -942,7 +979,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False):
 				#check if the user's answer is correct, even if it isn't the target answer
 				for key in catalot:
 					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate=aIsDate, showFullAnswer=not showHint):
-						print("Your answer is not wrong, but another entry is the expected answer. Please try again.")
+						print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
 						tryAgain = True
 						break
 
@@ -1282,51 +1319,66 @@ def quizString(catalot, key, step, corewords, color, attribute=""):
 	return correct, exit, immediately
 
 
-def quizList(listKey, items, step, learned=False):
+def quizList(listKey, items, step, indentLevel=0, learned=False):
 	if learned:
 		color = COLOR_LEARNED
 	else:
 		color = COLOR_UNLEARNED
+	if indentLevel == 0:
+		colorPrint(listKey + ":", color)
 
-	colorPrint(listKey + ":", color)
+	if type(step) is list:
+		subStep = step[1:]
+		if len(subStep) == 1:
+			subStep = subStep[0] #convert a 1-element array to int
+		step = step[0]
+	else:
+		subStep = 1
 
 	if step <= len(items):
-		for i in range(1, step):
-			if type(items[i-1]) is not tuple:
-				print("{0}. {1}".format(i, items[i-1]))
-			else:
-				item = "{0}. ".format(i)
-				for el in items[i-1]:
-					item += toString(el) + ", "
-				item = item[:-2]
-
-				print(item)
-
+		stepOffset = printList(items, step, indentLevel, color)
 		finalStep = False
 	else:
 		#this is the final step, which demands the user to enter every list item
 		finalStep = True
 		step = 1
+		stepOffset = 0
 
 	correct = True
 
 	while type(correct) is bool and step <= len(items):
-		if type(items[step-1]) is not tuple:
-			correct, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(items[step-1]), color, alwaysShowHint=not finalStep)
-		else:
+		if type(items[step-1]) is list:
+			if finalStep:
+				subStep = len(items[step-1]) + 1
+
+			correct, exit, immediately = quizList("", items[step-1], subStep, indentLevel=indentLevel+1, learned=learned)
+			stepOffset -= 1
+
+			if immediately:
+				break
+			elif type(correct) is list:
+				step = [step] + correct
+			elif type(correct) is int:
+				if correct == len(items[step-1]) + 1:
+					correct = True #sublist answered successfully
+				else:
+					step = [step] + [correct]
+		elif type(items[step-1]) is tuple:
 			correct = True
 			for item in items[step-1]:
 				iType = getType(item)
 				if iType is Type.Date or iType is Type.Range:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), item, color, alwaysShowHint=not finalStep) #pass Dates without converting them to string
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), item, color, alwaysShowHint=not finalStep, indentLevel=indentLevel) #pass Dates without converting them to string
 				else:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}. item".format(step), toString(item), color, alwaysShowHint=not finalStep)
+					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(item), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
 
 				if type(itemCorrect) is not bool:
 					correct = itemCorrect
 					break
 				if exit:
 					break
+		else:
+			correct, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(items[step-1]), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
 
 		if immediately:
 			break
@@ -1334,8 +1386,9 @@ def quizList(listKey, items, step, learned=False):
 			return correct, exit, immediately
 		elif type(correct) is bool:
 			step += 1
-		else:
-			feedback("Wrong! Correct answer: " + correct, False)
+			feedback("") #play correct sound
+		elif type(correct) is str:
+			feedback("Wrong! Correct answer: " + correct)
 
 	if not finalStep:
 		return step, exit, immediately
@@ -1533,7 +1586,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					msgGUI("I {}".format(fullPath(entry[attribute][0])))
 					usedGUI = True
 					if random.randint(0, 1) == 0:
-						correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), True)
+						correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), learned=True)
 					else:
 						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
 				elif attributeType is Type.Image:
@@ -1625,24 +1678,28 @@ def quiz(category, catalot, metacatalot, corewords):
 
 						for attribute in meta["step"]:
 							meta["step"][attribute] = 1
-			elif type(correct) is int:
+			elif type(correct) is int or type(correct) is list:
 				#quizList returns correct as the new step
 				newStep = correct
-				if newStep > meta["step"]:
+				if type(correct) is list:
+					newStepRoot = newStep[0]
+				else:
+					newStepRoot = newStep
+				if type(meta["step"]) is list:
+					metaStepRoot = meta["step"][0]
+				else:
+					metaStepRoot = meta["step"]
+
+				if newStepRoot > metaStepRoot:
 					correct = True
 					nCorrect += 1
 				else:
 					correct = False
 
 				if entryType is Type.List:
-					print("List progress @ {}%.".format(100*(newStep-1)//len(entry)))
+					print("List progress @ {}%.".format(100*(newStepRoot-1)//len(entry)))
 				else:
-					print("Diagram progress @ {}%.".format(100*(newStep-1)//len(entry[1])))
-				
-				if correct:
-					PlaySound(SOUND_CORRECT, SND_FILENAME)
-				else:
-					PlaySound(SOUND_WRONG, SND_FILENAME)
+					print("Diagram progress @ {}%.".format(100*(newStepRoot-1)//len(entry[1])))
 
 				meta["step"] = newStep
 				meta["nextTest"] = datetime.now() + timedelta(hours=22)

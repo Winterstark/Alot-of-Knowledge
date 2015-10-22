@@ -1167,7 +1167,7 @@ def qType_RecognizeList(listKey, items, color):
 	randomItems = list(items)
 	random.shuffle(randomItems)
 	randomItems = randomItems[:min(3, len(randomItems))]
-
+	
 	for item in randomItems:
 		print(toString(item))
 
@@ -1175,12 +1175,8 @@ def qType_RecognizeList(listKey, items, color):
 		itemsType = "list"
 	else:
 		itemsType = "set"
-	answer, exit, immediately = checkForExit(input("What {} do these items belong to? ".format(itemsType)))
 
-	if isAnswerCorrect(answer, listKey):
-		return True, exit, immediately
-	else:
-		return listKey, exit, immediately
+	return qType_EnterAnswer("What {} do these items belong to? ".format(itemsType), listKey, color)
 
 
 def qType_RecognizeItem(listKey, items, color):
@@ -1472,6 +1468,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 
 		key = random.choice(ready)
+		key = "Commanders-in-Chief of the French Army during WWI"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]

@@ -189,6 +189,36 @@ class Date:
 			return "Year-Month-Day"
 
 
+	def isAlmostCorrect(self, answer):
+		if Date.isValid(answer):
+			answerDate = Date(answer)
+		else:
+			return False
+
+		precision = self.precision()
+		if precision == "M":
+			if self.M < 10:
+				marginForError = 1
+			else:
+				marginForError = 2
+			return abs(self.c - answerDate.c) <= marginForError
+		elif precision == "c":
+			if not self.bc:
+				marginForError = 1
+			elif self.c <= 20:
+				marginForError = 2
+			else:
+				marginForError = 4
+			return abs(self.c - answerDate.c) <= marginForError
+		elif precision == "y":
+			marginForError = (datetime.now().year - self.y) // 100 + 1
+			return abs(self.y - answerDate.y) <= marginForError
+		elif precision == "m":
+			return self.y == answerDate.y
+		elif precision == "d":
+			return self.y == answerDate.y and self.m == answerDate.m
+
+
 	#checks if string represents a Date (short form, e.g. "18c.")
 	def isValid(entry):
 		eType = type(entry)
@@ -947,6 +977,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 	if promptPrefix == ">":
 		colorPrint('\t'*indentLevel + toString(q), color)
 
+	originalA = a
 	aStr = toString(a, False)
 	aStrReadable = toString(a)
 	showHint = alwaysShowHint or len(aStr.split()) > 5 or len(aStr) > 30 #don't show the hint for simple answers
@@ -967,7 +998,8 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 			prompt = "{0}{1} ".format('\t'*indentLevel, promptPrefix)
 
 	#wait for user's answer
-	tryAgain = True
+	tryAgain = firstAttempt = True
+
 	while tryAgain:
 		answer, exit, immediately = checkForExit(input(prompt))
 		tryAgain = False
@@ -982,6 +1014,16 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 						print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
 						tryAgain = True
 						break
+
+			if not tryAgain and firstAttempt and aIsDate:
+				#check if the user's answer is relatively close to the correct Date
+				if getType(originalA) is Type.Date:
+					if originalA.isAlmostCorrect(answer):
+						print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+						tryAgain = True
+						firstAttempt = False
+				else:
+					pass
 
 			if tryAgain:
 				continue

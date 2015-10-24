@@ -1432,7 +1432,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		elif type(correct) is bool:
 			step += 1
 			feedback("") #play correct sound
-		elif type(correct) is str:
+		elif type(correct) is str and correct != "False":
 			feedback("Wrong! Correct answer: " + correct)
 
 	if not finalStep:

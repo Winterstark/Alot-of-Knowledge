@@ -1140,11 +1140,10 @@ def qType_FillString(q, s, difficulty, corewords, color):
 
 	#print the string with blanks
 	colorPrint(q + ":", color)
+	print("> ", end="")
 
 	if difficulty < 3:
 		#print hint
-		print("> ", end="")
-
 		for i in range(len(parts)):
 			if i not in blanks:
 				print(parts[i], end="")

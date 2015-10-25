@@ -1410,7 +1410,13 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 					correct = True #sublist answered successfully
 				else:
 					step = [step] + [correct]
-		elif type(items[step-1]) is tuple or type(items[step-1]) is set:
+		elif type(items[step-1]) is set:
+			if not finalStep:
+				subSetStep = 1
+			else:
+				subSetStep = 2
+			correct, exit, immediately = quizSet("", items[step-1], subSetStep, color)
+		elif type(items[step-1]) is tuple:
 			correct = True
 			for item in items[step-1]:
 				iType = getType(item)
@@ -1586,7 +1592,9 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
 					
 					if not immediately:
-						if type(correct[attribute]) is not str:
+						if type(correct[attribute]) is int or type(correct[attribute]) is list:
+							print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
+						elif type(correct[attribute]) is not str:
 							feedback("Correct!")
 						else:
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))

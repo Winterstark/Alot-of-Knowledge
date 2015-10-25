@@ -537,6 +537,8 @@ def maxSteps(answer):
 		return 1
 	elif answerType is Type.Set:
 		return 2
+	elif answerType is Type.List:
+		return len(answer) + 1
 	else:
 		print("TYPE NOT SUPPORTED FOR MAXSTEPS():", answerType)
 
@@ -1408,7 +1410,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 					correct = True #sublist answered successfully
 				else:
 					step = [step] + [correct]
-		elif type(items[step-1]) is tuple:
+		elif type(items[step-1]) is tuple or type(items[step-1]) is set:
 			correct = True
 			for item in items[step-1]:
 				iType = getType(item)
@@ -1584,7 +1586,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
 					
 					if not immediately:
-						if type(correct[attribute]) is bool:
+						if type(correct[attribute]) is not str:
 							feedback("Correct!")
 						else:
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))

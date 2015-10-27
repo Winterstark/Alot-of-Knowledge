@@ -387,6 +387,8 @@ def parseFile(path):
 
 	#new entries?
 	nNew = 0
+	nExp = 0
+
 	for key in data:
 		if key not in metadata:
 			#init metadata entry
@@ -404,6 +406,21 @@ def parseFile(path):
 			
 			nNew += 1
 			changes = True
+		elif type(data[key]) is dict:
+			#check if Class has been expanded
+			for attribute in data[key]:
+				if attribute not in metadata[key]["step"]:
+					metadata[key]["step"][attribute] = 1
+
+					if metadata[key]["learned"]:
+						metadata[key]["learned"] = False
+						metadata[key]["nextTest"] = datetime.now() + timedelta(hours=22)
+						for attrib in metadata[key]["step"]:
+							metadata[key]["step"][attrib] = 1
+
+					nExp += 1
+					changes = True
+
 
 	#deleted entries?
 	toDel = []
@@ -418,7 +435,7 @@ def parseFile(path):
 	for key in toDel:
 		del metadata[key]
 
-	return data, metadata, changes, nNew, nDel
+	return data, metadata, changes, nNew, nExp, nDel
 
 
 def saveToFile(data, metadata, path):
@@ -1923,12 +1940,18 @@ changes = {}
 for filename in os.listdir(DIR):
 	if ".txt" in filename:
 		category = os.path.splitext(filename)[0]
-		alot[category], metalot[category], changes[category], nNew, nDel = parseFile(DIR + os.sep + filename)
+		alot[category], metalot[category], changes[category], nNew, nExp, nDel = parseFile(DIR + os.sep + filename)
 
-		if nNew > 0 or nDel > 0:
+		if nNew > 0 or nExp > 0 or nDel > 0:
 			print(filename + " changed: ", end="")
 			if nNew > 0:
 				print(str(nNew) + " new entries", end="")
+				if nExp + nDel > 0:
+					print(", ", end="")
+				else:
+					print("\n")
+			if nExp > 0:
+				print(str(nExp) + " expanded entries", end="")
 				if nDel > 0:
 					print(", ", end="")
 				else:

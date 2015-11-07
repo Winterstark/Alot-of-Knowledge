@@ -53,6 +53,9 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formMain_FormClosing);
             this.Load += new System.EventHandler(this.formMain_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.formMain_KeyDown);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.formMain_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.formMain_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.formMain_MouseUp);
             this.ResumeLayout(false);
             this.PerformLayout();
 

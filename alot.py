@@ -1,4 +1,4 @@
-import os, sys, subprocess, traceback, random, struct
+import os, sys, subprocess, traceback, random, struct, calendar
 from enum import Enum
 from datetime import datetime, timedelta
 from time import sleep
@@ -189,6 +189,61 @@ class Date:
 			return "Year-Month-Day"
 
 
+	def toGUIFormat(self, partOfRange):
+		precision = self.precision()
+
+		if precision == "M" or precision == "c":
+			if precision == "M":
+				baseDate = self.M * 1000
+				scale = 1000
+			else:
+				baseDate = self.c * 100
+				scale = 100
+
+			if self.bc:
+				baseDate *= -1
+			else:
+				baseDate += -scale + 1
+
+			if self.prefix == 'Early ':
+				period = int(1/3 * scale)
+			elif self.prefix == 'Mid ':
+				baseDate += int(1/3 * scale)
+				period = int(1/3 * scale)
+			elif self.prefix == 'Late ':
+				baseDate += int(2/3 * scale)
+				period = int(1/3 * scale)
+			elif self.prefix == "First half of the ":
+				period = int(1/2 * scale)
+			elif self.prefix == "Second half of the ":
+				baseDate += int(1/2 * scale)
+				period = int(1/2 * scale)
+			else:
+				period = int(1 * scale)
+
+			if partOfRange:
+				return baseDate + period // 2 #midpoint
+			else:
+				return "{} - {}".format(baseDate, baseDate + period) #range
+		else:
+			if calendar.isleap(self.y):
+				totalDaysInYear = 366
+			else:
+				totalDaysInYear = 365
+
+			y = self.y
+			if self.bc:
+				y *= -1
+
+			if self.m == -1:
+				return y
+			else:
+				if self.d == -1:
+					return str(y + datetime(y, self.m, 1).timetuple().tm_yday / totalDaysInYear)
+				else:
+					return str(y + datetime(y, self.m, self.d).timetuple().tm_yday / totalDaysInYear)
+
+
 	def isAlmostCorrect(self, answer):
 		if Date.isValid(answer):
 			answerDate = Date(answer)
@@ -295,6 +350,46 @@ class Date:
 def msgGUI(msg):
 	pipe.write(struct.pack('I', len(msg)) + bytes(msg, "UTF-8"))
 	pipe.seek(0)
+
+
+def collectDatesForTimeline(heading, data, timeline):
+	compoundTypes = [Type.Class, Type.List, Type.Tuple]
+	dataType = getType(data)
+
+	if dataType is Type.Class:
+		for key in data:
+			entryType = getType(data[key])
+			if entryType is Type.Date or entryType is Type.Range:
+				if heading == "":
+					timeline[key] = data[key]
+				else:
+					timeline[heading] = data[key]
+			elif entryType in compoundTypes:
+				collectDatesForTimeline(key, data[key], timeline)
+	elif dataType is Type.List or dataType is Type.Tuple:
+		for i in range(len(data)):
+			entryType = getType(data[i])
+			if entryType is Type.Date or entryType is Type.Range:
+				if i > 0:
+					timeline[data[i-1]] = data[i]
+				else:
+					timeline[heading] = data[i]
+			elif entryType in compoundTypes:
+				collectDatesForTimeline(heading + ", " + str(i), data[i], timeline)
+
+
+def exportTimelineForGUI(alot):
+	#save Dates and Ranges to a file
+	timeline = {}
+	for category in alot:
+		collectDatesForTimeline("", alot[category], timeline)
+
+	with open("timeline.txt", "w") as f:
+		for key in timeline:
+			if getType(timeline[key]) is Type.Date:
+				f.write("{} :: {}\n".format(key, timeline[key].toGUIFormat(False)).replace("'", ""))
+			else:
+				f.write("{} :: {} - {}\n".format(key, timeline[key][0].toGUIFormat(True), timeline[key][1].toGUIFormat(True)).replace("'", ""))
 
 
 def convertToDateIfAnyInTuple(tpl):
@@ -837,7 +932,7 @@ def removeParentheses(s):
 			lb = s.index('(')
 			ub = s.index(')', lb) + 1
 			s = s[:lb] + s[ub:]
-			s = s.rstrip()
+			s = s.rstrip().replace("  ", " ")
 		except:
 			return s
 
@@ -985,6 +1080,9 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 
 
 def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLevel=0):
+	if type(q) is not str:
+		q = str(q)
+
 	#if q is in the format of "<int>.", then it represents the index of a list item
 	if q[-1] == '.':
 		try:
@@ -1141,6 +1239,9 @@ def qType_FillString(q, s, difficulty, corewords, color):
 				insideParentheses = True
 			elif char == ')':
 				insideParentheses = False
+
+	if len(words) == 0:
+		words.append(0) #no words to test -> test the first coreword
 
 	if difficulty == 1:
 		nBlanks = max(len(words) // 2, 1)
@@ -1325,6 +1426,17 @@ def qType_Image(imageKey, path, learned=False):
 		return True, quit, immediately
 	else:
 		return correctAnswer, quit, immediately
+
+
+def qType_Timeline(key):
+	msgGUI("timeline " + key)
+	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
+
+	if isAnswerCorrect(answer, key):
+		return True, quit, immediately
+	else:
+		return key, quit, immediately
+
 
 
 def quizNumber(catalot, key, step, color, attribute=""):
@@ -1628,8 +1740,13 @@ def quiz(category, catalot, metacatalot, corewords):
 		else:
 			color = COLOR_LEARNED
 
-			if entryType is Type.Number or entryType is Type.Date or entryType is Type.Range:
+			if entryType is Type.Number or entryType is Type.Range:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
+			if entryType is Type.Date:
+				if random.randint(0, 1) == 0:
+					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
+				else:
+					correct, exit, immediately = qType_Timeline(key)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
 				usedGUI = True
@@ -1894,14 +2011,18 @@ def mainLoop(alot, metalot, changes):
 
 			print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+1)+'.', "exit"))
 
+			WORD_CHOICES = ["all", "exit", "timeline"]
 			choice = ""
-			while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and choice != "all" and choice != "exit":
+			while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and choice not in WORD_CHOICES:
 				choice = input('Choose a category: ')
-
 			if choice.isdigit():
 				choice = cats[int(choice)]
 
-			if choice == "all": #test all categories one by one
+			if choice == "timeline":
+				pass
+				#exportTimelineForGUI(alot)
+				#msgGUI("timeline")
+			elif choice == "all": #test all categories one by one
 				for category in alot:
 					changes[category] = quiz(category, alot[category], metalot[category], corewords)
 					keys, nNew, nLearned = getReadyKeys(metalot[category])
@@ -1960,6 +2081,8 @@ for filename in os.listdir(DIR):
 				print(str(nDel) + " deletions")
 
 #init GUI
+exportTimelineForGUI(alot)
+
 gui = subprocess.Popen(GUI)
 sleepInterval = 0.125
 

@@ -30,11 +30,11 @@ namespace AlotGUI
         List<Tuple<string, float, float>> timeline;
         int[] reservedLabelRows, reservedPeriodRows; //used to prevent overlapping labels/periods
         string questionEvent;
-        float timelineLB, timelineUB, prevTimelineLB; //left and right/lower and upper date bounds of the timeline
+        float timelineLB, timelineUB, prevTimelineLB; //lower and upper date bounds of the timeline
         float timelineNotchPeriod;
         int timelinePenWidth, timelineNotchWidth, timelineLabelFrequency, timelineMonthNotchFrequency, timelineMonthLabelFrequency;
         int prevMX, prevMY;
-        bool mouseDown;
+        bool mouseDown, concealEventName;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -78,27 +78,73 @@ namespace AlotGUI
             {
                 if (msg.Length > 8)
                 {
-                    questionEvent = msg.Substring(msg.IndexOf(' ') + 1);
+                    questionEvent = msg.Substring(9);
+
+                    if (questionEvent.Contains(" ?"))
+                    {
+                        concealEventName = true;
+                        questionEvent.Replace(" ?", "");
+                    }
+                    else
+                        concealEventName = false;
                     float questionEventDate = 0;
 
                     foreach (var entry in timeline)
                         if (entry.Item1 == questionEvent)
                         {
                             if (entry.Item3 == 0)
+                            {
                                 questionEventDate = entry.Item2;
+                                if (questionEventDate % 1 > 0.01)
+                                    timelinePenWidth = 8; //if the date specifies the month then zoom in enough to show the month labels
+                                else
+                                {
+                                    //otherwise, zoom in more for more recent events
+                                    if (questionEventDate < -1000)
+                                        timelinePenWidth = 1;
+                                    else if (questionEventDate < 0)
+                                        timelinePenWidth = 2;
+                                    else if (questionEventDate < 1000)
+                                        timelinePenWidth = 3;
+                                    else if (questionEventDate < 1400)
+                                        timelinePenWidth = 4;
+                                    else if (questionEventDate < 1700)
+                                        timelinePenWidth = 5;
+                                    else if (questionEventDate < 1900)
+                                        timelinePenWidth = 6;
+                                    else
+                                        timelinePenWidth = 7;
+                                }
+                            }
                             else
+                            {
                                 questionEventDate = (entry.Item2 + entry.Item3) / 2;
+
+                                //zoom in enough to show the whole period
+                                for (timelinePenWidth = 9; timelinePenWidth >= 1; timelinePenWidth--)
+                                {
+                                    setTimelineScale();
+                                    if (questionEventDate - convertPixelsToDate(this.ClientSize.Width / 2) < entry.Item2)
+                                        break;
+                                }
+                            }
                             break;
                         }
+
+                    if (questionEventDate == 0)
+                    {
+                        System.Media.SystemSounds.Beep.Play();
+                        updateStatus("Could not find entry: " + questionEventDate);
+                        return;
+                    }
                     
-                    timelinePenWidth = 6;
                     setTimelineScale();
                     timelineLB = questionEventDate - convertPixelsToDate(this.ClientSize.Width / 2);
                 }
                 
                 calcTimelineUB();
-                this.BackgroundImage = null;
                 mode = DisplayMode.Timeline;
+                this.BackgroundImage = null;
                 this.Refresh();
             }
             else
@@ -343,7 +389,7 @@ namespace AlotGUI
                     timelineNotchPeriod = 1;
                     timelineNotchWidth = 75;
                     timelineLabelFrequency = 1;
-                    timelineMonthNotchFrequency = -1;
+                    timelineMonthNotchFrequency = 6;
                     timelineMonthLabelFrequency = -1;
                     break;
                 case 7:
@@ -559,7 +605,9 @@ namespace AlotGUI
                             string label = entry.Item1;
                             if (entry.Item1 == questionEvent)
                             {
-                                label = "???";
+                                if (concealEventName)
+                                    label = "???";
+
                                 brush = Brushes.Purple;
                             }
 
@@ -587,7 +635,9 @@ namespace AlotGUI
                             string label = entry.Item1;
                             if (entry.Item1 == questionEvent)
                             {
-                                label = "???";
+                                if (concealEventName)
+                                    label = "???";
+
                                 brush = Brushes.Purple;
                                 color = Color.Purple;
                             }
@@ -668,7 +718,7 @@ namespace AlotGUI
             mouseDown = false;
         }
 
-        private void formMain_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void formMain_MouseWheel(object sender, MouseEventArgs e)
         {
             //calculate current year in the center of the (visible) timeline
             float timelineMid = timelineLB + convertPixelsToDate(this.ClientSize.Width / 2);

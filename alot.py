@@ -1429,14 +1429,13 @@ def qType_Image(imageKey, path, learned=False):
 
 
 def qType_Timeline(key):
-	msgGUI("timeline " + key)
+	msgGUI("timeline " + key + " ?")
 	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
 
 	if isAnswerCorrect(answer, key):
 		return True, quit, immediately
 	else:
 		return key, quit, immediately
-
 
 
 def quizNumber(catalot, key, step, color, attribute=""):
@@ -1678,7 +1677,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				#select attributes not yet learned
 				correct = {}
 				unlearnedAttributes = []
-				keepGUIActive = False
+				keepGUIActive = learnedDateAttribute = False
 
 				for attribute in entry:
 					if isLearned(step[attribute], entry[attribute]):
@@ -1690,8 +1689,17 @@ def quiz(category, catalot, metacatalot, corewords):
 							msgGUI("I {}".format(fullPath(entry[attribute])))
 							usedGUI = True
 							keepGUIActive = True
+
+						#if the class has an date and it has been learned already, show it (if there are no leaned images in the class)
+						if (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.Range) and isLearned(step[attribute], entry[attribute]):
+							learnedDateAttribute = True
 					else:
 						unlearnedAttributes.append(attribute)
+
+				if not usedGUI and learnedDateAttribute:
+					msgGUI("timeline " + key)
+					usedGUI = True
+					keepGUIActive = True
 
 				#ask a question for each unlearned attribute
 				firstQuestion = True
@@ -1761,12 +1769,20 @@ def quiz(category, catalot, metacatalot, corewords):
 				attributeType = getType(entry[attribute])
 
 				if attributeType is not Type.Image and attributeType is not Type.Diagram:
+					hasDate = False
+
 					#show class image (if any)
 					for attr in entry:
 						if getType(entry[attr]) is Type.Image:
 							msgGUI("I {}".format(fullPath(entry[attr])))
 							usedGUI = True
 							break
+						elif getType(entry[attr]) is Type.Date or getType(entry[attr]) is Type.Range:
+							hasDate = True
+
+					if not usedGUI and hasDate and attributeType is not Type.Date and attributeType is not Type.Range: #show date on the timeline
+						msgGUI("timeline " + key)
+						usedGUI = True
 
 				if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
 					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
@@ -2038,7 +2054,7 @@ def mainLoop(alot, metalot, changes):
 
 
 #MAIN
-print("Alot of Knowlege v0.9")
+print("Alot of Knowlege")
 
 init() #colorama init
 

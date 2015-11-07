@@ -83,7 +83,7 @@ namespace AlotGUI
                     if (questionEvent.Contains(" ?"))
                     {
                         concealEventName = true;
-                        questionEvent.Replace(" ?", "");
+                        questionEvent = questionEvent.Replace(" ?", "");
                     }
                     else
                         concealEventName = false;

@@ -1429,7 +1429,7 @@ def qType_Image(imageKey, path, learned=False):
 
 
 def qType_Timeline(key):
-	msgGUI("timeline " + key + " ?")
+	msgGUI("timeline " + key)
 	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
 
 	if isAnswerCorrect(answer, key):

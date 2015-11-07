@@ -1853,6 +1853,9 @@ def quiz(category, catalot, metacatalot, corewords):
 								meta["step"][attribute] += 1
 
 							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])
+						elif type(correct[attribute]) is int or type(correct[attribute]) is list:
+							meta["step"][attribute] = correct[attribute]
+							allLearned = False
 						else:
 							allLearned = False
 							anyMistakes = True

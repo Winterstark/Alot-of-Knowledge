@@ -352,6 +352,46 @@ def msgGUI(msg):
 	pipe.seek(0)
 
 
+def addNodeToFamilyTree(catalot, key, visited=[]):
+	if key not in catalot or type(catalot[key]) is not dict:
+		return ""
+	else:
+		nodeOutput = ""
+		checkNodes = []
+		visited.append(key)
+
+		if "Appearance" in catalot[key]:
+			nodeOutput += key + ", Appearance: " + fullPath(catalot[key]["Appearance"]) + "\n"
+
+		if "Parents" in catalot[key]:
+			parents = ""
+			for node in catalot[key]["Parents"]:
+				parents += node + '/'
+				checkNodes.append(node)
+
+			nodeOutput += key + ", Parents: " + parents[:-1] + "\n"
+		if "Consort" in catalot[key] and catalot[key]["Consort"] not in visited:
+			checkNodes.append(catalot[key]["Consort"])
+			nodeOutput += key + ", Consort: " + str(catalot[key]["Consort"]) + "\n"
+
+		for k in catalot:
+			if type(catalot[k]) is dict and "Parents" in catalot[k] and key in catalot[k]["Parents"] and k not in visited:
+				checkNodes.append(k)
+
+		for node in checkNodes:
+			if node not in visited:
+				nodeOutput += addNodeToFamilyTree(catalot, node)
+
+		return nodeOutput
+
+
+def exportFamilyTree(catalot, key, isQuestion):
+	if isQuestion:
+		return key + " ?\n" + addNodeToFamilyTree(catalot, key)
+	else:
+		return key + "\n" + addNodeToFamilyTree(catalot, key)
+
+
 def collectDatesForTimeline(heading, data, timeline):
 	compoundTypes = [Type.Class, Type.List, Type.Tuple]
 	dataType = getType(data)
@@ -1438,6 +1478,16 @@ def qType_Timeline(key):
 		return key, quit, immediately
 
 
+def qType_FamilyTree(catalot, key):
+	msgGUI("ftree " + exportFamilyTree(catalot, key, True))
+	answer, quit, immediately = checkForExit(input("Who (???) is highlighted in the family tree?\n> "))
+
+	if isAnswerCorrect(answer, key):
+		return True, quit, immediately
+	else:
+		return key, quit, immediately
+
+
 def quizNumber(catalot, key, step, color, attribute=""):
 	if step == 1:
 		if attribute != "":
@@ -1765,51 +1815,60 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:
-				attribute = random.choice(list(entry.keys()))
-				attributeType = getType(entry[attribute])
+				nFTreeAttributes = 0
+				if "Parents" in entry:
+					nFTreeAttributes += 1
+				if "Consort" in entry:
+					nFTreeAttributes += 1
 
-				if attributeType is not Type.Image and attributeType is not Type.Diagram:
-					hasDate = False
+				if random.randint(0, nFTreeAttributes) > 0:
+					correct, exit, immediately = qType_FamilyTree(catalot, key)
+				else:
+					attribute = random.choice(list(entry.keys()))
+					attributeType = getType(entry[attribute])
 
-					#show class image (if any)
-					for attr in entry:
-						if getType(entry[attr]) is Type.Image:
-							msgGUI("I {}".format(fullPath(entry[attr])))
+					if attributeType is not Type.Image and attributeType is not Type.Diagram:
+						hasDate = False
+
+						#show class image (if any)
+						for attr in entry:
+							if getType(entry[attr]) is Type.Image:
+								msgGUI("I {}".format(fullPath(entry[attr])))
+								usedGUI = True
+								break
+							elif getType(entry[attr]) is Type.Date or getType(entry[attr]) is Type.Range:
+								hasDate = True
+
+						if not usedGUI and hasDate and attributeType is not Type.Date and attributeType is not Type.Range: #show date on the timeline
+							msgGUI("timeline " + key)
 							usedGUI = True
-							break
-						elif getType(entry[attr]) is Type.Date or getType(entry[attr]) is Type.Range:
-							hasDate = True
 
-					if not usedGUI and hasDate and attributeType is not Type.Date and attributeType is not Type.Range: #show date on the timeline
-						msgGUI("timeline " + key)
+					if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
+						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
+					elif attributeType is Type.Diagram:
+						msgGUI("I {}".format(fullPath(entry[attribute][0])))
 						usedGUI = True
+						if random.randint(0, 1) == 0:
+							correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), learned=True)
+						else:
+							correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
+					elif attributeType is Type.Image:
+						usedGUI = True
+						correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
+					elif attributeType is Type.String:
+						correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
+					elif attributeType is Type.List:
+						qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
-				if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
-					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
-				elif attributeType is Type.Diagram:
-					msgGUI("I {}".format(fullPath(entry[attribute][0])))
-					usedGUI = True
-					if random.randint(0, 1) == 0:
-						correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), learned=True)
-					else:
-						correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
-				elif attributeType is Type.Image:
-					usedGUI = True
-					correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
-				elif attributeType is Type.String:
-					correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
-				elif attributeType is Type.List:
-					qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
-
-					if qType is quizList:	
-						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), True)
-					else:
-						correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
-				elif attributeType is Type.Set:
-					if random.randint(0, 1) == 0:
-						correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color)
-					else:
-						correct, exit, immediately = qType_RecognizeList(key + ", " + attribute, entry[attribute], color)
+						if qType is quizList:	
+							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), True)
+						else:
+							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
+					elif attributeType is Type.Set:
+						if random.randint(0, 1) == 0:
+							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color)
+						else:
+							correct, exit, immediately = qType_RecognizeList(key + ", " + attribute, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 				qType = quizList
@@ -2118,6 +2177,16 @@ while "pipe" not in locals():
 
 print("\r\t\t\t\t\t\t\t\t\t", end="") #erase previous line
 print("\rEstablished connection to AlotGUI.")
+
+ttt = "ftree " + exportFamilyTree(alot["mythology"], "Osiris", True)
+
+print(ttt)
+with open("ttt.txt", "w") as f:
+	f.write(ttt)
+
+msgGUI(ttt)
+input()
+sys.exit(0)
 
 #show "main menu"
 try:

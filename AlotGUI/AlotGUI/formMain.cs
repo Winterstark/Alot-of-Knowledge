@@ -16,16 +16,18 @@ namespace AlotGUI
         const string TIMELINE_PATH = @"C:\dev\scripts\Alot of Knowledge\timeline.txt";
         readonly string[] MONTHS = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
-        enum DisplayMode {Logo, Image, Mosaic, Timeline};
+        enum DisplayMode { Logo, Image, Mosaic, Timeline, FamilyTree };
         DisplayMode mode;
 
         BackgroundWorker pipeWorker;
         delegate void SetTextCallback(string text);
 
+        //image globals
         Image logo;
         string[] imgs, multipleChoiceImages;
         int imgIndex, correctAnswer;
 
+        //timeline globals
         Font labelFont, labelMonthFont;
         List<Tuple<string, float, float>> timeline;
         int[] reservedLabelRows, reservedPeriodRows; //used to prevent overlapping labels/periods
@@ -34,7 +36,19 @@ namespace AlotGUI
         float timelineNotchPeriod;
         int timelinePenWidth, timelineNotchWidth, timelineLabelFrequency, timelineMonthNotchFrequency, timelineMonthLabelFrequency;
         int prevMX, prevMY;
-        bool mouseDown, concealEventName;
+        bool mouseDown, concealQuestionEvent;
+
+        //family tree globals
+        const int NODE_IMAGE_HEIGHT = 150;
+
+        Dictionary<int, int[]> reservedNodeRows, reservedLineRows; //used to prevent overlapping nodes/lines
+        Dictionary<int, string[]> reservedLineRowsBorders; //tracks to which parent a line leads
+        Dictionary<string, Image> nodeImages;
+        Font nodeFont;
+        string[,] tree;
+        string questionNode;
+        int treeX, treeY;
+        bool concealQuestionNode;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -62,7 +76,7 @@ namespace AlotGUI
                     break;
                 }
             }
-            
+
             server.Close();
             server.Dispose();
         }
@@ -74,6 +88,49 @@ namespace AlotGUI
                 this.BackgroundImage = logo;
                 mode = DisplayMode.Logo;
             }
+            else if (msg.Contains("ftree"))
+            {
+                string args = msg.Substring(6);
+                if (args.Contains(" ?"))
+                {
+                    concealQuestionNode = true;
+                    args = args.Replace(" ?", "");
+                }
+
+                questionNode = args.Substring(0, args.IndexOf('\n'));
+                List<string> treeLines = new List<string>(args.Substring(args.IndexOf('\n') + 1).Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+
+                nodeImages = new Dictionary<string, Image>();
+                foreach (string line in treeLines)
+                    if (line.Contains(", Appearance: "))
+                    {
+                        string node = line.Substring(0, line.IndexOf(", "));
+                        string imgPath = line.Substring(line.IndexOf(": ") + 2);
+
+                        Image img = Bitmap.FromFile(imgPath);
+                        nodeImages.Add(node, new Bitmap(img, img.Width * NODE_IMAGE_HEIGHT / img.Height, NODE_IMAGE_HEIGHT));
+                        img.Dispose();
+                    }
+
+                treeLines.RemoveAll(l => l.Contains(", Appearance: "));
+                tree = new string[treeLines.Count, 3];
+                for (int i = 0; i < treeLines.Count; i++)
+                {
+                    int sep1 = treeLines[i].IndexOf(", ");
+                    int sep2 = treeLines[i].IndexOf(": ");
+
+                    tree[i, 0] = treeLines[i].Substring(0, sep1);
+                    tree[i, 1] = treeLines[i].Substring(sep1 + 2, sep2 - sep1 - 2);
+                    tree[i, 2] = treeLines[i].Substring(sep2 + 2);
+                }
+
+                treeX = this.ClientSize.Width / 2;
+                treeY = this.ClientSize.Height / 2;
+
+                mode = DisplayMode.FamilyTree;
+                this.BackgroundImage = null;
+                this.Refresh();
+            }
             else if (msg.Contains("timeline"))
             {
                 if (msg.Length > 8)
@@ -82,11 +139,11 @@ namespace AlotGUI
 
                     if (questionEvent.Contains(" ?"))
                     {
-                        concealEventName = true;
+                        concealQuestionEvent = true;
                         questionEvent = questionEvent.Replace(" ?", "");
                     }
                     else
-                        concealEventName = false;
+                        concealQuestionEvent = false;
                     float questionEventDate = 0;
 
                     foreach (var entry in timeline)
@@ -137,11 +194,11 @@ namespace AlotGUI
                         updateStatus("Could not find entry: " + questionEventDate);
                         return;
                     }
-                    
+
                     setTimelineScale();
                     timelineLB = questionEventDate - convertPixelsToDate(this.ClientSize.Width / 2);
                 }
-                
+
                 calcTimelineUB();
                 mode = DisplayMode.Timeline;
                 this.BackgroundImage = null;
@@ -264,6 +321,7 @@ namespace AlotGUI
                 lblStatus.Text = status;
         }
 
+        #region Mosaic
         Bitmap combineImages(string[] files)
         {
             Image[] visuals = new Bitmap[files.Length];
@@ -332,7 +390,9 @@ namespace AlotGUI
 
             return false;
         }
-        
+        #endregion
+
+        #region Timeline
         bool dateVisibleOnScreen(float date1, float date2)
         {
             if (date2 == 0)
@@ -345,7 +405,7 @@ namespace AlotGUI
                     return date1 < timelineUB;
             }
         }
-        
+
         void setTimelineScale()
         {
             switch (timelinePenWidth)
@@ -416,6 +476,7 @@ namespace AlotGUI
             }
 
             labelFont = new Font(FontFamily.GenericSansSerif, 7 + timelinePenWidth);
+            nodeFont = new Font(FontFamily.GenericSansSerif, 14);
 
             //calculate how many rows of labels there is room for
             int rowH = (int)this.CreateGraphics().MeasureString("A", labelFont).Height;
@@ -449,7 +510,7 @@ namespace AlotGUI
         {
             return x * (float)timelineNotchPeriod / timelineNotchWidth;
         }
-        
+
         float mod(float x, float m)
         {
             x %= m;
@@ -458,7 +519,7 @@ namespace AlotGUI
 
             return x;
         }
-        
+
         void drawMonthNotches(Graphics gfx, float x)
         {
             if (timelineMonthNotchFrequency != -1)
@@ -473,7 +534,7 @@ namespace AlotGUI
                     else if (monthNotchesSincePrevLabel == timelineMonthLabelFrequency - 1)
                     {
                         gfx.DrawLine(new Pen(Color.Black, timelinePenWidth), monthX, this.ClientSize.Height / 2 - timelinePenWidth, monthX, this.ClientSize.Height / 2 + timelinePenWidth);
-                        
+
                         float labelX = monthX - gfx.MeasureString(MONTHS[monthInd], labelMonthFont).Width / 2;
                         if (labelX >= 0)
                             gfx.DrawString(MONTHS[monthInd], labelMonthFont, Brushes.Black, labelX, this.ClientSize.Height / 2 + 10 + timelinePenWidth);
@@ -487,6 +548,308 @@ namespace AlotGUI
                     }
             }
         }
+        #endregion
+
+        #region FamilyTree
+        SizeF drawFamilyTreeNode(Graphics gfx, string node, int x, int y, out int nodeX, List<string> visitedNodes, Dictionary<string, Point> parentNodes)
+        {
+            visitedNodes.Add(node);
+
+            //draw node
+            SizeF nodeLabelSize;
+            if (node != questionNode || !concealQuestionNode)
+            {
+                nodeLabelSize = drawCenteredNodeLabel(gfx, node, ref x, y);
+
+                if (nodeImages.ContainsKey(node))
+                    gfx.DrawImageUnscaled(nodeImages[node], x - nodeImages[node].Width / 2, y + (int)nodeLabelSize.Height / 2 + 10);
+            }
+            else
+                nodeLabelSize = drawCenteredNodeLabel(gfx, "???", ref x, y);
+            nodeX = x;
+
+            //check for consort
+            string[] consorts = getNodeRelatives(node, "Consort");
+            string nodeConsortCouple;
+            if (consorts.Length == 0)
+            {
+                nodeConsortCouple = node;
+                if (!parentNodes.ContainsKey(nodeConsortCouple))
+                    parentNodes.Add(nodeConsortCouple, new Point(x, y + (int)nodeLabelSize.Height / 2 + 10));
+            }
+            else
+            {
+                string consort = consorts[0];
+                nodeConsortCouple = createCouple(new string[] { node, consort });
+                if (!parentNodes.ContainsKey(nodeConsortCouple))
+                    parentNodes.Add(nodeConsortCouple, new Point(x + 75, y));
+
+                if (!visitedNodes.Contains(consort))
+                {
+                    int consortNodeX;
+                    SizeF consortLabelSize = drawFamilyTreeNode(gfx, consort, x + 150, y, out consortNodeX, visitedNodes, parentNodes);
+                    gfx.DrawLine(new Pen(getCoupleColor(nodeConsortCouple, 255), 2), x + nodeLabelSize.Width / 2 + 10, y, x + 150 - 10 - consortLabelSize.Width / 2, y);
+                }
+            }
+
+            //check for parents
+            string[] parents = getNodeRelatives(node, "Parents");
+            if (parents.Length > 0)
+            {
+                string parentCouple = createCouple(parents);
+                bool visitedAnyParent = false;
+                foreach (string parent in parents)
+                    visitedAnyParent |= visitedNodes.Contains(parent);
+
+                if (!visitedAnyParent || !parentNodes.ContainsKey(parentCouple))
+                {
+                    int parentNodeX;
+
+                    if (parents.Length == 1)
+                    {
+                        SizeF parentLabelSize = drawFamilyTreeNode(gfx, parents[0], x, y - 300, out parentNodeX, visitedNodes, parentNodes);
+                        if (!parentNodes.ContainsKey(parentCouple))
+                            parentNodes.Add(parentCouple, new Point(parentNodeX, y - 300 + (int)parentLabelSize.Height / 2 + 10));
+                    }
+                    else
+                    {
+                        drawFamilyTreeNode(gfx, parents[0], x - 75, y - 300, out parentNodeX, visitedNodes, parentNodes);
+                        if (!parentNodes.ContainsKey(parentCouple))
+                            parentNodes.Add(parentCouple, new Point(parentNodeX + 75, y - 300));
+                    }
+                }
+
+                connectParentToChild(gfx, parentNodes[parentCouple], new Point(x, y - (int)nodeLabelSize.Height / 2 - 10), parentCouple, node, nodeLabelSize);
+            }
+
+            //check for children
+            string[] children = getNodeRelatives(node, "Children");
+            foreach (string child in children)
+                if (!visitedNodes.Contains(child))
+                {
+                    int tmp;
+                    SizeF childLabelSize = drawFamilyTreeNode(gfx, child, x, y + 300, out tmp, visitedNodes, parentNodes);
+                }
+
+            return nodeLabelSize;
+        }
+
+        SizeF drawCenteredNodeLabel(Graphics gfx, string label, ref int x, int y)
+        {
+            SizeF labelSize = gfx.MeasureString(label, nodeFont);
+
+            int x1 = x - (int)labelSize.Width / 2;
+            int x2 = x + (int)labelSize.Width / 2;
+            reserveRow(ref y, ref x1, ref x2, 100, true, "");
+            x = (x1 + x2) / 2;
+
+            if (label == "???")
+                gfx.DrawString(label, nodeFont, Brushes.Purple, x - labelSize.Width / 2, y - labelSize.Height / 2);
+            else
+                gfx.DrawString(label, nodeFont, Brushes.Black, x - labelSize.Width / 2, y - labelSize.Height / 2);
+
+            return labelSize;
+        }
+
+        void connectParentToChild(Graphics gfx, Point p1, Point p2, string parentCouple, string childNode, SizeF childNodeLabelSize)
+        {
+            Color lineColor = getCoupleColor(parentCouple, 128);
+            Pen linePen = new Pen(lineColor, 2);
+
+            if (p1.Y < p2.Y)
+            {
+                //the parents are above the child
+                int midY = p1.Y + NODE_IMAGE_HEIGHT + 40;
+                int x1 = p1.X, x2 = p2.X;
+                reserveRow(ref midY, ref x1, ref x2, 10, false, parentCouple);
+
+                Point mid1 = new Point(p1.X, midY);
+                Point mid2 = new Point(p2.X, midY);
+
+                gfx.DrawLine(linePen, p1, mid1);
+                gfx.DrawLine(linePen, mid1, mid2);
+                gfx.DrawLine(linePen, mid2, p2);
+            }
+            else
+            {
+                //the parents are on the same level as the child
+                int extraW;
+                if (nodeImages.ContainsKey(childNode))
+                    extraW = nodeImages[childNode].Width / 2 + 10;
+                else
+                    extraW = (int)childNodeLabelSize.Width / 2 + 10;
+
+                int midY = p1.Y + NODE_IMAGE_HEIGHT + 30;
+                int x1 = p1.X, x2 = p2.X + extraW;
+                reserveRow(ref midY, ref x1, ref x2, 10, false, parentCouple);
+
+                Point mid1 = new Point(p1.X, midY);
+                Point mid2 = new Point(p2.X + extraW, midY);
+                Point mid3 = new Point(p2.X + extraW, p2.Y - 10);
+                Point mid4 = new Point(p2.X, p2.Y - 10);
+
+                gfx.DrawLine(linePen, p1, mid1);
+                gfx.DrawLine(linePen, mid1, mid2);
+                gfx.DrawLine(linePen, mid2, mid3);
+                gfx.DrawLine(linePen, mid3, mid4);
+                gfx.DrawLine(linePen, mid4, p2);
+            }
+        }
+
+        string[] getNodeRelatives(string node, string relation)
+        {
+            List<string> results = new List<string>();
+            string relationQuery = relation;
+            if (relation == "Children")
+                relationQuery = "Parents";
+
+            bool breakForLoop = false;
+            for (int i = 0; i < tree.Length / 3 && !breakForLoop; i++)
+                if (tree[i, 1] == relationQuery)
+                {
+                    switch (relation)
+                    {
+                        case "Parents":
+                            if (tree[i, 0] == node)
+                            {
+                                foreach (string parent in tree[i, 2].Split('/'))
+                                    results.Add(parent);
+                                breakForLoop = true;
+                            }
+                            break;
+                        case "Consort":
+                            if (tree[i, 0] == node)
+                            {
+                                results.Add(tree[i, 2]);
+                                breakForLoop = true;
+                            }
+                            if (tree[i, 2] == node)
+                            {
+                                results.Add(tree[i, 0]);
+                                breakForLoop = true;
+                            }
+                            break;
+                        case "Children":
+                            if (new List<string>(tree[i, 2].Split('/')).Contains(node))
+                                results.Add(tree[i, 0]);
+                            break;
+                    }
+                }
+
+            return results.ToArray();
+        }
+
+        string createCouple(string[] nodes)
+        {
+            if (nodes.Length == 0)
+                return "";
+            else if (nodes.Length == 1)
+                return nodes[0];
+            else if (nodes[0].CompareTo(nodes[1]) < 0)
+                return nodes[0] + "/" + nodes[1];
+            else
+                return nodes[1] + "/" + nodes[0];
+        }
+
+        Color getCoupleColor(string couple, int alpha)
+        {
+            return Color.FromArgb(alpha, Color.FromArgb(couple.GetHashCode()));
+        }
+
+        void reserveRow(ref int y, ref int x1, ref int x2, int margin, bool node, string parentCouple)
+        {
+            if (x1 > x2)
+            {
+                int tmp = x1;
+                x1 = x2;
+                x2 = tmp;
+            }
+
+            int dx = x2 - x1;
+
+            Dictionary<int, int[]> reserved;
+            if (node)
+                reserved = reservedNodeRows;
+            else
+                reserved = reservedLineRows;
+
+            if (!reserved.ContainsKey(y))
+            {
+                reserved.Add(y, new int[] { x1, x2 });
+                if (!node)
+                    reservedLineRowsBorders.Add(y, new string[] { parentCouple, parentCouple });
+            }
+            else
+            {
+                //if this NODE overlaps with reserved space, move it to the left or right
+                //if this LINE overlaps with reserved space, move it down
+                if ((x1 + x2) / 2 < (reserved[y][0] + reserved[y][1]) / 2)
+                {
+                    if (x2 + margin > reserved[y][0] && (node || reservedLineRowsBorders[y][0] != parentCouple)) //disregard any overlaps if the reserved line leads to the same parent
+                    {
+                        if (node)
+                        {
+                            x2 = reserved[y][0] - margin;
+                            x1 = x2 - dx;
+                            reserved[y][0] = x1;
+                        }
+                        else
+                        {
+                            do
+                                y += margin;
+                            while (reserved.ContainsKey(y) && reservedLineRowsBorders[y][0] != parentCouple);
+                            
+                            if (reserved.ContainsKey(y))
+                                reservedLineRowsBorders[y][0] = parentCouple;
+                            else
+                            {
+                                reserved.Add(y, new int[] { x1, x2 });
+                                reservedLineRowsBorders.Add(y, new string[] { parentCouple, parentCouple });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        reserved[y][0] = x1;
+                        if (!node)
+                            reservedLineRowsBorders[y][0] = parentCouple;
+                    }
+                }
+                else
+                {
+                    if (x1 - margin < reserved[y][1] && (node || reservedLineRowsBorders[y][1] != parentCouple)) //disregard any overlaps if the reserved line leads to the same parent
+                    {
+                        if (node)
+                        {
+                            x1 = reserved[y][1] + margin;
+                            x2 = x1 + dx;
+                            reserved[y][1] = x2;
+                        }
+                        else
+                        {
+                            do
+                                y += margin;
+                            while (reserved.ContainsKey(y) && reservedLineRowsBorders[y][1] != parentCouple);
+                            
+                            if (reserved.ContainsKey(y))
+                                reservedLineRowsBorders[y][1] = parentCouple;
+                            else
+                            {
+                                reserved.Add(y, new int[] { x1, x2 });
+                                reservedLineRowsBorders.Add(y, new string[] { parentCouple, parentCouple });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        reserved[y][1] = x2;
+                        if (!node)
+                            reservedLineRowsBorders[y][1] = parentCouple;
+                    }
+                }
+            }
+        }
+        #endregion
 
 
         public formMain()
@@ -498,7 +861,7 @@ namespace AlotGUI
         {
             //init variables
             mode = DisplayMode.Image;
-            
+
             timelinePenWidth = 1;
             timelineLB = 0;
 
@@ -539,7 +902,7 @@ namespace AlotGUI
 
                 float date1 = float.Parse(dates[0].Replace('.', ',')), date2;
                 if (dates.Length == 1)
-                    date2 = 0; 
+                    date2 = 0;
                 else
                     date2 = float.Parse(dates[1].Replace('.', ','));
 
@@ -557,113 +920,123 @@ namespace AlotGUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (mode == DisplayMode.Timeline)
+            switch (mode)
             {
-                e.Graphics.DrawLine(new Pen(Color.Black, timelinePenWidth), 0, this.ClientSize.Height / 2, this.ClientSize.Width, this.ClientSize.Height / 2);
+                case DisplayMode.Timeline:
+                    e.Graphics.DrawLine(new Pen(Color.Black, timelinePenWidth), 0, this.ClientSize.Height / 2, this.ClientSize.Width, this.ClientSize.Height / 2);
 
-                //draw notches and date labels
-                float dateOffset = mod(timelineLB, timelineNotchPeriod);
-                if (dateOffset != 0)
-                    dateOffset = timelineNotchPeriod - dateOffset;
-                float labelDate = timelineLB + dateOffset;
-                int notchesSincePrevLabel = (int)Math.Ceiling((double)mod(timelineLB, timelineNotchPeriod * timelineLabelFrequency) / timelineNotchPeriod) - 1;
-                
-                drawMonthNotches(e.Graphics, dateOffset * timelineNotchWidth / timelineNotchPeriod - timelineNotchWidth);
+                    //draw notches and date labels
+                    float dateOffset = mod(timelineLB, timelineNotchPeriod);
+                    if (dateOffset != 0)
+                        dateOffset = timelineNotchPeriod - dateOffset;
+                    float labelDate = timelineLB + dateOffset;
+                    int notchesSincePrevLabel = (int)Math.Ceiling((double)mod(timelineLB, timelineNotchPeriod * timelineLabelFrequency) / timelineNotchPeriod) - 1;
 
-                for (float x = dateOffset * timelineNotchWidth / timelineNotchPeriod; x < this.ClientSize.Width; x += timelineNotchWidth)
-                {
-                    if (notchesSincePrevLabel == timelineLabelFrequency - 1)
+                    drawMonthNotches(e.Graphics, dateOffset * timelineNotchWidth / timelineNotchPeriod - timelineNotchWidth);
+
+                    for (float x = dateOffset * timelineNotchWidth / timelineNotchPeriod; x < this.ClientSize.Width; x += timelineNotchWidth)
                     {
-                        e.Graphics.DrawLine(new Pen(Color.Black, timelinePenWidth), x, this.ClientSize.Height / 2 - timelinePenWidth * 2, x, this.ClientSize.Height / 2 + timelinePenWidth * 2);
-                        e.Graphics.DrawString(labelDate.ToString(), labelFont, Brushes.Black, x - e.Graphics.MeasureString(labelDate.ToString(), labelFont).Width / 2, this.ClientSize.Height / 2 + 10 + timelinePenWidth);
-                        notchesSincePrevLabel = 0;
-                    }
-                    else
-                    {
-                        e.Graphics.DrawLine(new Pen(Color.Black, timelinePenWidth), x, this.ClientSize.Height / 2 - timelinePenWidth, x, this.ClientSize.Height / 2 + timelinePenWidth);
-                        notchesSincePrevLabel++;
-                    }
-
-                    drawMonthNotches(e.Graphics, x);
-
-                    labelDate += timelineNotchPeriod;
-                }
-
-                //draw dates
-                for (int i = 0; i < reservedLabelRows.Length; i++)
-                    reservedLabelRows[i] = -100;
-                for (int i = 0; i < reservedPeriodRows.Length; i++)
-                    reservedPeriodRows[i] = -100;
-
-                foreach (var entry in timeline)
-                {
-                    if (dateVisibleOnScreen(entry.Item2, entry.Item3))
-                    {
-                        if (entry.Item3 == 0)
+                        if (notchesSincePrevLabel == timelineLabelFrequency - 1)
                         {
-                            Brush brush = Brushes.RoyalBlue;
-                            string label = entry.Item1;
-                            if (entry.Item1 == questionEvent)
-                            {
-                                if (concealEventName)
-                                    label = "???";
-
-                                brush = Brushes.Purple;
-                            }
-
-                            int x = convertDateToPixels(entry.Item2);
-                            float dotSize = 5 + (float)timelinePenWidth;
-                            e.Graphics.FillEllipse(brush, x - dotSize / 2, this.ClientSize.Height / 2 - dotSize / 2, dotSize, dotSize);
-                            SizeF labelSize = e.Graphics.MeasureString(label, labelFont);
-
-                            //locate the first available label row
-                            int row = 0;
-                            for (; row < reservedLabelRows.Length; row++)
-                                if (reservedLabelRows[row] + 10 + timelinePenWidth <= x - labelSize.Width / 2)
-                                    break;
-
-                            if (row < reservedLabelRows.Length)
-                            {
-                                e.Graphics.DrawString(label, labelFont, brush, x - labelSize.Width / 2, this.ClientSize.Height / 2 - 10 - timelinePenWidth - labelSize.Height * (1 + row));
-                                reservedLabelRows[row] = x + (int)(labelSize.Width / 2);
-                            }
+                            e.Graphics.DrawLine(new Pen(Color.Black, timelinePenWidth), x, this.ClientSize.Height / 2 - timelinePenWidth * 2, x, this.ClientSize.Height / 2 + timelinePenWidth * 2);
+                            e.Graphics.DrawString(labelDate.ToString(), labelFont, Brushes.Black, x - e.Graphics.MeasureString(labelDate.ToString(), labelFont).Width / 2, this.ClientSize.Height / 2 + 10 + timelinePenWidth);
+                            notchesSincePrevLabel = 0;
                         }
                         else
                         {
-                            Brush brush = Brushes.SeaGreen;
-                            Color color = Color.SeaGreen;
-                            string label = entry.Item1;
-                            if (entry.Item1 == questionEvent)
-                            {
-                                if (concealEventName)
-                                    label = "???";
+                            e.Graphics.DrawLine(new Pen(Color.Black, timelinePenWidth), x, this.ClientSize.Height / 2 - timelinePenWidth, x, this.ClientSize.Height / 2 + timelinePenWidth);
+                            notchesSincePrevLabel++;
+                        }
 
-                                brush = Brushes.Purple;
-                                color = Color.Purple;
+                        drawMonthNotches(e.Graphics, x);
+
+                        labelDate += timelineNotchPeriod;
+                    }
+
+                    //draw dates
+                    for (int i = 0; i < reservedLabelRows.Length; i++)
+                        reservedLabelRows[i] = -100;
+                    for (int i = 0; i < reservedPeriodRows.Length; i++)
+                        reservedPeriodRows[i] = -100;
+
+                    foreach (var entry in timeline)
+                    {
+                        if (dateVisibleOnScreen(entry.Item2, entry.Item3))
+                        {
+                            if (entry.Item3 == 0)
+                            {
+                                Brush brush = Brushes.RoyalBlue;
+                                string label = entry.Item1;
+                                if (entry.Item1 == questionEvent)
+                                {
+                                    if (concealQuestionEvent)
+                                        label = "???";
+
+                                    brush = Brushes.Purple;
+                                }
+
+                                int x = convertDateToPixels(entry.Item2);
+                                float dotSize = 5 + (float)timelinePenWidth;
+                                e.Graphics.FillEllipse(brush, x - dotSize / 2, this.ClientSize.Height / 2 - dotSize / 2, dotSize, dotSize);
+                                SizeF labelSize = e.Graphics.MeasureString(label, labelFont);
+
+                                //locate the first available label row
+                                int row = 0;
+                                for (; row < reservedLabelRows.Length; row++)
+                                    if (reservedLabelRows[row] + 10 + timelinePenWidth <= x - labelSize.Width / 2)
+                                        break;
+
+                                if (row < reservedLabelRows.Length)
+                                {
+                                    e.Graphics.DrawString(label, labelFont, brush, x - labelSize.Width / 2, this.ClientSize.Height / 2 - 10 - timelinePenWidth - labelSize.Height * (1 + row));
+                                    reservedLabelRows[row] = x + (int)(labelSize.Width / 2);
+                                }
                             }
-
-                            int x1 = convertDateToPixels(entry.Item2), x2 = convertDateToPixels(entry.Item3);
-                            SizeF labelSize = e.Graphics.MeasureString(label, labelFont);
-                            int labelX = (int)((x1 + x2) / 2 - labelSize.Width / 2);
-
-                            //locate the first available timeline row
-                            int row = 0;
-                            for (; row < reservedPeriodRows.Length; row++)
-                                if (reservedPeriodRows[row] + 10 + timelinePenWidth <= Math.Min(x1, labelX))
-                                    break;
-
-                            if (row < reservedPeriodRows.Length)
+                            else
                             {
-                                int y = (int)(this.ClientSize.Height / 2 + 10 + timelinePenWidth + labelSize.Height * 1.5f * (1 + row));
+                                Brush brush = Brushes.SeaGreen;
+                                Color color = Color.SeaGreen;
+                                string label = entry.Item1;
+                                if (entry.Item1 == questionEvent)
+                                {
+                                    if (concealQuestionEvent)
+                                        label = "???";
 
-                                e.Graphics.DrawLine(new Pen(color, timelinePenWidth / 2), x1, y, x2, y);
-                                e.Graphics.DrawString(label, labelFont, brush, labelX, y);
+                                    brush = Brushes.Purple;
+                                    color = Color.Purple;
+                                }
 
-                                reservedPeriodRows[row] = Math.Max(x2, labelX + (int)labelSize.Width);
+                                int x1 = convertDateToPixels(entry.Item2), x2 = convertDateToPixels(entry.Item3);
+                                SizeF labelSize = e.Graphics.MeasureString(label, labelFont);
+                                int labelX = (int)((x1 + x2) / 2 - labelSize.Width / 2);
+
+                                //locate the first available timeline row
+                                int row = 0;
+                                for (; row < reservedPeriodRows.Length; row++)
+                                    if (reservedPeriodRows[row] + 10 + timelinePenWidth <= Math.Min(x1, labelX))
+                                        break;
+
+                                if (row < reservedPeriodRows.Length)
+                                {
+                                    int y = (int)(this.ClientSize.Height / 2 + 10 + timelinePenWidth + labelSize.Height * 1.5f * (1 + row));
+
+                                    e.Graphics.DrawLine(new Pen(color, timelinePenWidth / 2), x1, y, x2, y);
+                                    e.Graphics.DrawString(label, labelFont, brush, labelX, y);
+
+                                    reservedPeriodRows[row] = Math.Max(x2, labelX + (int)labelSize.Width);
+                                }
                             }
                         }
                     }
-                }
+                    break;
+                case DisplayMode.FamilyTree:
+                    reservedNodeRows = new Dictionary<int, int[]>();
+                    reservedLineRows = new Dictionary<int, int[]>();
+                    reservedLineRowsBorders = new Dictionary<int, string[]>();
+                    int temp;
+
+                    drawFamilyTreeNode(e.Graphics, questionNode, treeX, treeY, out temp, new List<string>(), new Dictionary<string, Point>());
+                    break;
             }
         }
 
@@ -703,12 +1076,20 @@ namespace AlotGUI
         {
             if (mouseDown)
             {
-                if (mode == DisplayMode.Timeline)
+                switch (mode)
                 {
-                    timelineLB = prevTimelineLB - convertPixelsToDate(e.X - prevMX);
-                    calcTimelineUB();
-                    this.Text = timelineLB.ToString();
-                    this.Invalidate();
+                    case DisplayMode.Timeline:
+                        timelineLB = prevTimelineLB - convertPixelsToDate(e.X - prevMX);
+                        calcTimelineUB();
+                        this.Invalidate();
+                        break;
+                    case DisplayMode.FamilyTree:
+                        treeX += e.X - prevMX;
+                        treeY += e.Y - prevMY;
+                        prevMX = e.X;
+                        prevMY = e.Y;
+                        this.Invalidate();
+                        break;
                 }
             }
         }
@@ -722,7 +1103,7 @@ namespace AlotGUI
         {
             //calculate current year in the center of the (visible) timeline
             float timelineMid = timelineLB + convertPixelsToDate(this.ClientSize.Width / 2);
-            
+
             //change scale
             timelinePenWidth = Math.Min(Math.Max(timelinePenWidth + e.Delta / 120, 1), 9);
             setTimelineScale();

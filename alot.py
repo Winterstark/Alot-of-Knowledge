@@ -1469,7 +1469,7 @@ def qType_Image(imageKey, path, learned=False):
 
 
 def qType_Timeline(key):
-	msgGUI("timeline " + key)
+	msgGUI("timeline " + key + " ?")
 	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
 
 	if isAnswerCorrect(answer, key):
@@ -1702,6 +1702,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 
 		key = random.choice(ready)
+		key = "Suez canal"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]

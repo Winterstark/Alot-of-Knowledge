@@ -1843,8 +1843,13 @@ def quiz(category, catalot, metacatalot, corewords):
 							msgGUI("timeline " + key)
 							usedGUI = True
 
-					if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
+					if attributeType is Type.Number or attributeType is Type.Range:
 						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
+					elif attributeType is Type.Date:
+						if random.randint(0, 1) == 0:
+							correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
+						else:
+							correct, exit, immediately = qType_Timeline(entry[attribute])
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
 						usedGUI = True
@@ -2177,16 +2182,6 @@ while "pipe" not in locals():
 
 print("\r\t\t\t\t\t\t\t\t\t", end="") #erase previous line
 print("\rEstablished connection to AlotGUI.")
-
-ttt = "ftree " + exportFamilyTree(alot["mythology"], "Osiris", True)
-
-print(ttt)
-with open("ttt.txt", "w") as f:
-	f.write(ttt)
-
-msgGUI(ttt)
-input()
-sys.exit(0)
 
 #show "main menu"
 try:

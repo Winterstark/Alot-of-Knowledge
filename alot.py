@@ -1702,7 +1702,6 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 
 		key = random.choice(ready)
-		key = "Suez canal"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]

@@ -21,6 +21,10 @@ This project is not meant to reach Wordy's scale and user-friendliness - for exa
 
 ![Alot screenshot 2](http://i.imgur.com/OF0mfhL.png)
 
+![Alot, family tree](http://i.imgur.com/jz3Zg9E.png)
+
+![Alot, timeline](http://i.imgur.com/WKIBoLm.png)
+
 
 Credits
 --------

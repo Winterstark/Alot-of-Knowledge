@@ -11,6 +11,61 @@ namespace AlotGUI
 {
     public partial class formMain : Form
     {
+        class TimelineEvent
+        {
+            public static readonly int TIMELINE_IMAGE_HEIGHT = 100;
+
+            public string Name, EntryKey;
+            public float Date1, Date2;
+            public Image Img;
+            public bool IsPeriod;
+
+            public TimelineEvent(string line)
+            {
+                string[] keyValuePair = line.Split(new string[] { " :: " }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = keyValuePair[1].Split(new string[] { " // " }, StringSplitOptions.None);
+                string[] dates = values[0].Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+
+                Name = keyValuePair[0];
+                EntryKey = values[1];
+
+                if (Directory.Exists(values[2]))
+                    values[2] = Directory.GetFiles(values[2])[0];
+                if (File.Exists(values[2]))
+                {
+                    Image fullSizeImg = Bitmap.FromFile(values[2]);
+                    Img = new Bitmap(fullSizeImg, fullSizeImg.Width * TIMELINE_IMAGE_HEIGHT / fullSizeImg.Height, TIMELINE_IMAGE_HEIGHT);
+                    fullSizeImg.Dispose();
+                }
+                
+                Date1 = float.Parse(dates[0].Replace('.', ','));
+                if (dates.Length == 1)
+                {
+                    Date2 = 0;
+                    IsPeriod = false;
+                }
+                else
+                {
+                    Date2 = float.Parse(dates[1].Replace('.', ','));
+                    IsPeriod = true;
+                }
+            }
+
+            public bool IsVisibleOnScreen(float timelineLB, float timelineUB)
+            {
+                if (Date2 == 0)
+                    return Date1 >= timelineLB && Date1 <= timelineUB;
+                else
+                {
+                    if (Date1 < timelineLB)
+                        return Date2 > timelineLB;
+                    else
+                        return Date1 < timelineUB;
+                }
+            }
+        }
+
+
         const string IMG_DIR = @"C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES"; //top-level directory for images
         const string LOGO_PATH = @"C:\dev\scripts\Alot of Knowledge\alot.png";
         const string TIMELINE_PATH = @"C:\dev\scripts\Alot of Knowledge\timeline.txt";
@@ -29,13 +84,14 @@ namespace AlotGUI
 
         //timeline globals
         Font labelFont, labelMonthFont;
-        List<Tuple<string, float, float>> timeline;
-        int[] reservedLabelRows, reservedPeriodRows; //used to prevent overlapping labels/periods
+        List<TimelineEvent> timeline;
+        int[,] reservedLabelRows, reservedPeriodRows; //used to prevent overlapping labels/periods
         string questionEvent;
         float timelineLB, timelineUB, prevTimelineLB; //lower and upper date bounds of the timeline
         float timelineNotchPeriod;
         int timelinePenWidth, timelineNotchWidth, timelineLabelFrequency, timelineMonthNotchFrequency, timelineMonthLabelFrequency;
         int prevMX, prevMY;
+        int timelineImageHeightInRows;
         bool mouseDown, concealQuestionEvent;
 
         //family tree globals
@@ -147,11 +203,11 @@ namespace AlotGUI
                     float questionEventDate = 0;
 
                     foreach (var entry in timeline)
-                        if (entry.Item1 == questionEvent)
+                        if (entry.Name == questionEvent)
                         {
-                            if (entry.Item3 == 0)
+                            if (!entry.IsPeriod)
                             {
-                                questionEventDate = entry.Item2;
+                                questionEventDate = entry.Date1;
                                 if (questionEventDate % 1 > 0.01)
                                     timelinePenWidth = 8; //if the date specifies the month then zoom in enough to show the month labels
                                 else
@@ -175,13 +231,13 @@ namespace AlotGUI
                             }
                             else
                             {
-                                questionEventDate = (entry.Item2 + entry.Item3) / 2;
+                                questionEventDate = (entry.Date1 + entry.Date2) / 2;
 
                                 //zoom in enough to show the whole period
                                 for (timelinePenWidth = 9; timelinePenWidth >= 1; timelinePenWidth--)
                                 {
                                     setTimelineScale();
-                                    if (questionEventDate - convertPixelsToDate(this.ClientSize.Width / 2) < entry.Item2)
+                                    if (questionEventDate - convertPixelsToDate(this.ClientSize.Width / 2) < entry.Date1)
                                         break;
                                 }
                             }
@@ -393,19 +449,6 @@ namespace AlotGUI
         #endregion
 
         #region Timeline
-        bool dateVisibleOnScreen(float date1, float date2)
-        {
-            if (date2 == 0)
-                return date1 >= timelineLB && date1 <= timelineUB;
-            else
-            {
-                if (date1 < timelineLB)
-                    return date2 > timelineLB;
-                else
-                    return date1 < timelineUB;
-            }
-        }
-
         void setTimelineScale()
         {
             switch (timelinePenWidth)
@@ -482,8 +525,10 @@ namespace AlotGUI
             int rowH = (int)this.CreateGraphics().MeasureString("A", labelFont).Height;
             int nRows = (this.ClientSize.Height / 2 - timelinePenWidth - rowH) / rowH;
 
-            reservedLabelRows = new int[nRows];
-            reservedPeriodRows = new int[(int)((float)nRows * 0.75f)];
+            reservedLabelRows = new int[nRows, 2];
+            reservedPeriodRows = new int[(int)((float)nRows * 0.75f), 2];
+
+            timelineImageHeightInRows = (int)Math.Ceiling((float)TimelineEvent.TIMELINE_IMAGE_HEIGHT / rowH);
         }
 
         void calcTimelineUB()
@@ -547,6 +592,11 @@ namespace AlotGUI
                         monthNotchesSincePrevLabel++;
                     }
             }
+        }
+
+        bool anyOverlap(int a1, int a2, int b1, int b2)
+        {
+            return a1 >= b1 && a1 <= b2 || a2 >= b1 && a2 <= b2;
         }
         #endregion
 
@@ -892,29 +942,17 @@ namespace AlotGUI
 
             //load timeline data
             file = new StreamReader(TIMELINE_PATH);
-            timeline = new List<Tuple<string, float, float>>();
+            timeline = new List<TimelineEvent>();
 
             while (!file.EndOfStream)
+                timeline.Add(new TimelineEvent(file.ReadLine()));
+            
+            timeline.Sort(delegate (TimelineEvent x, TimelineEvent y)
             {
-                string line = file.ReadLine();
-                string[] parts = line.Split(new string[] { " :: " }, StringSplitOptions.RemoveEmptyEntries);
-                string[] dates = parts[1].Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
-
-                float date1 = float.Parse(dates[0].Replace('.', ',')), date2;
-                if (dates.Length == 1)
-                    date2 = 0;
+                if (x.Date1 != y.Date1)
+                    return x.Date1.CompareTo(y.Date1);
                 else
-                    date2 = float.Parse(dates[1].Replace('.', ','));
-
-                timeline.Add(new Tuple<string, float, float>(parts[0], date1, date2));
-            }
-
-            timeline.Sort(delegate (Tuple<string, float, float> x, Tuple<string, float, float> y)
-            {
-                if (x.Item2 != y.Item2)
-                    return x.Item2.CompareTo(y.Item2);
-                else
-                    return x.Item3.CompareTo(y.Item3);
+                    return x.Date2.CompareTo(y.Date2);
             });
         }
 
@@ -954,76 +992,157 @@ namespace AlotGUI
                     }
 
                     //draw dates
-                    for (int i = 0; i < reservedLabelRows.Length; i++)
-                        reservedLabelRows[i] = -100;
-                    for (int i = 0; i < reservedPeriodRows.Length; i++)
-                        reservedPeriodRows[i] = -100;
+                    for (int i = 0; i < reservedLabelRows.Length / 2; i++)
+                    {
+                        reservedLabelRows[i, 0] = this.ClientSize.Width + 100;
+                        reservedLabelRows[i, 1] = -100;
+                    }
+                    for (int i = 0; i < reservedPeriodRows.Length / 2; i++)
+                    {
+                        reservedPeriodRows[i, 0] = this.ClientSize.Width + 100;
+                        reservedPeriodRows[i, 1] = -100;
+                    }
+
+                    List<Tuple<int, int, int, Image, bool>> potentialEventImages = new List<Tuple<int, int, int, Image, bool>>(); //the three ints indicate the row and coordinates of the event label
 
                     foreach (var entry in timeline)
                     {
-                        if (dateVisibleOnScreen(entry.Item2, entry.Item3))
+                        if (entry.IsVisibleOnScreen(timelineLB, timelineUB))
                         {
-                            if (entry.Item3 == 0)
+                            if (!entry.IsPeriod)
                             {
                                 Brush brush = Brushes.RoyalBlue;
-                                string label = entry.Item1;
-                                if (entry.Item1 == questionEvent)
+                                string label = entry.Name;
+                                if (entry.Name == questionEvent || entry.EntryKey == questionEvent)
                                 {
-                                    if (concealQuestionEvent)
-                                        label = "???";
+                                    if (entry.Name == questionEvent)
+                                    {
+                                        if (concealQuestionEvent)
+                                            label = "???";
+                                    }
+                                    else
+                                        label = "";
 
                                     brush = Brushes.Purple;
                                 }
 
-                                int x = convertDateToPixels(entry.Item2);
+                                int x = convertDateToPixels(entry.Date1);
                                 float dotSize = 5 + (float)timelinePenWidth;
                                 e.Graphics.FillEllipse(brush, x - dotSize / 2, this.ClientSize.Height / 2 - dotSize / 2, dotSize, dotSize);
                                 SizeF labelSize = e.Graphics.MeasureString(label, labelFont);
 
                                 //locate the first available label row
                                 int row = 0;
-                                for (; row < reservedLabelRows.Length; row++)
-                                    if (reservedLabelRows[row] + 10 + timelinePenWidth <= x - labelSize.Width / 2)
+                                for (; row < reservedLabelRows.Length / 2; row++)
+                                    if (reservedLabelRows[row, 1] + 10 + timelinePenWidth <= x - labelSize.Width / 2)
                                         break;
 
-                                if (row < reservedLabelRows.Length)
+                                if (row < reservedLabelRows.Length / 2)
                                 {
-                                    e.Graphics.DrawString(label, labelFont, brush, x - labelSize.Width / 2, this.ClientSize.Height / 2 - 10 - timelinePenWidth - labelSize.Height * (1 + row));
-                                    reservedLabelRows[row] = x + (int)(labelSize.Width / 2);
+                                    float y = this.ClientSize.Height / 2 - 10 - timelinePenWidth - labelSize.Height * (1 + row);
+                                    e.Graphics.DrawString(label, labelFont, brush, x - labelSize.Width / 2, y);
+
+                                    reservedLabelRows[row, 0] = Math.Min(x - (int)(labelSize.Width / 2), reservedLabelRows[row, 0]);
+                                    reservedLabelRows[row, 1] = Math.Max(x + (int)(labelSize.Width / 2), reservedLabelRows[row, 1]);
+
+                                    if (entry.Img != null)
+                                        potentialEventImages.Add(new Tuple<int, int, int, Image, bool>(row + 1, x, (int)y, entry.Img, false));
                                 }
                             }
                             else
                             {
                                 Brush brush = Brushes.SeaGreen;
                                 Color color = Color.SeaGreen;
-                                string label = entry.Item1;
-                                if (entry.Item1 == questionEvent)
+                                string label = entry.Name;
+                                if (entry.Name == questionEvent || entry.EntryKey == questionEvent)
                                 {
-                                    if (concealQuestionEvent)
-                                        label = "???";
+                                    if (entry.Name == questionEvent)
+                                    {
+                                        if (concealQuestionEvent)
+                                            label = "???";
+                                    }
+                                    else
+                                        label = "";
 
                                     brush = Brushes.Purple;
                                     color = Color.Purple;
                                 }
 
-                                int x1 = convertDateToPixels(entry.Item2), x2 = convertDateToPixels(entry.Item3);
+                                int x1 = convertDateToPixels(entry.Date1), x2 = convertDateToPixels(entry.Date2);
                                 SizeF labelSize = e.Graphics.MeasureString(label, labelFont);
                                 int labelX = (int)((x1 + x2) / 2 - labelSize.Width / 2);
 
                                 //locate the first available timeline row
                                 int row = 0;
-                                for (; row < reservedPeriodRows.Length; row++)
-                                    if (reservedPeriodRows[row] + 10 + timelinePenWidth <= Math.Min(x1, labelX))
+                                for (; row < reservedPeriodRows.Length / 2; row++)
+                                    if (reservedPeriodRows[row, 1] + 10 + timelinePenWidth <= Math.Min(x1, labelX))
                                         break;
 
-                                if (row < reservedPeriodRows.Length)
+                                if (row < reservedPeriodRows.Length / 2)
                                 {
                                     int y = (int)(this.ClientSize.Height / 2 + 10 + timelinePenWidth + labelSize.Height * 1.5f * (1 + row));
-
+                                    
                                     e.Graphics.DrawLine(new Pen(color, timelinePenWidth / 2), x1, y, x2, y);
                                     e.Graphics.DrawString(label, labelFont, brush, labelX, y);
 
-                                    reservedPeriodRows[row] = Math.Max(x2, labelX + (int)labelSize.Width);
+                                    reservedPeriodRows[row, 0] = Math.Min(Math.Min(x1, labelX), reservedPeriodRows[row, 0]);
+                                    reservedPeriodRows[row, 1] = Math.Max(Math.Max(x2, labelX + (int)labelSize.Width), reservedPeriodRows[row, 1]);
+
+                                    if (entry.Img != null)
+                                        potentialEventImages.Add(new Tuple<int, int, int, Image, bool>(row + 1, labelX + (int)labelSize.Width / 2, y + (int)labelSize.Height, entry.Img, true));
+                                }
+                            }
+                        }
+                    }
+
+                    //draw event images (those that have unused space above their labels)
+                    foreach (var eventImage in potentialEventImages)
+                    {
+                        if (!eventImage.Item5)
+                        {
+                            //single event
+                            bool enoughSpace = true;
+                            for (int row = eventImage.Item1; row < eventImage.Item1 + timelineImageHeightInRows && row < reservedLabelRows.Length / 2; row++)
+                                if (reservedLabelRows[row, 1] == -100)
+                                    break;
+                                else if (anyOverlap(eventImage.Item2 - eventImage.Item4.Width / 2, eventImage.Item2 + eventImage.Item4.Width / 2, reservedLabelRows[row, 0], reservedLabelRows[row, 1]))
+                                {
+                                    enoughSpace = false;
+                                    break;
+                                }
+
+                            if (enoughSpace)
+                            {
+                                e.Graphics.DrawImage(eventImage.Item4, eventImage.Item2 - eventImage.Item4.Width / 2, eventImage.Item3 - eventImage.Item4.Height);
+
+                                for (int row = eventImage.Item1; row < eventImage.Item1 + timelineImageHeightInRows && row < reservedLabelRows.Length / 2; row++)
+                                {
+                                    reservedLabelRows[row, 0] = Math.Min(reservedLabelRows[row, 0], eventImage.Item2 - eventImage.Item4.Width / 2);
+                                    reservedLabelRows[row, 1] = Math.Max(reservedLabelRows[row, 1], eventImage.Item2 + eventImage.Item4.Width / 2);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //period
+                            bool enoughSpace = true;
+                            for (int row = eventImage.Item1; row < eventImage.Item1 + timelineImageHeightInRows && row < reservedPeriodRows.Length / 2; row++)
+                                if (reservedPeriodRows[row, 1] == -100)
+                                    break;
+                                else if (anyOverlap(eventImage.Item2 - eventImage.Item4.Width / 2, eventImage.Item2 + eventImage.Item4.Width / 2, reservedPeriodRows[row, 0], reservedPeriodRows[row, 1]))
+                                {
+                                    enoughSpace = false;
+                                    break;
+                                }
+
+                            if (enoughSpace)
+                            {
+                                e.Graphics.DrawImage(eventImage.Item4, eventImage.Item2 - eventImage.Item4.Width / 2, eventImage.Item3);
+
+                                for (int row = eventImage.Item1; row < eventImage.Item1 + timelineImageHeightInRows && row < reservedPeriodRows.Length / 2; row++)
+                                {
+                                    reservedPeriodRows[row, 0] = Math.Min(reservedPeriodRows[row, 0], eventImage.Item2 - eventImage.Item4.Width / 2);
+                                    reservedPeriodRows[row, 1] = Math.Max(reservedPeriodRows[row, 1], eventImage.Item2 + eventImage.Item4.Width / 2);
                                 }
                             }
                         }

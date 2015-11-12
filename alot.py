@@ -392,44 +392,52 @@ def exportFamilyTree(catalot, key, isQuestion):
 		return key + "\n" + addNodeToFamilyTree(catalot, key)
 
 
-def collectDatesForTimeline(heading, data, timeline):
+def collectDatesForTimeline(entryKey, data, img, timeline):
 	compoundTypes = [Type.Class, Type.List, Type.Tuple]
 	dataType = getType(data)
 
 	if dataType is Type.Class:
+		if "Picture" in data:
+			img = fullPath(data["Picture"])
+		elif "Appearance" in data:
+			img = fullPath(data["Appearance"])
+
 		for key in data:
 			entryType = getType(data[key])
 			if entryType is Type.Date or entryType is Type.Range:
-				if heading == "":
-					timeline[key] = data[key]
+				if entryKey == "":
+					timeline[key] = [data[key], entryKey, img]
 				else:
-					timeline[heading] = data[key]
+					timeline[entryKey] = [data[key], entryKey, img]
 			elif entryType in compoundTypes:
-				collectDatesForTimeline(key, data[key], timeline)
+				if entryKey == "":
+					collectDatesForTimeline(key, data[key], img, timeline)
+				else:
+					collectDatesForTimeline(entryKey, data[key], img, timeline)
 	elif dataType is Type.List or dataType is Type.Tuple:
 		for i in range(len(data)):
 			entryType = getType(data[i])
 			if entryType is Type.Date or entryType is Type.Range:
 				if i > 0:
-					timeline[data[i-1]] = data[i]
+					timeline[data[i-1]] = [data[i], entryKey, img]
 				else:
-					timeline[heading] = data[i]
+					timeline[entryKey] = [data[i], entryKey, img]
 			elif entryType in compoundTypes:
-				collectDatesForTimeline(heading + ", " + str(i), data[i], timeline)
+				collectDatesForTimeline(entryKey, data[i], img, timeline)
 
 
 def exportTimelineForGUI(alot):
 	#save Dates and Ranges to a file
 	timeline = {}
 	for category in alot:
-		collectDatesForTimeline("", alot[category], timeline)
+		collectDatesForTimeline("", alot[category], "", timeline)
 
 	with open("timeline.txt", "w") as f:
 		for key in timeline:
-			if getType(timeline[key]) is Type.Date:
-				f.write("{} :: {}\n".format(key, timeline[key].toGUIFormat(False)).replace("'", ""))
+			if getType(timeline[key][0]) is Type.Date:
+				f.write("{} :: {} // {} // {}\n".format(key, timeline[key][0].toGUIFormat(False), timeline[key][1], timeline[key][2]).replace("'", ""))
 			else:
-				f.write("{} :: {} - {}\n".format(key, timeline[key][0].toGUIFormat(True), timeline[key][1].toGUIFormat(True)).replace("'", ""))
+				f.write("{} :: {} - {} // {} // {}\n".format(key, timeline[key][0][0].toGUIFormat(True), timeline[key][0][1].toGUIFormat(True), timeline[key][1], timeline[key][2]).replace("'", ""))
 
 
 def convertToDateIfAnyInTuple(tpl):

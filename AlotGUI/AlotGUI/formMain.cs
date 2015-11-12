@@ -1021,7 +1021,7 @@ namespace AlotGUI
                                             label = "???";
                                     }
                                     else
-                                        label = "";
+                                        continue; //hide sub events
 
                                     brush = Brushes.Purple;
                                 }
@@ -1062,7 +1062,7 @@ namespace AlotGUI
                                             label = "???";
                                     }
                                     else
-                                        label = "";
+                                        continue; //hide sub events
 
                                     brush = Brushes.Purple;
                                     color = Color.Purple;

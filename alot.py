@@ -1019,10 +1019,10 @@ def colorPrint(text, color, endline="\n"):
 	print(Fore.RESET, end="")
 
 
-def printList(items, step, indentLevel, color):
+def printList(items, step, indentLevel, color, firstItem=1):
 	stepOffset = 0 #takes into account how many sublists have been printed before the current item (so that we know its correct index)
 
-	for i in range(1, step):
+	for i in range(firstItem, step):
 		heading = i < len(items) and type(items[i]) is list
 
 		if type(items[i-1]) is list:
@@ -1621,6 +1621,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		if immediately:
 			break
 		elif learned: #if testing learned entry, only one list item is needed
+			printList(items, len(items) + 1, indentLevel, color, step + 1) #print the rest of the list
 			return correct, exit, immediately
 		elif type(correct) is bool:
 			step += 1

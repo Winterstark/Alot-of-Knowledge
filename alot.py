@@ -1791,7 +1791,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
 						elif type(correct[attribute]) is not str:
 							feedback("Correct!")
-						else:
+						elif correct[attribute] != "False":
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
 
 						if usedGUI and not keepGUIActive:

@@ -1859,7 +1859,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
 						else:
-							correct, exit, immediately = qType_Timeline(entry[attribute])
+							correct, exit, immediately = qType_Timeline(key)
 							usedGUI = True
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))

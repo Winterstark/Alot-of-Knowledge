@@ -26,8 +26,10 @@ This project is not meant to reach Wordy's scale and user-friendliness - for exa
 ![Alot, timeline](http://i.imgur.com/WKIBoLm.png)
 
 
-Credits
+Credits	
 --------
 
 * [Colorama](https://pypi.python.org/pypi/colorama)
+* [Geographic data source](naturalearthdata.com)
+* C# dBASE reader by [Brian Duke @ Codeproject](http://www.codeproject.com/Articles/24247/Load-a-DBF-into-a-DataTable)
 * Name and logo from [Hyperbole and a half](http://hyperboleandahalf.blogspot.com/2010/04/alot-is-better-than-you-at-everything.html)

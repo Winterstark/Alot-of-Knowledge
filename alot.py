@@ -15,7 +15,7 @@ COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
 
-Type = Enum("Type", "Number Date Range String Image Diagram Class List Set Tuple")
+Type = Enum("Type", "Number Date Range String Image Diagram Class List Set Tuple Geo")
 
 
 
@@ -350,6 +350,18 @@ class Date:
 def msgGUI(msg):
 	pipe.write(struct.pack('I', len(msg)) + bytes(msg, "UTF-8"))
 	pipe.seek(0)
+
+
+def getFeedbackFromGUI():
+	while "pipe" not in locals():
+		try:
+			pipe = open(r'\\.\pipe\alotPipeFeedback', 'r+b', 0)
+		except:
+			#give gui time to start the pipe
+			sleep(0.2)
+
+	pipe.seek(0)
+	return pipe.read(1) == b"\x01", False, False
 
 
 def addNodeToFamilyTree(catalot, key, visited=[]):
@@ -689,7 +701,7 @@ def isLearned(step, answer):
 def maxSteps(answer):
 	answerType = getType(answer)
 
-	if answerType is Type.Number or answerType is Type.Date or answerType is Type.Range:
+	if answerType is Type.Number or answerType is Type.Date or answerType is Type.Range or answerType is Type.Geo:
 		return 4
 	elif answerType is Type.String:
 		return 5
@@ -718,6 +730,8 @@ def getType(entry):
 		else:
 			return Type.Tuple
 	elif entryType is str:
+		if entry[:4] == "GEO:":
+			return Type.Geo
 		if os.path.exists(fullPath(entry)):
 			return Type.Image
 		else:
@@ -1110,19 +1124,20 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	if not correct and userA != "":
 		correct = toString(a)
 
-		#find the value (or key) associated with the user's wrong answer
-		if userA in catalot:
-			userAValue = toString(catalot[userA]).replace("\n   ", ", ")
-			correct += "\n({0} -> {1})".format(userA, userAValue)
-		elif userA in catalot.values():
-			userAKey = list(catalot)[list(catalot.values()).index(userA)]
-			correct += "\n({0} -> {1})".format(toString(userA), userAKey)
-		else:
-			#check classes
-			for key in catalot:
-				if getType(catalot[key]) is Type.Class and userA in catalot[key].values():
-					correct += "\n({0} -> {1})".format(toString(userA), key)
-					break
+		if catalot != None:
+			#find the value (or key) associated with the user's wrong answer
+			if userA in catalot:
+				userAValue = toString(catalot[userA]).replace("\n   ", ", ")
+				correct += "\n({0} -> {1})".format(userA, userAValue)
+			elif userA in catalot.values():
+				userAKey = list(catalot)[list(catalot.values()).index(userA)]
+				correct += "\n({0} -> {1})".format(toString(userA), userAKey)
+			else:
+				#check classes
+				for key in catalot:
+					if getType(catalot[key]) is Type.Class and userA in catalot[key].values():
+						correct += "\n({0} -> {1})".format(toString(userA), key)
+						break
 
 	return correct, exit, immediately
 
@@ -1697,6 +1712,30 @@ def quizSet(setKey, items, step, color):
 	return correct, exit, immediately
 
 
+def quizGeo(catalot, key, step, color):
+	geoName = catalot[key][4:] #ignore "GEO:"
+	separator = geoName.index('/')
+	geoType = geoName[:separator].lower()
+	geoName = geoName[separator+1:]
+
+	msgGUI("map {} {}".format(step, geoName))
+
+	if step == 1:
+		correct, exit, immediately = qType_MultipleChoice(None, "What is the name of the highlighted {}?".format(geoType), geoName, getAltAnswers(catalot, key, True), color)
+	elif step == 2:
+		colorPrint(geoName, color)
+		print("Select this {} on the map.".format(geoType))
+		correct, exit, immediately = getFeedbackFromGUI()
+	elif step == 3:
+		colorPrint(geoName, color)
+		print("Find the {} on the map.".format(geoType))
+		correct, exit, immediately = getFeedbackFromGUI()
+	elif step == 4:
+		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), geoName, color)
+
+	return correct, exit, immediately
+
+
 def quiz(category, catalot, metacatalot, corewords):
 	ready, nNew, nLearned = getReadyKeys(metacatalot)
 	if nNew + nLearned == 0:
@@ -1731,6 +1770,9 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
+			elif entryType is Type.Geo:
+				correct, exit, immediately = quizGeo(catalot, key, step, color)
+				usedGUI = True
 			elif entryType is Type.Class:
 				#custom class
 				#select attributes not yet learned
@@ -1822,6 +1864,9 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Image:
 				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
+			elif entryType is Type.Geo:
+				correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
+				usedGUI = True
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:

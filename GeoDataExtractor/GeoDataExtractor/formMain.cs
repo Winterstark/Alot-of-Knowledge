@@ -1,27 +1,139 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Data.OleDb;
+using System.Data;
 
 namespace GeoDataExtractor
 {
     public partial class formMain : Form
     {
+        Visualizer viz;
+        DataTable dbfTable;
+        int nameColumn, colorColumn, typeColumn;
+        bool massCheckingInProgress;
+
+
+        void loadDBF(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                MessageBox.Show("Shapes will not be identified.", "Could not locate DBF file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                nameColumn = -1;
+            }
+            else
+            {
+                dbfTable = ParseDBF.ReadDBF(filePath);
+                
+                //find the name, color, and type columns
+                nameColumn = getColumnIndex("NAME_LONG");
+                if (nameColumn == -1)
+                    nameColumn = getColumnIndex("NAME");
+                if (nameColumn == -1)
+                    MessageBox.Show("shapes will not be identified.", "DBF file has no NAME column", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                
+                colorColumn = getColumnIndex("MAPCOLOR");
+                typeColumn = getColumnIndex("TYPE");
+            }
+        }
+
+        int getColumnIndex(string columnTitle)
+        {
+            for (int i = 0; i < dbfTable.Columns.Count; i++)
+                if (dbfTable.Columns[i].ColumnName.Contains(columnTitle))
+                    return i;
+
+            return -1;
+        }
+
+        string getNextItemFromColumn(int column, string defaultValue)
+        {
+            if (column != -1 && chklistShapes.Items.Count < dbfTable.Rows.Count)
+                return dbfTable.Rows[chklistShapes.Items.Count][column].ToString().Trim();
+            else
+                return defaultValue;
+        }
+        
         void loadShapefile(string filePath)
         {
-            BinaryReader file = new BinaryReader(new FileStream(filePath, FileMode.Open));
+            chklistShapes.Items.Clear();
 
-            int fileCode = file.ReadInt32();
-            fileCode = IPAddress.HostToNetworkOrder(fileCode);
-            if (fileCode != 0x0000270a && MessageBox.Show("File code doesn't match the Shapefile specification. Continue loading file anyway?", "WARNING!", MessageBoxButtons.OKCancel,MessageBoxIcon.Warning) == DialogResult.OK)
+            BinaryReader file = new BinaryReader(new FileStream(filePath, FileMode.Open));
+            if (readBigEndianInt32(file) == 0x0000270a || MessageBox.Show("File code doesn't match the Shapefile specification. Continue loading file anyway?", "WARNING!", MessageBoxButtons.OKCancel,MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                //unused; five uint32's
-                for (int i = 0; i < 5; i++)
-                    file.ReadUInt32();
+                try
+                {
+                    //unused; five uint32's
+                    for (int i = 0; i < 5; i++)
+                        file.ReadUInt32();
+
+                    int fileLength = readBigEndianInt32(file);
+                    int version = file.ReadInt32();
+                    int shapeType = file.ReadInt32();
+
+                    double minX = file.ReadDouble();
+                    double minY = file.ReadDouble();
+                    double maxX = file.ReadDouble();
+                    double maxY = file.ReadDouble();
+                    double minZ = file.ReadDouble();
+                    double maxZ = file.ReadDouble();
+                    double minM = file.ReadDouble();
+                    double maxM = file.ReadDouble();
+
+                    int processedLength = 50; //lengths are measured in 16-bit words
+                    while (processedLength < fileLength)
+                    {
+                        readBigEndianInt32(file); //ignore record number
+                        int recordLength = readBigEndianInt32(file);
+                        int recordShapeType = file.ReadInt32();
+
+                        switch (recordShapeType)
+                        {
+                            case Visualizer.SHAPE_TYPE_POLYLINE:
+                                string name = getNextItemFromColumn(nameColumn, "PolyLine");
+
+                                viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYLINE, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(colorColumn, "0"))), name);
+                                chklistShapes.Items.Add(name);
+                                break;
+                            case Visualizer.SHAPE_TYPE_POLYGON:
+                                name = getNextItemFromColumn(nameColumn, "Polygon");
+                                
+                                viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYGON, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(colorColumn, "0"))), name);
+                                chklistShapes.Items.Add(name);
+                                break;
+                            default:
+                                MessageBox.Show("Unsupported shape type: " + recordShapeType.ToString());
+                                break;
+                        }
+
+                        processedLength += 4 + recordLength; //4 = length of the record header
+                    }
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message, "Encountered exception while reading file!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            
+
             file.Close();
+        }
+
+        int readBigEndianInt32(BinaryReader file)
+        {
+            return IPAddress.HostToNetworkOrder(file.ReadInt32());
+        }
+
+        void updateCheckedShapes()
+        {
+            buttCheckNone.Enabled = chklistShapes.CheckedItems.Count != 0;
+            buttCheckAll.Enabled = chklistShapes.CheckedItems.Count != chklistShapes.Items.Count;
+            buttSave.Enabled = chklistShapes.CheckedItems.Count != 0;
+
+            viz.UpdateCheckedShapes(chklistShapes.CheckedIndices);
+            viz.Draw();
         }
 
 
@@ -32,8 +144,10 @@ namespace GeoDataExtractor
 
         private void formMain_Load(object sender, EventArgs e)
         {
-            //debugging
-            loadShapefile(@"C:\Users\Winterstark\Desktop\ne_110m_coastline.shp");
+            viz = new Visualizer(picDisplay.CreateGraphics(), picDisplay.ClientSize);
+
+            massCheckingInProgress = false;
+            lblDragRecipient.Left = 12; //put label on top
         }
 
         private void lblDragRecipient_DragEnter(object sender, DragEventArgs e)
@@ -53,8 +167,97 @@ namespace GeoDataExtractor
         private void lblDragRecipient_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
             if (files.Length > 0)
+            {
+                loadDBF(files[0].Replace(".shp", ".dbf"));
                 loadShapefile(files[0]);
+
+                lblDragRecipient.Visible = false;
+            }
+        }
+
+        private void chklistShapes_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (!massCheckingInProgress)
+                timerRefreshDisplay.Enabled = true; //using a timer to trigger refresh because the checked item's state has not been updated yet
+        }
+
+        private void buttCheckAll_Click(object sender, EventArgs e)
+        {
+            massCheckingInProgress = true;
+            for (int i = 0; i < chklistShapes.Items.Count; i++)
+                chklistShapes.SetItemChecked(i, true);
+            massCheckingInProgress = false;
+
+            updateCheckedShapes();
+        }
+
+        private void buttCheckNone_Click(object sender, EventArgs e)
+        {
+            massCheckingInProgress = true;
+            for (int i = 0; i < chklistShapes.Items.Count; i++)
+                chklistShapes.SetItemChecked(i, false);
+            massCheckingInProgress = false;
+
+            updateCheckedShapes();
+        }
+
+        private void buttSave_Click(object sender, EventArgs e)
+        {
+            string alotEntries = "";
+
+            saveDialog.ShowDialog();
+            if (saveDialog.FileName != "")
+            {
+                string name = "";
+                if (InputBox.Show("Enter name for the shape collection:", "Enter nothing to save shapes separately.", ref name) == DialogResult.OK)
+                {
+                    StreamWriter file = new StreamWriter(saveDialog.FileName, true);
+
+                    if (name != "")
+                    {
+                        file.WriteLine(name);
+                        alotEntries = viz.Save(file, false);
+                    }
+                    else
+                        alotEntries = viz.Save(file, true);
+
+                    file.Close();
+                }
+            }
+
+            //create entries for Alot
+            saveDialog.FileName = saveDialog.FileName.Replace(".txt", "_entries.txt");
+            saveDialog.ShowDialog();
+            if (saveDialog.FileName != "")
+            {
+                StreamWriter file = new StreamWriter(saveDialog.FileName, true);
+                file.Write(alotEntries);
+                file.Close();
+            }
+        }
+
+        private void buttClose_Click(object sender, EventArgs e)
+        {
+            lblDragRecipient.BackColor = SystemColors.Control;
+            lblDragRecipient.Visible = true;
+
+            buttCheckAll.Enabled = true;
+            buttCheckNone.Enabled = false;
+            buttSave.Enabled = false;
+        }
+
+        private void timerRefreshDisplay_Tick(object sender, EventArgs e)
+        {
+            timerRefreshDisplay.Enabled = false;
+            updateCheckedShapes();
+        }
+
+        private void chkShowWorldCoastline_CheckedChanged(object sender, EventArgs e)
+        {
+            viz.ShowCoastline = chkShowWorldCoastline.Checked;
+            viz.Draw();
         }
     }
 }

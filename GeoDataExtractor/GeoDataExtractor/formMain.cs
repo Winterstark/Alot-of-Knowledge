@@ -43,7 +43,7 @@ namespace GeoDataExtractor
         int getColumnIndex(string columnTitle)
         {
             for (int i = 0; i < dbfTable.Columns.Count; i++)
-                if (dbfTable.Columns[i].ColumnName.Contains(columnTitle))
+                if (dbfTable.Columns[i].ColumnName.ToUpper().Contains(columnTitle.ToUpper()))
                     return i;
 
             return -1;

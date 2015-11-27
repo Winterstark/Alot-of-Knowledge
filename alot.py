@@ -361,7 +361,12 @@ def getFeedbackFromGUI():
 			sleep(0.2)
 
 	pipe.seek(0)
-	return pipe.read(1) == b"\x01", False, False
+	feedback = pipe.read(1) == b"\x01"
+
+	if feedback == False:
+		feedback = "False"
+
+	return feedback, False, False
 
 
 def addNodeToFamilyTree(catalot, key, visited=[]):
@@ -890,7 +895,10 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		targetTotalDays = getDateTotalDays(catalot[targetKey], attribute)
 		
 		for key in answers:
-			days = getDateDayDifference(answers[key], attribute, targetTotalDays)
+			if isEntryOrAttributeDate(answers[key], attribute):
+				days = getDateDayDifference(answers[key], attribute, targetTotalDays)
+			else:
+				days = 0
 
 			if days == 0:
 				toDel.append(key)
@@ -932,10 +940,17 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 
 		if not returnKeys:
 			for i in range(len(finalAnswers)):
-				if attribute == "":
-					finalAnswers[i] = answers[finalAnswers[i]]
+				#generate a random date if necessary (if there aren't enough actual dates in the knowledge file)
+				if finalAnswers[i] == "":
+					if random.randint(0, 1) == 0:
+						finalAnswers[i] = Date(str(random.randint(1, datetime.now().year)))
+					else:
+						finalAnswers[i] = Date('-' + str(random.randint(1, datetime.now().year)))
 				else:
-					finalAnswers[i] = answers[finalAnswers[i]][attribute]
+					if attribute == "":
+						finalAnswers[i] = answers[finalAnswers[i]]
+					else:
+						finalAnswers[i] = answers[finalAnswers[i]][attribute]
 	else:
 		finalAnswers = []
 
@@ -1197,21 +1212,39 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 						tryAgain = True
 						break
 
-			if not tryAgain and firstAttempt and aIsDate:
-				#check if the user's answer is relatively close to the correct Date
-				if getType(originalA) is Type.Date:
-					if originalA.isAlmostCorrect(answer):
-						print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
-						tryAgain = True
-						firstAttempt = False
-				else:
-					answerRange = answer.split(' - ')
-					if len(answerRange) == 2:
-						if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
+			if not tryAgain and firstAttempt:
+				if aIsDate:
+					if getType(originalA) is Type.Date:
+						#check if the user's answer is relatively close to the correct Date
+						if originalA.isAlmostCorrect(answer):
 							print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
 							tryAgain = True
 							firstAttempt = False
+					else:
+						answerRange = answer.split(' - ')
+						if len(answerRange) == 2:
+							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
+								print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+								tryAgain = True
+								firstAttempt = False
+				elif getType(originalA) is Type.Number:
+					#check if the user's answer is relatively close to the correct Number
+					try:
+						answer = int(answer)
 
+						relativeError = abs(answer - a) / a
+						if relativeError < 0.05:
+							#close enough; accept the answer
+							print("Exact number: " + str(a))
+							correct = True
+							break
+						elif relativeError < 0.10:
+							print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+							tryAgain = True
+							firstAttempt = False
+					except:
+						pass
+			
 			if tryAgain:
 				continue
 			else:
@@ -1712,8 +1745,14 @@ def quizSet(setKey, items, step, color):
 	return correct, exit, immediately
 
 
-def quizGeo(catalot, key, step, color):
-	geoName = catalot[key][4:] #ignore "GEO:"
+def quizGeo(catalot, key, step, color, attribute=""):
+	 #ignore "GEO:"
+	if attribute == "":
+		geoName = catalot[key][4:]
+	else:
+		geoName = catalot[key][attribute][4:]
+		step = step[attribute]
+
 	separator = geoName.index('/')
 	geoType = geoName[:separator].lower()
 	geoName = geoName[separator+1:]
@@ -1721,17 +1760,17 @@ def quizGeo(catalot, key, step, color):
 	msgGUI("map {} {}".format(step, geoName))
 
 	if step == 1:
-		correct, exit, immediately = qType_MultipleChoice(None, "What is the name of the highlighted {}?".format(geoType), geoName, getAltAnswers(catalot, key, True), color)
+		correct, exit, immediately = qType_MultipleChoice(None, "What is the name of the highlighted {}?".format(geoType), key, getAltAnswers(catalot, key, True), color)
 	elif step == 2:
-		colorPrint(geoName, color)
+		colorPrint(key, color)
 		print("Select this {} on the map.".format(geoType))
 		correct, exit, immediately = getFeedbackFromGUI()
 	elif step == 3:
-		colorPrint(geoName, color)
+		colorPrint(key, color)
 		print("Find the {} on the map.".format(geoType))
 		correct, exit, immediately = getFeedbackFromGUI()
 	elif step == 4:
-		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), geoName, color)
+		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color)
 
 	return correct, exit, immediately
 
@@ -1748,7 +1787,7 @@ def quiz(category, catalot, metacatalot, corewords):
 	while len(ready) > 0:
 		#prepare next question
 		print("\n")
-
+		
 		key = random.choice(ready)
 		entry = catalot[key]
 		entryType = getType(entry)
@@ -1823,6 +1862,9 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False)
 					elif attributeType is Type.String:
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
+					elif attributeType is Type.Geo:
+						correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute)
+						usedGUI = True
 					elif attributeType is Type.List:
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
 					elif attributeType is Type.Set:
@@ -1833,7 +1875,9 @@ def quiz(category, catalot, metacatalot, corewords):
 							print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
 						elif type(correct[attribute]) is not str:
 							feedback("Correct!")
-						elif correct[attribute] != "False":
+						elif correct[attribute] == "False":
+							feedback("Wrong!")
+						else:
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
 
 						if usedGUI and not keepGUIActive:

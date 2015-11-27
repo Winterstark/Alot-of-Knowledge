@@ -109,7 +109,7 @@ namespace AlotGUI
 
         //map globals
         Visualizer viz;
-        string questionEntity;
+        string[] questionEntities;
         int mapQType;
 
 
@@ -1143,8 +1143,8 @@ namespace AlotGUI
             if (msg.Length > 6)
             {
                 mapQType = int.Parse(msg.Substring(4, 1));
-                questionEntity = msg.Substring(6);
-                viz.Highlight(questionEntity, mapQType);
+                questionEntities = msg.Substring(6).Split('+');
+                viz.Highlight(questionEntities, mapQType);
             }
 
             mode = DisplayMode.Map;
@@ -1195,6 +1195,8 @@ namespace AlotGUI
             //load data
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
+
+            //processMsg("map 3 France");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1282,7 +1284,7 @@ namespace AlotGUI
                 }
             else if (mode == DisplayMode.Map && mapQType == 3)
             {
-                viz.Highlight(viz.GetSelectedCountry(e.X, e.Y), -1);
+                viz.Highlight(new string[1] { viz.GetSelectedArea(e.X, e.Y) }, -1);
                 this.Invalidate();
             }
         }
@@ -1291,9 +1293,9 @@ namespace AlotGUI
         {
             mouseDown = false;
 
-            if (mode == DisplayMode.Map && mapQType == 2 || mapQType == 3 &&
+            if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) &&
                 Math.Abs(e.X - initialMX) + Math.Abs(e.Y - initialMY) < 2) //check if the user actually clicked or was just dragging
-                sendFeedbackToAlot(viz.GetSelectedCountry(e.X, e.Y) == questionEntity);
+                sendFeedbackToAlot(viz.ArrayContainsString(questionEntities, viz.GetSelectedArea(e.X, e.Y)));            
         }
 
         private void formMain_MouseWheel(object sender, MouseEventArgs e)

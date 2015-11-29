@@ -18,6 +18,7 @@ namespace GeoDataExtractor
         Size picSize;
         float viewportX, viewportY, zoom;
         public bool ShowCoastline;
+        int defaultColor;
 
         Shape worldCoastline;
         List<Shape> shapes;
@@ -35,6 +36,7 @@ namespace GeoDataExtractor
 
             loadWorldCoastline();
             ShowCoastline = true;
+            defaultColor = 0;
 
             zoom = (float)picSize.Width / 360;
             viewportX = 180 * zoom;
@@ -83,6 +85,19 @@ namespace GeoDataExtractor
                         shapes[i].Draw(gfx, pen);
         }
         
+        public void SetDefaultColor(int color)
+        {
+            for (int i = 0; i < shapes.Count; i++)
+                if (shapes[i].ShapeType == SHAPE_TYPE_POLYGON)
+                {
+                    Poly polygon = (Poly)shapes[i];
+                    if (polygon.Color == defaultColor)
+                        polygon.Color = color;
+                }
+
+            defaultColor = color;
+        }
+
         public string Save(StreamWriter file, bool saveAllShapes)
         {
             string alotEntries = "{\n";
@@ -158,15 +173,15 @@ namespace GeoDataExtractor
         {
             get;
         }
+        public int Color;
         PointF[][] parts;
-        int color;
 
 
         public Poly(BinaryReader file, int shapeType, string entryType, int color)
         {
             ShapeType = shapeType;
             this.EntryType = entryType;
-            this.color = color;
+            this.Color = color;
 
             //read Poly from Shapefile
             float minX = (float)file.ReadDouble();
@@ -216,7 +231,7 @@ namespace GeoDataExtractor
             }
 
             if (ShapeType == Visualizer.SHAPE_TYPE_POLYGON)
-                color = int.Parse(file.ReadLine());
+                Color = int.Parse(file.ReadLine());
         }
 
         public override void Draw(Graphics gfx, Pen pen)
@@ -247,7 +262,7 @@ namespace GeoDataExtractor
             }
 
             if (ShapeType == Visualizer.SHAPE_TYPE_POLYGON)
-                file.WriteLine(color);
+                file.WriteLine(Color);
         }
     }
 }

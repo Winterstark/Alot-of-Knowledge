@@ -40,7 +40,10 @@
             this.saveDialog = new System.Windows.Forms.SaveFileDialog();
             this.timerRefreshDisplay = new System.Windows.Forms.Timer(this.components);
             this.chkShowWorldCoastline = new System.Windows.Forms.CheckBox();
+            this.numDefaultColor = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDefaultColor)).BeginInit();
             this.SuspendLayout();
             // 
             // lblDragRecipient
@@ -151,12 +154,41 @@
             this.chkShowWorldCoastline.UseVisualStyleBackColor = true;
             this.chkShowWorldCoastline.CheckedChanged += new System.EventHandler(this.chkShowWorldCoastline_CheckedChanged);
             // 
+            // numDefaultColor
+            // 
+            this.numDefaultColor.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numDefaultColor.Location = new System.Drawing.Point(406, 391);
+            this.numDefaultColor.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numDefaultColor.Name = "numDefaultColor";
+            this.numDefaultColor.Size = new System.Drawing.Size(98, 20);
+            this.numDefaultColor.TabIndex = 11;
+            this.numDefaultColor.ValueChanged += new System.EventHandler(this.numDefaultColor_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(298, 393);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(102, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Default shape color:";
+            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1006, 449);
             this.Controls.Add(this.lblDragRecipient);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.numDefaultColor);
             this.Controls.Add(this.chkShowWorldCoastline);
             this.Controls.Add(this.buttCheckNone);
             this.Controls.Add(this.buttCheckAll);
@@ -166,11 +198,12 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.picDisplay);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MinimizeBox = false;
+            this.MaximizeBox = false;
             this.Name = "formMain";
             this.Text = "GeoDataExtractor";
             this.Load += new System.EventHandler(this.formMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDefaultColor)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -189,6 +222,8 @@
         private System.Windows.Forms.SaveFileDialog saveDialog;
         private System.Windows.Forms.Timer timerRefreshDisplay;
         private System.Windows.Forms.CheckBox chkShowWorldCoastline;
+        private System.Windows.Forms.NumericUpDown numDefaultColor;
+        private System.Windows.Forms.Label label2;
     }
 }
 

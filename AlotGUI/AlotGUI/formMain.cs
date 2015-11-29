@@ -110,6 +110,7 @@ namespace AlotGUI
         //map globals
         Visualizer viz;
         string[] questionEntities;
+        string mapMouseOverRegion;
         int mapQType;
 
 
@@ -1184,6 +1185,7 @@ namespace AlotGUI
 
             labelMonthFont = new Font(FontFamily.GenericSansSerif, 7);
             questionEvent = "";
+            mapMouseOverRegion = "";
 
             //init worker
             pipeWorker = new BackgroundWorker();
@@ -1195,8 +1197,8 @@ namespace AlotGUI
             //load data
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
-
-            //processMsg("map 3 France");
+            
+            processMsg("map 1 Brazil");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1282,10 +1284,16 @@ namespace AlotGUI
                         this.Invalidate();
                         break;
                 }
-            else if (mode == DisplayMode.Map && mapQType == 3)
+            else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3))
             {
-                viz.Highlight(new string[1] { viz.GetSelectedArea(e.X, e.Y) }, -1);
-                this.Invalidate();
+                string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
+                if (mouseOverRegion != mapMouseOverRegion)
+                {
+                    viz.Highlight(new string[1] { mouseOverRegion }, -mapQType);
+                    this.Invalidate();
+
+                    mapMouseOverRegion = mouseOverRegion;
+                }
             }
         }
 

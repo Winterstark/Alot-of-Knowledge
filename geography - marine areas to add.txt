@@ -233,7 +233,6 @@
 	"Kaliningrad": "GEO:Sea/Kaliningrad",
 	"Matochkin Shar Strait": "GEO:Strait/Matochkin Shar Strait",
 	"Gulf of Anadyr'": "GEO:Gulf/Gulf of Anadyr'",
-	"Ozero Mogotoyevo": "GEO:Sea/Ozero Mogotoyevo",
 	"Guba Gusinaya": "GEO:Sea/Guba Gusinaya",
 	"Bali Sea": "GEO:Sea/Bali Sea",
 	"Davao Gulf": "GEO:Sea/Davao Gulf",

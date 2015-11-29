@@ -13,7 +13,7 @@ namespace GeoDataExtractor
     {
         Visualizer viz;
         DataTable dbfTable;
-        int nameColumn, colorColumn, typeColumn;
+        int nameColumn, colorColumn, typeColumn, unknownShapeCount;
         bool massCheckingInProgress;
 
 
@@ -52,14 +52,36 @@ namespace GeoDataExtractor
         string getNextItemFromColumn(int column, string defaultValue)
         {
             if (column != -1 && chklistShapes.Items.Count < dbfTable.Rows.Count)
-                return dbfTable.Rows[chklistShapes.Items.Count][column].ToString().Trim();
+            {
+                string name = dbfTable.Rows[chklistShapes.Items.Count][column].ToString().Trim();
+
+                if (name == "")
+                    name = "Unknown shape " + (++unknownShapeCount).ToString();
+
+                return name;
+            }
             else
                 return defaultValue;
+        }
+
+        string checkIfDuplicateName(string name)
+        {
+            if (chklistShapes.Items.Contains(name))
+            {
+                int ind = 2;
+                while (chklistShapes.Items.Contains(name + " " + ind))
+                    ind++;
+
+                name = name + " " + ind;
+            }
+
+            return name;
         }
         
         void loadShapefile(string filePath)
         {
             chklistShapes.Items.Clear();
+            unknownShapeCount = 0;
 
             BinaryReader file = new BinaryReader(new FileStream(filePath, FileMode.Open));
             if (readBigEndianInt32(file) == 0x0000270a || MessageBox.Show("File code doesn't match the Shapefile specification. Continue loading file anyway?", "WARNING!", MessageBoxButtons.OKCancel,MessageBoxIcon.Warning) == DialogResult.OK)
@@ -93,13 +115,13 @@ namespace GeoDataExtractor
                         switch (recordShapeType)
                         {
                             case Visualizer.SHAPE_TYPE_POLYLINE:
-                                string name = getNextItemFromColumn(nameColumn, "PolyLine");
+                                string name = checkIfDuplicateName(getNextItemFromColumn(nameColumn, "PolyLine"));
 
                                 viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYLINE, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(colorColumn, "0"))), name);
                                 chklistShapes.Items.Add(name);
                                 break;
                             case Visualizer.SHAPE_TYPE_POLYGON:
-                                name = getNextItemFromColumn(nameColumn, "Polygon");
+                                name = checkIfDuplicateName(getNextItemFromColumn(nameColumn, "Polygon"));
                                 
                                 viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYGON, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(colorColumn, "0"))), name);
                                 chklistShapes.Items.Add(name);
@@ -236,6 +258,11 @@ namespace GeoDataExtractor
                 file.Write(alotEntries);
                 file.Close();
             }
+        }
+
+        private void numDefaultColor_ValueChanged(object sender, EventArgs e)
+        {
+            viz.SetDefaultColor((int)numDefaultColor.Value);
         }
 
         private void buttClose_Click(object sender, EventArgs e)

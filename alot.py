@@ -364,7 +364,7 @@ def getFeedbackFromGUI():
 	feedback = pipe.read(1) == b"\x01"
 
 	if feedback == False:
-		feedback = "False"
+		feedback = "AlotGUI sends its regards: False"
 
 	return feedback, False, False
 
@@ -1869,13 +1869,13 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
 					elif attributeType is Type.Set:
 						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
-					
+
 					if not immediately:
 						if type(correct[attribute]) is int or type(correct[attribute]) is list:
 							print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
 						elif type(correct[attribute]) is not str:
 							feedback("Correct!")
-						elif correct[attribute] == "False":
+						elif correct[attribute] == "AlotGUI sends its regards: False":
 							feedback("Wrong!")
 						else:
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
@@ -2097,7 +2097,9 @@ def quiz(category, catalot, metacatalot, corewords):
 								print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))
 								meta["nextTest"] = datetime.now() + timedelta(hours=22)
 					else:
-						if correct != "False": #if it is "False" then quizList has already printed the correct answer
+						if correct == "AlotGUI sends its regards: False":
+							feedback("Wrong!")
+						elif correct != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback("Wrong! Correct answer: " + correct)
 						
 						if entryType is Type.List or entryType is Type.Diagram:

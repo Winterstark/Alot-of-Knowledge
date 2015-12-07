@@ -904,7 +904,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 				toDel.append(key)
 			else:
 				diff[key] = days
-
+		
 		for key in toDel:
 			del answers[key]
 		
@@ -940,8 +940,8 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 
 		if not returnKeys:
 			for i in range(len(finalAnswers)):
-				#generate a random date if necessary (if there aren't enough actual dates in the knowledge file)
 				if finalAnswers[i] == "":
+					#generate a random date if necessary (if there aren't enough actual dates in the knowledge file)
 					if random.randint(0, 1) == 0:
 						finalAnswers[i] = Date(str(random.randint(1, datetime.now().year)))
 					else:
@@ -951,6 +951,24 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 						finalAnswers[i] = answers[finalAnswers[i]]
 					else:
 						finalAnswers[i] = answers[finalAnswers[i]][attribute]
+		else:
+			if len(answers) < 5:
+				#rebuild answers
+				for key in catalot:
+					if key != targetKey:
+						answers[key] = catalot[key]
+
+			for i in range(len(finalAnswers)):
+				if len(answers) == 0:
+					break
+
+				if finalAnswers[i] == "":
+					#grab random keys if necessary (if there aren't enough actual dates in the knowledge file)<
+					nextA = random.choice(list(answers.keys()))
+
+					if returnKeys:
+						finalAnswers[i] = nextA
+					del answers[nextA]
 	else:
 		finalAnswers = []
 
@@ -2223,7 +2241,7 @@ def mainLoop(alot, metalot, changes):
 
 
 #MAIN
-print("Alot of Knowlege")
+print("Alot of Knowledge")
 
 init() #colorama init
 

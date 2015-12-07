@@ -1198,7 +1198,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
             
-            processMsg("map 1 Brazil");
+            //processMsg("map 1 Brazil");
         }
 
         protected override void OnPaint(PaintEventArgs e)

@@ -9,6 +9,7 @@ namespace GeoDataExtractor
     public class Visualizer
     {
         public const string WORLD_COASTLINE_PATH = @"C:\dev\scripts\Alot of Knowledge\dat knowledge\!GEODATA\world landmass.txt";
+        public const int SHAPE_TYPE_POINT = 1;
         public const int SHAPE_TYPE_POLYLINE = 3;
         public const int SHAPE_TYPE_POLYGON = 5;
 
@@ -91,14 +92,14 @@ namespace GeoDataExtractor
                 if (shapes[i].ShapeType == SHAPE_TYPE_POLYGON)
                 {
                     Poly polygon = (Poly)shapes[i];
-                    if (polygon.Color == defaultColor)
-                        polygon.Color = color;
+                    if (polygon.Misc == defaultColor)
+                        polygon.Misc = color;
                 }
 
             defaultColor = color;
         }
 
-        public string Save(StreamWriter file, bool saveAllShapes)
+        public string Save(StreamWriter file, bool saveAllShapes, bool saveCountry)
         {
             string alotEntries = "{\n";
 
@@ -118,7 +119,10 @@ namespace GeoDataExtractor
                         file.WriteLine(shapeNames[i]);
                         shapes[i].Save(file);
 
-                        alotEntries += "\t\"" + shapeNames[i] + "\": \"GEO:" + shapes[i].EntryType + "/" + shapeNames[i] + "\",\n";
+                        if (!saveCountry)
+                            alotEntries += "\t\"" + shapeNames[i] + "\": \"GEO:" + shapes[i].EntryType + "/" + shapeNames[i] + "\",\n";
+                        else
+                            alotEntries += "\t\"" + shapeNames[i] + "\": {\"GEO:" + shapes[i].EntryType + "/" + shapeNames[i] + "\", \"Country\": \"" + shapes[i].Country + "\"},\n";
                     }
             }
 
@@ -129,6 +133,8 @@ namespace GeoDataExtractor
         {
             switch(shapeType)
             {
+                case SHAPE_TYPE_POINT:
+                    return "POINT";
                 case SHAPE_TYPE_POLYLINE:
                     return "POLYLINE";
                 case SHAPE_TYPE_POLYGON:
@@ -145,7 +151,7 @@ namespace GeoDataExtractor
         {
             get;
         }
-        public string EntryType;
+        public string EntryType, Country;
         public RectangleF box;
         
         public abstract void Draw(Graphics gfx, Pen pen);
@@ -167,21 +173,56 @@ namespace GeoDataExtractor
         }
     }
 
+    public class Point : Shape
+    {
+        public override int ShapeType
+        {
+            get;
+        }
+        public int Misc; //represents the point's size
+        PointF point;
+
+
+        public Point(BinaryReader file, int shapeType, string entryType, int misc, string country)
+        {
+            ShapeType = shapeType;
+            EntryType = entryType;
+            Misc = misc;
+            Country = country;
+
+            point = new PointF((float)file.ReadDouble(), (float)file.ReadDouble());
+        }
+
+        public override void Draw(Graphics gfx, Pen pen)
+        {
+            float size = (float)Misc / 10;
+            gfx.FillEllipse(Brushes.Black, point.X - size / 2, point.Y - size / 2, size, size);
+        }
+
+        public override void Save(StreamWriter file)
+        {
+            file.WriteLine(Visualizer.ShapeTypeToString(ShapeType));
+            file.WriteLine(point.X + ", " + point.Y);
+            file.WriteLine(Misc);
+        }
+    }
+
     public class Poly : Shape //can represent both PolyLine and Polygon
     {
         public override int ShapeType
         {
             get;
         }
-        public int Color;
+        public int Misc; //represents the color of a polygon or the width of a polyline
         PointF[][] parts;
 
 
-        public Poly(BinaryReader file, int shapeType, string entryType, int color)
+        public Poly(BinaryReader file, int shapeType, string entryType, int misc, string country)
         {
             ShapeType = shapeType;
-            this.EntryType = entryType;
-            this.Color = color;
+            EntryType = entryType;
+            Misc = misc;
+            Country = country;
 
             //read Poly from Shapefile
             float minX = (float)file.ReadDouble();
@@ -231,7 +272,7 @@ namespace GeoDataExtractor
             }
 
             if (ShapeType == Visualizer.SHAPE_TYPE_POLYGON)
-                Color = int.Parse(file.ReadLine());
+                Misc = int.Parse(file.ReadLine());
         }
 
         public override void Draw(Graphics gfx, Pen pen)
@@ -261,8 +302,7 @@ namespace GeoDataExtractor
                     file.WriteLine(point.X + ", " + point.Y);
             }
 
-            if (ShapeType == Visualizer.SHAPE_TYPE_POLYGON)
-                file.WriteLine(Color);
+            file.WriteLine(Misc);
         }
     }
 }

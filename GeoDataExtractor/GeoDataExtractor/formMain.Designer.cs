@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.lblDragRecipient = new System.Windows.Forms.Label();
             this.picDisplay = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblShapesCount = new System.Windows.Forms.Label();
             this.chklistShapes = new System.Windows.Forms.CheckedListBox();
             this.buttSave = new System.Windows.Forms.Button();
             this.buttClose = new System.Windows.Forms.Button();
@@ -42,6 +42,7 @@
             this.chkShowWorldCoastline = new System.Windows.Forms.CheckBox();
             this.numDefaultColor = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
+            this.chkSaveCountry = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDefaultColor)).BeginInit();
             this.SuspendLayout();
@@ -70,14 +71,14 @@
             this.picDisplay.TabIndex = 1;
             this.picDisplay.TabStop = false;
             // 
-            // label1
+            // lblShapesCount
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Shapes:";
+            this.lblShapesCount.AutoSize = true;
+            this.lblShapesCount.Location = new System.Drawing.Point(12, 9);
+            this.lblShapesCount.Name = "lblShapesCount";
+            this.lblShapesCount.Size = new System.Drawing.Size(46, 13);
+            this.lblShapesCount.TabIndex = 3;
+            this.lblShapesCount.Text = "Shapes:";
             // 
             // chklistShapes
             // 
@@ -146,7 +147,7 @@
             this.chkShowWorldCoastline.AutoSize = true;
             this.chkShowWorldCoastline.Checked = true;
             this.chkShowWorldCoastline.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowWorldCoastline.Location = new System.Drawing.Point(866, 393);
+            this.chkShowWorldCoastline.Location = new System.Drawing.Point(866, 391);
             this.chkShowWorldCoastline.Name = "chkShowWorldCoastline";
             this.chkShowWorldCoastline.Size = new System.Drawing.Size(126, 17);
             this.chkShowWorldCoastline.TabIndex = 10;
@@ -181,12 +182,23 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "Default shape color:";
             // 
+            // chkSaveCountry
+            // 
+            this.chkSaveCountry.AutoSize = true;
+            this.chkSaveCountry.Location = new System.Drawing.Point(598, 391);
+            this.chkSaveCountry.Name = "chkSaveCountry";
+            this.chkSaveCountry.Size = new System.Drawing.Size(128, 17);
+            this.chkSaveCountry.TabIndex = 13;
+            this.chkSaveCountry.Text = "Save shape\'s country";
+            this.chkSaveCountry.UseVisualStyleBackColor = true;
+            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1006, 449);
             this.Controls.Add(this.lblDragRecipient);
+            this.Controls.Add(this.chkSaveCountry);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.numDefaultColor);
             this.Controls.Add(this.chkShowWorldCoastline);
@@ -195,7 +207,7 @@
             this.Controls.Add(this.buttClose);
             this.Controls.Add(this.buttSave);
             this.Controls.Add(this.chklistShapes);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblShapesCount);
             this.Controls.Add(this.picDisplay);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -213,7 +225,7 @@
 
         private System.Windows.Forms.Label lblDragRecipient;
         private System.Windows.Forms.PictureBox picDisplay;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblShapesCount;
         private System.Windows.Forms.CheckedListBox chklistShapes;
         private System.Windows.Forms.Button buttSave;
         private System.Windows.Forms.Button buttClose;
@@ -224,6 +236,7 @@
         private System.Windows.Forms.CheckBox chkShowWorldCoastline;
         private System.Windows.Forms.NumericUpDown numDefaultColor;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox chkSaveCountry;
     }
 }
 

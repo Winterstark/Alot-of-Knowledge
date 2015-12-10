@@ -13,7 +13,8 @@ namespace GeoDataExtractor
     {
         Visualizer viz;
         DataTable dbfTable;
-        int nameColumn, colorColumn, typeColumn, unknownShapeCount;
+        string fileName;
+        int nameColumn, miscColumn, typeColumn, countryColumn, unknownShapeCount;
         bool massCheckingInProgress;
 
 
@@ -28,15 +29,25 @@ namespace GeoDataExtractor
             {
                 dbfTable = ParseDBF.ReadDBF(filePath);
                 
-                //find the name, color, and type columns
+                //find the name, color/width, and type columns
                 nameColumn = getColumnIndex("NAME_LONG");
                 if (nameColumn == -1)
                     nameColumn = getColumnIndex("NAME");
                 if (nameColumn == -1)
                     MessageBox.Show("shapes will not be identified.", "DBF file has no NAME column", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 
-                colorColumn = getColumnIndex("MAPCOLOR");
-                typeColumn = getColumnIndex("TYPE");
+                miscColumn = getColumnIndex("MAPCOLOR"); //miscColumn represents the color of a polygon...
+                if (miscColumn == -1)
+                    miscColumn = getColumnIndex("scalerank"); //...or the width of a polyline or point
+
+                typeColumn = getColumnIndex("type_en");
+                if (typeColumn == -1)
+                    typeColumn = getColumnIndex("TYPE");
+
+                countryColumn = getColumnIndex("SOV0NAME");
+                if (countryColumn == -1)
+                    countryColumn = getColumnIndex("admin");
+                chkSaveCountry.Enabled = chkSaveCountry.Checked = countryColumn != -1;
             }
         }
 
@@ -56,7 +67,7 @@ namespace GeoDataExtractor
                 string name = dbfTable.Rows[chklistShapes.Items.Count][column].ToString().Trim();
 
                 if (name == "")
-                    name = "Unknown shape " + (++unknownShapeCount).ToString();
+                    name = "Unknown shape " + (++unknownShapeCount).ToString() + " (" + fileName + ")";
 
                 return name;
             }
@@ -80,6 +91,8 @@ namespace GeoDataExtractor
         
         void loadShapefile(string filePath)
         {
+            fileName = Path.GetFileNameWithoutExtension(filePath);
+
             chklistShapes.Items.Clear();
             unknownShapeCount = 0;
 
@@ -111,19 +124,26 @@ namespace GeoDataExtractor
                         readBigEndianInt32(file); //ignore record number
                         int recordLength = readBigEndianInt32(file);
                         int recordShapeType = file.ReadInt32();
+                        string name;
 
                         switch (recordShapeType)
                         {
+                            case Visualizer.SHAPE_TYPE_POINT:
+                                name = checkIfDuplicateName(getNextItemFromColumn(nameColumn, "Point"));
+                                
+                                viz.AddShape(new Point(file, Visualizer.SHAPE_TYPE_POINT, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(miscColumn, "0")), getNextItemFromColumn(countryColumn, "UNKNOWN COUNTRY")), name);
+                                chklistShapes.Items.Add(name);
+                                break;
                             case Visualizer.SHAPE_TYPE_POLYLINE:
-                                string name = checkIfDuplicateName(getNextItemFromColumn(nameColumn, "PolyLine"));
+                                name = checkIfDuplicateName(getNextItemFromColumn(nameColumn, "PolyLine"));
 
-                                viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYLINE, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(colorColumn, "0"))), name);
+                                viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYLINE, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(miscColumn, "0")), getNextItemFromColumn(countryColumn, "UNKNOWN COUNTRY")), name);
                                 chklistShapes.Items.Add(name);
                                 break;
                             case Visualizer.SHAPE_TYPE_POLYGON:
                                 name = checkIfDuplicateName(getNextItemFromColumn(nameColumn, "Polygon"));
                                 
-                                viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYGON, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(colorColumn, "0"))), name);
+                                viz.AddShape(new Poly(file, Visualizer.SHAPE_TYPE_POLYGON, getNextItemFromColumn(typeColumn, "UNKNOWN_TYPE"), int.Parse(getNextItemFromColumn(miscColumn, "0")), getNextItemFromColumn(countryColumn, "UNKNOWN COUNTRY")), name);
                                 chklistShapes.Items.Add(name);
                                 break;
                             default:
@@ -141,6 +161,8 @@ namespace GeoDataExtractor
             }
 
             file.Close();
+
+            lblShapesCount.Text = chklistShapes.Items.Count + " shapes:";
         }
 
         int readBigEndianInt32(BinaryReader file)
@@ -240,10 +262,10 @@ namespace GeoDataExtractor
                     if (name != "")
                     {
                         file.WriteLine(name);
-                        alotEntries = viz.Save(file, false);
+                        alotEntries = viz.Save(file, false, chkSaveCountry.Checked);
                     }
                     else
-                        alotEntries = viz.Save(file, true);
+                        alotEntries = viz.Save(file, true, chkSaveCountry.Checked);
 
                     file.Close();
                 }

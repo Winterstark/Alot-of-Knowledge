@@ -11,7 +11,7 @@ namespace AlotGUI
         public const int SHAPE_TYPE_POLYLINE = 3;
         public const int SHAPE_TYPE_POLYGON = 5;
 
-        public enum GeoType {Landmass, Country, PhysicalRegion, MarineArea, Lake};
+        public enum GeoType {Landmass, PhysicalRegion, MarineArea, Lake, River, Country, Region, City};
 
         Shape worldLandmass;
         Dictionary<string, Shape> mapEntities;
@@ -49,12 +49,18 @@ namespace AlotGUI
                 GeoType geoType;
                 if (filePath.Contains("countries"))
                     geoType = Visualizer.GeoType.Country;
+                else if (filePath.Contains("admin"))
+                    geoType = Visualizer.GeoType.Region;
+                else if (filePath.Contains("cities"))
+                    geoType = Visualizer.GeoType.City;
                 else if (filePath.Contains("physical"))
                     geoType = Visualizer.GeoType.PhysicalRegion;
                 else if (filePath.Contains("marine"))
                     geoType = Visualizer.GeoType.MarineArea;
                 else if (filePath.Contains("lakes"))
                     geoType = Visualizer.GeoType.Lake;
+                else if (filePath.Contains("rivers"))
+                    geoType = Visualizer.GeoType.River;
                 else
                     geoType = Visualizer.GeoType.Landmass;
 
@@ -63,12 +69,13 @@ namespace AlotGUI
                 while (!file.EndOfStream)
                 {
                     string name = file.ReadLine();
-                    if (mapEntities.ContainsKey(name))
-                        MessageBox.Show(name, "A map entity with that name already exists!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     string shapeType = file.ReadLine();
                     switch (shapeType)
                     {
+                        case "POINT":
+                            mapEntities.Add(name, new GeoPoint(geoType, file));
+                            break;
                         case "POLYLINE":
                             mapEntities.Add(name, new PolyLine(geoType, file, pen));
                             break;
@@ -153,7 +160,7 @@ namespace AlotGUI
             double avgDistance;
 
             foreach (var entity in mapEntities)
-                if (entity.Value.GeoType == qGeoType && entity.Value.Box.Contains(lon, lat) && ((Polygon)entity.Value).IsPointInPolygon(lon, lat, out avgDistance))
+                if (entity.Value.GeoType == qGeoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(lon, lat)) && entity.Value.IsSelected(lon, lat, out avgDistance))
                     enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
 
             //there may be more than one enclosing area if the user selected an enclave (e.g. San Marino or Lesotho), so select the one whose points are on average closest to the point of selection
@@ -166,6 +173,16 @@ namespace AlotGUI
                     selectedArea = area.Item1;
                     minAvgDistance = area.Item2;
                 }
+
+            if (selectedArea != "" && qGeoType == GeoType.River)
+            {
+                //rivers often have more than one segment; selectedArea needs to include them all
+                string baseName = selectedArea = getRiverBaseName(selectedArea);
+
+                int i = 2;
+                while (mapEntities.ContainsKey(baseName + " " + i.ToString()))
+                    selectedArea += "+" + baseName + " " + (i++).ToString();
+            }
 
             return selectedArea;
         }
@@ -187,24 +204,37 @@ namespace AlotGUI
                     drawEntityCollection(gfx, GeoType.PhysicalRegion);
 
                 drawEntityCollection(gfx, GeoType.Country);
+                drawEntityCollection(gfx, GeoType.City);
 
-                if (qGeoType == GeoType.Lake || qGeoType == GeoType.Country)
+                drawHighlightedRegions(gfx);
+
+                if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
+                {
+                    drawEntityCollection(gfx, GeoType.River);
                     drawEntityCollection(gfx, GeoType.Lake);
+                }
             }
             else
+            {
+                worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
                 worldLandmass.Draw(gfx);
 
-            //draw highlighted region
-            foreach (var entity in highlightedEntities)
-                if (entity.Box.IntersectsWith(viewportBox))
-                    entity.Draw(gfx);
+                drawHighlightedRegions(gfx);
+            }
         }
 
         void drawEntityCollection(Graphics gfx, GeoType type)
         {
             foreach (var entity in mapEntities)
-                if (entity.Value.GeoType == type && entity.Value.Box.IntersectsWith(viewportBox))
+                if (entity.Value.GeoType == type && (type == GeoType.City || entity.Value.Box.IntersectsWith(viewportBox)))
                     entity.Value.Draw(gfx);
+        }
+
+        void drawHighlightedRegions(Graphics gfx)
+        {
+            foreach (var entity in highlightedEntities)
+                if (entity.Box.IntersectsWith(viewportBox))
+                    entity.Draw(gfx);
         }
 
         public void Highlight(string[] entities, int qType)
@@ -240,28 +270,54 @@ namespace AlotGUI
                         RectangleF entitiesBox = new RectangleF(mapEntities[entities[0]].Box.X, mapEntities[entities[0]].Box.Y, mapEntities[entities[0]].Box.Width, mapEntities[entities[0]].Box.Height);
                         for (int i = 1; i < entities.Length; i++)
                             addRectangles(ref entitiesBox, mapEntities[entities[i]].Box);
-                        
+
                         foreach (var ent in mapEntities)
-                            if (!ArrayContainsString(entities, ent.Key) && ent.Value.GeoType == qGeoType)
+                            if (!ArrayContainsString(entities, ent.Key) && !neighbors.ContainsValue(getRiverBaseName(ent.Key)) && ent.Value.GeoType == qGeoType)
                             {
-                                float distance = distanceBetweenRegions(ent.Value.Box, entitiesBox);
+                                string entName = getRiverBaseName(ent.Key);
+                                
+                                float distance = 0;
+                                if (qGeoType != GeoType.River)
+                                    distance = distanceBetweenRegions(ent.Value.Box, entitiesBox);
+                                else
+                                {
+                                    //create a Box that includes all segments of the river
+                                    RectangleF riverBox = new RectangleF(ent.Value.Box.X, ent.Value.Box.Y, ent.Value.Box.Width, ent.Value.Box.Height);
+                                    for (int i = 2; mapEntities.ContainsKey(entName + " " + i.ToString()); i++)
+                                        addRectangles(ref riverBox, mapEntities[entName + " " + i.ToString()].Box);
+
+                                    distance = distanceBetweenRegions(riverBox, entitiesBox);
+                                }
 
                                 //remember closest 20 regions
                                 if (neighbors.Count < 20)
-                                    neighbors.Add(distance, ent.Key);
+                                    neighbors.Add(distance, entName);
                                 else if (distance < neighbors.Keys[19])
                                 {
                                     neighbors.RemoveAt(19);
-                                    neighbors.Add(distance, ent.Key);
+                                    neighbors.Add(distance, entName);
                                 }
                             }
 
                         //choose 5 random neighbors
                         Random rand = new Random((int)DateTime.Now.Ticks);
-                        while (highlightedEntities.Count < 5 && neighbors.Count > 0)
+
+                        for (int i = 0; i < 5 && neighbors.Count > 0; i++)
                         {
                             int index = rand.Next(neighbors.Count);
-                            highlightedEntities.Add(mapEntities[neighbors.Values[index]]);
+
+                            if (qGeoType != GeoType.River)
+                                highlightedEntities.Add(mapEntities[neighbors.Values[index]]);
+                            else
+                            {
+                                //add all river segments
+                                string river = getRiverBaseName(neighbors.Values[index]);
+
+                                highlightedEntities.Add(mapEntities[river]);
+                                for (int j = 2; mapEntities.ContainsKey(river + " " + j.ToString()); j++)
+                                    highlightedEntities.Add(mapEntities[river + " " + j.ToString()]);
+                            }
+
                             neighbors.RemoveAt(index);
                         }
                         break;
@@ -285,6 +341,7 @@ namespace AlotGUI
                         newZoom = windowSize.Width / highlightedEntitiesBox.Width * 0.75f;
                     else
                         newZoom = windowSize.Height / highlightedEntitiesBox.Height * 0.75f;
+                    newZoom = Math.Min(newZoom, 200);
 
                     zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
                 }
@@ -293,8 +350,10 @@ namespace AlotGUI
 
         public bool ArrayContainsString(string[] arr, string s)
         {
+            s = getRiverBaseName(s);
+
             foreach (string item in arr)
-                if (item == s)
+                if (getRiverBaseName(item) == s)
                     return true;
 
             return false;
@@ -327,6 +386,18 @@ namespace AlotGUI
 
             return (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
+
+        string getRiverBaseName(string entityName)
+        {
+            if (mapEntities.ContainsKey(entityName) && mapEntities[entityName].GeoType == GeoType.River)
+            {
+                int ind = entityName.LastIndexOf(' '), tmp;
+                if (ind != -1 && ind != entityName.Length - 1 && int.TryParse(entityName.Substring(ind + 1), out tmp))
+                    return entityName.Substring(0, entityName.LastIndexOf(' '));
+            }
+
+            return entityName;
+        }
     }
     
 
@@ -334,11 +405,12 @@ namespace AlotGUI
     {
         public RectangleF Box;
         public Visualizer.GeoType GeoType;
-        public int ShapeType;
         public bool Highlighted;
 
 
         public abstract void Draw(Graphics gfx);
+
+        public abstract bool IsSelected(float x, float y, out double distance); //distance returns the MINIMUM distance for a point/polyline or the AVERAGE distance for a polygon
         
         public void EnlargeViewportBox(ref RectangleF viewportBox)
         {
@@ -355,6 +427,47 @@ namespace AlotGUI
         }
     }
 
+
+    public class GeoPoint : Shape
+    {
+        PointF point;
+        float size;
+
+
+        public GeoPoint(Visualizer.GeoType geoType, StreamReader file)
+        {
+            GeoType = geoType;
+
+            string[] coords = file.ReadLine().Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+            point = new PointF(float.Parse(coords[0]), float.Parse(coords[1]));
+
+            Box = new RectangleF(point.X, point.Y, 0.01f, 0.01f);
+
+            size = (11 - float.Parse(file.ReadLine())) / 100;
+        }
+
+        public override void Draw(Graphics gfx)
+        {
+            gfx.FillEllipse(Highlighted ? Brushes.Purple : Brushes.Black, point.X - size / 2, point.Y - size / 2, size, size);
+
+            if (size >= 0.05)
+            {
+                //draw larger cities with a red center circle
+                float centerSize = size / 2;
+                gfx.FillEllipse(Brushes.DarkRed, point.X - centerSize / 2, point.Y - centerSize / 2, centerSize, centerSize);
+            }
+        }
+
+        public override bool IsSelected(float x, float y, out double distance)
+        {
+            float dx = x - point.X;
+            float dy = y - point.Y;
+            distance = Math.Sqrt(dx * dx + dy * dy);
+
+            return distance <= size / 2;
+        }
+    }
+
     
     public class PolyLine : Shape
     {
@@ -365,8 +478,7 @@ namespace AlotGUI
         public PolyLine(Visualizer.GeoType geoType, StreamReader file, Pen pen)
         {
             GeoType = geoType;
-
-            ShapeType = Visualizer.SHAPE_TYPE_POLYLINE;
+            
             this.pen = pen;
 
             Box = new RectangleF(float.Parse(file.ReadLine()), float.Parse(file.ReadLine()), float.Parse(file.ReadLine()), float.Parse(file.ReadLine()));
@@ -383,13 +495,102 @@ namespace AlotGUI
                     parts[i][j] = new PointF(float.Parse(coords[0]), float.Parse(coords[1]));
                 }
             }
+
+            if (geoType == Visualizer.GeoType.River)
+            {
+                int scaleRank = int.Parse(file.ReadLine());
+                this.pen = new Pen(Color.PowderBlue, 0.028f - (float)scaleRank / 400);
+            }
         }
 
         public override void Draw(Graphics gfx)
         {
-            foreach (var line in parts)
-                gfx.DrawLines(pen, line);
+            if (Highlighted)
+            {
+                Pen highlightedPen = new Pen(Color.Purple, pen.Width + 0.1f);
+                foreach (var polyline in parts)
+                    gfx.DrawLines(highlightedPen, polyline);
+
+                highlightedPen.Dispose();
+            }
+
+            foreach (var polyline in parts)
+                gfx.DrawLines(pen, polyline);
         }
+
+        public override bool IsSelected(float x, float y, out double minDistance)
+        {
+            minDistance = double.MaxValue;
+
+            foreach (var polyline in parts)
+                for (int i = 0; i < polyline.Length - 1; i++)
+                {
+                    double dist = lineToPointDistance2D(polyline[i], polyline[i + 1], x, y, true);
+                    if (dist < minDistance)
+                        minDistance = dist;
+                }
+
+            return minDistance < 1;
+        }
+
+        #region Calculate distance from point to line segment
+        //compute the dot product AB . AC
+        private double dotProduct(double[] pointA, double[] pointB, double[] pointC)
+        {
+            double[] AB = new double[2];
+            double[] BC = new double[2];
+
+            AB[0] = pointB[0] - pointA[0];
+            AB[1] = pointB[1] - pointA[1];
+            BC[0] = pointC[0] - pointB[0];
+            BC[1] = pointC[1] - pointB[1];
+
+            return AB[0] * BC[0] + AB[1] * BC[1];
+        }
+
+        //compute the cross product AB x AC
+        private double crossProduct(double[] pointA, double[] pointB, double[] pointC)
+        {
+            double[] AB = new double[2];
+            double[] AC = new double[2];
+
+            AB[0] = pointB[0] - pointA[0];
+            AB[1] = pointB[1] - pointA[1];
+            AC[0] = pointC[0] - pointA[0];
+            AC[1] = pointC[1] - pointA[1];
+
+            return AB[0] * AC[1] - AB[1] * AC[0];
+        }
+
+        //compute the distance from A to B
+        double distance(double[] pointA, double[] pointB)
+        {
+            double d1 = pointA[0] - pointB[0];
+            double d2 = pointA[1] - pointB[1];
+
+            return Math.Sqrt(d1 * d1 + d2 * d2);
+        }
+
+        //compute the distance from AB to C
+        //if isSegment is true, AB is a segment, not a line.
+        double lineToPointDistance2D(PointF ptA, PointF ptB, float cx, float cy, bool isSegment)
+        {
+            double[] pointA = new double[] { ptA.X, ptA.Y };
+            double[] pointB = new double[] { ptB.X, ptB.Y };
+            double[] pointC = new double[] { cx, cy };
+            
+            if (isSegment)
+            {
+                if (dotProduct(pointA, pointB, pointC) > 0)
+                    return distance(pointB, pointC);
+
+                if (dotProduct(pointB, pointA, pointC) > 0)
+                    return distance(pointA, pointC);
+            }
+
+            return Math.Abs(crossProduct(pointA, pointB, pointC) / distance(pointA, pointB));
+        } 
+        #endregion
     }
     
 
@@ -406,14 +607,13 @@ namespace AlotGUI
         
         public Polygon(Visualizer.GeoType geoType, StreamReader file, Pen pen) : base(geoType, file, pen)
         {
-            ShapeType = Visualizer.SHAPE_TYPE_POLYGON;
-
             int color = int.Parse(file.ReadLine()) / 100;
 
             switch (GeoType)
             {
                 case Visualizer.GeoType.Landmass:
                     brush = new SolidBrush(MAP_COLORS[color]);
+                    highlightedBrush = Brushes.ForestGreen;
                     break;
                 case Visualizer.GeoType.Country:
                     brush = new SolidBrush(MAP_COLORS[color]);
@@ -448,11 +648,12 @@ namespace AlotGUI
                         gfx.FillPolygon(highlightedBrush, polygon);
                 }
 
-                gfx.DrawPolygon(pen, polygon);
+                if (GeoType != Visualizer.GeoType.Lake)
+                    gfx.DrawPolygon(pen, polygon);
             }
         }
 
-        public bool IsPointInPolygon(float x, float y, out double avgDistance)
+        public override bool IsSelected(float x, float y, out double avgDistance)
         {
             foreach (var part in parts)
             {

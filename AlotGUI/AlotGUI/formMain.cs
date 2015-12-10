@@ -191,14 +191,22 @@ namespace AlotGUI
 
         void sendFeedbackToAlot(bool feedback)
         {
-            var server = new NamedPipeServerStream("alotPipeFeedback");
-            server.WaitForConnection();
-            
-            var bw = new BinaryWriter(server);
-            bw.Write(feedback);
+            try
+            {
+                var server = new NamedPipeServerStream("alotPipeFeedback");
+                server.WaitForConnection();
 
-            server.Close();
-            server.Dispose();
+                var bw = new BinaryWriter(server);
+                bw.Write(feedback);
+
+                server.Close();
+                server.Dispose();
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Error while sending feedback!" + Environment.NewLine + exc.Message + Environment.NewLine + Environment.NewLine + "Trying again...");
+                sendFeedbackToAlot(feedback);
+            }
         }
 
         void pipeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1144,7 +1152,22 @@ namespace AlotGUI
             if (msg.Length > 6)
             {
                 mapQType = int.Parse(msg.Substring(4, 1));
-                questionEntities = msg.Substring(6).Split('+');
+                msg = msg.Substring(6);
+
+                if (msg.Contains(".."))
+                {
+                    //expand shortened expression, for example: "Nile..3" -> "Nile+Nile 2+Nile 3"
+                    int ind = msg.IndexOf("..");
+                    int n = int.Parse(msg.Substring(ind + 2));
+                    msg = msg.Substring(0, ind);
+                    string baseName = msg;
+
+                    for (int i = 2; i <= n; i++)
+                        msg += "+" + baseName + " " + i.ToString();
+                }
+
+                questionEntities = msg.Split('+');
+
                 viz.Highlight(questionEntities, mapQType);
             }
 
@@ -1197,8 +1220,8 @@ namespace AlotGUI
             //load data
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
-            
-            //processMsg("map 1 Brazil");
+
+            processMsg("map 1 United Kingdom");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1289,7 +1312,7 @@ namespace AlotGUI
                 string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
                 if (mouseOverRegion != mapMouseOverRegion)
                 {
-                    viz.Highlight(new string[1] { mouseOverRegion }, -mapQType);
+                    viz.Highlight(mouseOverRegion.Split('+'), -mapQType);
                     this.Invalidate();
 
                     mapMouseOverRegion = mouseOverRegion;

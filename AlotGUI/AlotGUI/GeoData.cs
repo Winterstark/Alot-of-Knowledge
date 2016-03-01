@@ -16,7 +16,8 @@ namespace AlotGUI
         Shape worldLandmass;
         Dictionary<string, Shape> mapEntities;
         List<Shape> highlightedEntities;
-        
+
+        Bitmap preDrawnMap;
         Brush seaBrush, highlightBrush;
         Pen pen, highlightPen;
         Size windowSize;
@@ -30,9 +31,10 @@ namespace AlotGUI
         {
             this.windowSize = windowSize;
 
-            zoom = windowSize.Width / 360;
-            viewportX = 180 * zoom;
-            viewportY = 90 * zoom;
+            zoom = (float)windowSize.Width / 360;
+            viewportX = 180.0f * zoom;
+            viewportY = 90.0f * zoom;
+            //zoomOnPoint(180.0f * zoom, 90.0f * zoom, zoom);
 
             seaBrush = new SolidBrush(Color.FromArgb(222, 229, 237));
             highlightBrush = new SolidBrush(Color.Purple);
@@ -93,6 +95,8 @@ namespace AlotGUI
 
                 file.Close();
             }
+
+            preDrawMap();
         }
 
         public void MoveViewport(int dx, int dy)
@@ -115,6 +119,8 @@ namespace AlotGUI
 
             //zoom
             zoomOnPoint(viewportCenterX, viewportCenterY, zoom + diff);
+
+            preDrawMap();
         }
 
         void zoomOnPoint(float x, float y, float newZoom)
@@ -129,6 +135,7 @@ namespace AlotGUI
 
         void checkViewportBounds()
         {
+            return;
             if (360 * zoom < windowSize.Width) //don't unzoom so much that the world map is smaller than the window
                 zoom = (float)windowSize.Width / 360.0f;
 
@@ -153,65 +160,123 @@ namespace AlotGUI
 
         public string GetSelectedArea(int mx, int my)
         {
-            float lon = (mx - viewportX) / zoom;
-            float lat = -(my - viewportY) / zoom;
+            try
+            {
+                float lon = (mx - viewportX) / zoom;
+                float lat = -(my - viewportY) / zoom;
 
-            List<Tuple<string, double>> enclosingAreas = new List<Tuple<string, double>>();
-            double avgDistance;
+                List<Tuple<string, double>> enclosingAreas = new List<Tuple<string, double>>();
+                double avgDistance;
 
-            foreach (var entity in mapEntities)
-                if (entity.Value.GeoType == qGeoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(lon, lat)) && entity.Value.IsSelected(lon, lat, out avgDistance))
-                    enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
+                foreach (var entity in mapEntities)
+                    if (entity.Value.GeoType == qGeoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(lon, lat)) && entity.Value.IsSelected(lon, lat, out avgDistance))
+                        enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
 
-            //there may be more than one enclosing area if the user selected an enclave (e.g. San Marino or Lesotho), so select the one whose points are on average closest to the point of selection
-            double minAvgDistance = double.MaxValue;
-            string selectedArea = "";
+                //there may be more than one enclosing area if the user selected an enclave (e.g. San Marino or Lesotho), so select the one whose points are on average closest to the point of selection
+                double minAvgDistance = double.MaxValue;
+                string selectedArea = "";
 
-            foreach (var area in enclosingAreas)
-                if (area.Item2 < minAvgDistance)
+                foreach (var area in enclosingAreas)
+                    if (area.Item2 < minAvgDistance)
+                    {
+                        selectedArea = area.Item1;
+                        minAvgDistance = area.Item2;
+                    }
+
+                if (selectedArea != "" && qGeoType == GeoType.River)
                 {
-                    selectedArea = area.Item1;
-                    minAvgDistance = area.Item2;
+                    //rivers often have more than one segment; selectedArea needs to include them all
+                    string baseName = selectedArea = getRiverBaseName(selectedArea);
+
+                    int i = 2;
+                    while (mapEntities.ContainsKey(baseName + " " + i.ToString()))
+                        selectedArea += "+" + baseName + " " + (i++).ToString();
                 }
 
-            if (selectedArea != "" && qGeoType == GeoType.River)
-            {
-                //rivers often have more than one segment; selectedArea needs to include them all
-                string baseName = selectedArea = getRiverBaseName(selectedArea);
-
-                int i = 2;
-                while (mapEntities.ContainsKey(baseName + " " + i.ToString()))
-                    selectedArea += "+" + baseName + " " + (i++).ToString();
+                return selectedArea;
             }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Exception in GetSelectedArea: " + exc.Message);
+                return "";
+            }
+        }
 
-            return selectedArea;
+        void preDrawMap()
+        {
+            //if the zoom is small enough, pre-draw the map to improve performance
+            if (preDrawnMap != null)
+                preDrawnMap.Dispose();
+
+            if (zoom < 10)
+            {
+                int imgW = (int)(360.0f * zoom);
+                int imgH = (int)(180.0f * zoom);
+                preDrawnMap = new Bitmap(imgW, imgH);
+
+                Graphics imgGfx = Graphics.FromImage(preDrawnMap);
+
+                //imgGfx.TranslateTransform(windowSize.Width / 2, windowSize.Height / 2 - 90 * zoom);
+                //imgGfx.TranslateTransform(viewportX, viewportY);
+                imgGfx.TranslateTransform(imgW / 2, imgH / 2);
+                imgGfx.ScaleTransform(zoom, -zoom);
+
+                drawMapImage(imgGfx);
+
+                imgGfx.Dispose();
+            }
+            else
+                preDrawnMap = null;
         }
 
         public void Draw(Graphics gfx)
         {
+            if (preDrawnMap != null)
+            {
+                gfx.DrawImageUnscaled(preDrawnMap, (int)viewportX, (int)viewportY);
+                gfx.DrawRectangle(Pens.Red, (int)viewportX, (int)viewportY, preDrawnMap.Width, preDrawnMap.Height);
+
+                drawHighlightedRegions(gfx);
+            }
+            else
+            {
+                gfx.TranslateTransform(viewportX, viewportY);
+                gfx.ScaleTransform(zoom, -zoom);
+                drawMapImage(gfx);
+            }
+        }
+
+        void drawMapImage(Graphics gfx)
+        {
             gfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
             gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
-            gfx.TranslateTransform(viewportX, viewportY);
-            gfx.ScaleTransform(zoom, -zoom);
+            //gfx.TranslateTransform(windowSize.Width / 2, windowSize.Height / 2 - 90 * zoom);
+            //gfx.TranslateTransform(viewportX, viewportY);
+            //gfx.ScaleTransform(zoom, -zoom);
 
             gfx.FillRectangle(seaBrush, -180, -90, 360, 180); //ocean background
             gfx.DrawRectangle(pen, -180, -90, 360, 180); //world frame
 
             if (qType == 1)
             {
-                if (qGeoType == GeoType.PhysicalRegion)
-                    drawEntityCollection(gfx, GeoType.PhysicalRegion);
-
-                drawEntityCollection(gfx, GeoType.Country);
-                drawEntityCollection(gfx, GeoType.City);
-
-                drawHighlightedRegions(gfx);
-
-                if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
+                if (qGeoType == GeoType.Region)
+                    drawEntityCollection(gfx, GeoType.Region);
+                else
                 {
-                    drawEntityCollection(gfx, GeoType.River);
-                    drawEntityCollection(gfx, GeoType.Lake);
+                    if (qGeoType == GeoType.PhysicalRegion)
+                        drawEntityCollection(gfx, GeoType.PhysicalRegion);
+
+                    drawEntityCollection(gfx, GeoType.Country);
+                    drawEntityCollection(gfx, GeoType.City);
+
+                    drawHighlightedRegions(gfx);
+
+                    if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
+                    {
+                        drawEntityCollection(gfx, GeoType.River);
+                        drawEntityCollection(gfx, GeoType.Lake);
+                    }
                 }
             }
             else
@@ -607,7 +672,9 @@ namespace AlotGUI
         
         public Polygon(Visualizer.GeoType geoType, StreamReader file, Pen pen) : base(geoType, file, pen)
         {
-            int color = int.Parse(file.ReadLine()) / 100;
+            int color = int.Parse(file.ReadLine());
+            if (geoType != Visualizer.GeoType.Region)
+                color /= 100;
 
             switch (GeoType)
             {
@@ -616,6 +683,7 @@ namespace AlotGUI
                     highlightedBrush = Brushes.ForestGreen;
                     break;
                 case Visualizer.GeoType.Country:
+                case Visualizer.GeoType.Region:
                     brush = new SolidBrush(MAP_COLORS[color]);
                     highlightedBrush = Brushes.Purple;
                     break;

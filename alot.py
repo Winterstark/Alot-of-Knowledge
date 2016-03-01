@@ -1642,7 +1642,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		step = 1
 		stepOffset = 0
 
-	correct = True
+	correct = playSound = True
 
 	while type(correct) is bool and step <= len(items):
 		if type(items[step-1]) is list:
@@ -1682,7 +1682,14 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				if exit:
 					break
 		else:
-			correct, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(items[step-1]), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
+			a = toString(items[step-1])
+			if removeParentheses(a) == "": #skip items that only consist of parenthesized texts
+				colorPrint("{}. {}".format(step + stepOffset, a), color)
+				correct = True
+				exit = immediately = False
+				playSound = False
+			else:
+				correct, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), a, color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
 
 		if immediately:
 			break
@@ -1691,7 +1698,8 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			return correct, exit, immediately
 		elif type(correct) is bool:
 			step += 1
-			feedback("") #play correct sound
+			if playSound:
+				feedback("")
 		elif type(correct) is str and correct != "False":
 			feedback("Wrong! Correct answer: " + correct)
 

@@ -1,290 +1,220 @@
-First Battle of Ypres :: 1914.7506849315068 - 1914.835616438356 //  // 
-Gabon :: 1960 // Gabon // 
-Mussolini executed :: 1945.323287671233 //  // 
-Second Battle of Champagne :: 1915.668493150685 - 1915.835616438356 //  // 
-Step Pyramid of Djoser :: -2700 - -2600 // Step Pyramid of Djoser // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ancient Egypt\Saqqara.jpg
-The Gambia :: 1965 // The Gambia // 
-U.S. declares war on the German Empire :: 1917.2493150684932 //  // 
-Italy enters WWII by attacking France :: 1940.4180327868853 //  // 
-Millard Fillmore :: 1850 - 1853 // Presidents of the U.S. // 
-Italy enters WWI :: 1915.331506849315 //  // 
-Greece enters WWI :: 1917.4164383561645 //  // 
-Repubblica di Genova :: 1051 - 1797 // Repubblica di Genova // 
-Basilica di San Marco :: 1001 - 1101 // Basilica di San Marco // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Basilica di San Marco
-Assassination of Archduke Franz Ferdinand of Austria-Hungary :: 1914.490410958904 //  // 
-Battle of Loos :: 1915.668493150685 - 1915.7506849315068 //  // 
-Cuban Missile Crisis :: 1962 //  // 
-Nero :: 54 - 68 // Julio-Claudian dynasty // 
-Airplane :: 1903 // Airplane // 
-John Quincy Adams :: 1825 - 1829 // Presidents of the U.S. // 
-Lyndon B. Johnson :: 1963 - 1969 // Presidents of the U.S. // 
-Grover Cleveland :: 1893 - 1897 // Presidents of the U.S. // 
-Monaco :: 1861 // Monaco // 
-First Indochina War :: 1946 - 1954 //  // 
-Vichy France (French State/Etat francais) :: 1940 - 1944 //  // 
-Battle of the Bulge :: 1944.9180327868853 - 1945.0027397260274 //  // 
-Franklin Pierce :: 1853 - 1857 // Presidents of the U.S. // 
-First Italian campaign :: 1796 - 1797 // Rise of Napoleon // 
-Second Battle of Ypres :: 1915.2493150684932 - 1915.331506849315 //  // 
-French invasion of Russia :: 1812.4180327868853 - 1812.9180327868853 // French invasion of Russia // 
-March on Rome; Mussolini becomes Prime Minister :: 1922 //  // 
-Crimean War :: 1853 - 1856 // Crimean War // 
-Battle of Tannenberg :: 1914.6438356164383 - 1914.66301369863 //  // 
-War of the Fourth Coalition :: 1806 - 1807 // War of the Fourth Coalition // 
-Theodore Roosevelt :: 1901 - 1909 // Presidents of the U.S. // 
-Airship :: 1834 - 1867 // Airship // 
-Germany surrenders :: 1945.3506849315067 //  // 
-First Battle of the Marne :: 1914.6794520547944 - 1914.6986301369864 //  // 
-Japan declares war on Germany and Austria-Hungary :: 1914.5835616438355 //  // 
-Hundred Days :: 1815.164383561644 - 1815.4986301369863 //  // 
-Winter War :: 1939.835616438356 - 1940.1666666666667 //  // 
-Battles of the Frontiers :: 1914.5835616438355 - 1914.668493150685 //  // 
-Warren G. Harding :: 1921 - 1923 // Presidents of the U.S. // 
-Hatshepsut :: -1667 - -1334 //  // 
-Immanuel Kant :: 1701 - 1801 //  // 
-James Madison :: 1809 - 1817 // Presidents of the U.S. // 
-Gas lighting :: 1767 - 1800 // Gas lighting // 
-Monarchy abolished; Republic declared (Year One of the French Republican Calendar) :: 1792.6693989071039 // French Revolution // 
-George W. Bush :: 2001 - 2009 // Presidents of the U.S. // 
-Battle of Verdun :: 1916.0874316939892 - 1916.9180327868853 //  // 
-Mikhail Gorbachev :: 1985 - 1991 // Leaders of the Soviet Union // 
-Croatia :: 1991 // Croatia // 
-Hitler joins the German Workers Party :: 1919 // Hitlers rise to power // 
-Martin Van Buren :: 1837 - 1841 // Presidents of the U.S. // 
-Thermidorian Reaction - Robespierre executed :: 1794.4986301369863 // French Revolution // 
-Plato :: -418 - -351 //  // 
-Hungary and Romania join the Axis :: 1940.8360655737704 //  // 
-Champ de Mars Massacre :: 1791.4986301369863 // French Revolution // 
-Battle of Stalingrad (Volgograd) :: 1942.5835616438355 - 1943.0876712328768 //  // 
-Germany invades Yugoslavia and Greece :: 1941.2493150684932 //  // 
-Francis Bacon :: 1550 - 1617 //  // 
-Ionic order :: -567 - -534 // Ionic order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ionic order
-Hitler commits suicide :: 1945.3287671232877 //  // 
-Battle of Lutzen :: 1813.331506849315 // War of the Sixth Coalition // 
-James A. Garfield :: 1881 // Presidents of the U.S. // 
-Cross of Lothair :: 1000 // Cross of Lothair // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Lothair
-NSDAP wins 44% of the vote in the Reichstag elections; the Reichstag passes the Enabling Act :: 1933.164383561644 // Hitlers rise to power // 
-Socrates :: -484 - -399 //  // 
-Frescoes in the Cappella Scrovegni :: 1300 // Frescoes in the Cappella Scrovegni // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Giotto - Frescoes in the Cappella Scrovegni
-Claudius :: 41 - 54 // Julio-Claudian dynasty // 
-William McKinley :: 1897 - 1901 // Presidents of the U.S. // 
-Ponte di Rialto :: 1501 - 1601 // Ponte di Rialto // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Ponte di Rialto.jpg
-New Kingdom :: -1500 - -1000 // Ancient Egyptian periods // 
-Battle of Waterloo :: 1815.4164383561645 //  // 
-Battle of Aspern-Essling :: 1809.331506849315 // War of the Fifth Coalition // 
-Battle of Vitoria: Wellesley decisively defeats the French army :: 1813 // Peninsular War // 
-Germany and the Soviet Union invade Poland :: 1939.668493150685 - 1939.7506849315068 //  // 
-Battle of Guadalcanal :: 1942.5835616438355 - 1943.0876712328768 //  // 
-Allies win in North Africa :: 1943.331506849315 //  // 
-Francois-Marie Arouet/Voltaire :: 1701 - 1801 //  // 
-United States Virgin Islands :: 1917 // United States Virgin Islands // 
-George H. W. Bush :: 1989 - 1993 // Presidents of the U.S. // 
-Namibia :: 1990 // Namibia // 
-Battle of Trafalgar :: 1805.7506849315068 // War of the Third Coalition // 
-Vladimir Lenin :: 1922 - 1924 // Leaders of the Soviet Union // 
-Germany assists Italy in Libya and drives back the British :: 1941 //  // 
-Pinochets military dictatorship of Chile :: 1973 - 1990 //  // 
-First Battle of the Aisne :: 1914.7013698630137 - 1914.7424657534248 //  // 
-Georg Wilhelm Friedrich Hegel :: 1783 - 1817 //  // 
-Return to France :: 1799.5835616438355 // Rise of Napoleon // 
-Remilitarization of the Rhineland :: 1936 //  // 
+James Buchanan :: 1857 - 1861 // Presidents of the U.S. // 
+Republic of Venice :: 697 - 1797 // Republic of Venice // 
 George Washington :: 1789 - 1797 // Presidents of the U.S. // 
-Austria-Hungary declares war on Serbia :: 1914.572602739726 //  // 
-Battle of Kursk :: 1943.4986301369863 - 1943.5835616438355 //  // 
-Yuri Andropov :: 1982 - 1984 // Leaders of the Soviet Union // 
-Constitution of the Year X - Napoleon becomes First Consul for life :: 1802 // Rise of Napoleon // 
-Mussolini deposed :: 1943.4986301369863 //  // 
-John Tyler :: 1841 - 1845 // Presidents of the U.S. // 
-Comoros :: 1975 // Comoros // 
-Norway :: 1905 // Norway // 
-Tripartite Pact (Berlin Pact) between Germany, Italy, and Japan :: 1940.6693989071039 //  // 
-Bulgaria joins the Axis :: 1941.164383561644 //  // 
-Maximilien Robespierre heads the Committee of Public Safety - Reign of Terror :: 1793 - 1794 // French Revolution // 
-Gerald R. Ford :: 1974 - 1977 // Presidents of the U.S. // 
-Battle of Bailen: The French retreat :: 1808.5 // Peninsular War // 
+Mikhail Gorbachev :: 1985 - 1991 // Leaders of the Soviet Union // 
+Lyndon B. Johnson :: 1963 - 1969 // Presidents of the U.S. // 
 Akhenaten :: -1334 - -1001 //  // 
-Move into Syria :: 1799.0027397260274 // Rise of Napoleon // 
-Fall of Constantinople :: 1453 //  // 
+Korean War :: 1950 - 1953 //  // 
+Ponte di Rialto :: 1501 - 1601 // Ponte di Rialto // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Ponte di Rialto.jpg
+Suez canal :: 1869 //  // 
+Battle of the Nile :: 1798.5835616438355 // Rise of Napoleon // 
+France occupies the Ruhr (in response to the Weimar Republics failure to continue its reparation payments) :: 1923 - 1925 // Hitlers rise to power // 
+Doric order :: -700 - -600 // Doric order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Doric order
+Leonid Brezhnev :: 1964 - 1982 // Leaders of the Soviet Union // 
+First Italian campaign :: 1796 - 1797 // Rise of Napoleon // 
+March on Rome; Mussolini becomes Prime Minister :: 1922 //  // 
+Battle of Ulm :: 1805.7506849315068 // War of the Third Coalition // 
+Nero :: 54 - 68 // Julio-Claudian dynasty // 
+Airship :: 1834 - 1867 // Airship // 
 Harry S. Truman :: 1945 - 1953 // Presidents of the U.S. // 
-The French retreat :: 1812.7513661202186 // French invasion of Russia // 
-13 Vendemiaire - Defense of the Tuileries Palace :: 1795 // Rise of Napoleon // 
-Cuban revolutionists win :: 1959 //  // 
+El Salvador :: 1841 // El Salvador // 
+Beer hall putsch :: 1923 // Hitlers rise to power // 
+Peninsular War :: 1807 - 1814 // Peninsular War // 
+Georgy Malenkov :: 1953 - 1955 // Leaders of the Soviet Union // 
 Constitution completed :: 1791.668493150685 // French Revolution // 
-Arsenale di Venezia :: 1100 // Arsenale di Venezia // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Arsenale di Venezia.jpg
-First Battle of Champagne :: 1914.9178082191781 - 1915.164383561644 //  // 
+Thermidorian Reaction - Robespierre executed :: 1794.4986301369863 // French Revolution // 
+(Royal) Flight to Varennes :: 1791.4164383561645 // French Revolution // 
+Vatican City :: 1929 // Vatican City // 
+Slovenia :: 1991 // Slovenia // 
+Calvin Coolidge :: 1923 - 1929 // Presidents of the U.S. // 
+Capture of Malta :: 1798.4164383561645 // Rise of Napoleon // 
+Battle of Bailen: The French retreat :: 1808.5 // Peninsular War // 
+Aristotle :: -384 - -322 //  // 
+Champ de Mars Massacre :: 1791.4986301369863 // French Revolution // 
+Frescoes in the Cappella Scrovegni :: 1300 // Frescoes in the Cappella Scrovegni // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Giotto - Frescoes in the Cappella Scrovegni
+Basilica di San Marco :: 1001 - 1101 // Basilica di San Marco // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Basilica di San Marco
+Napoleon returns to Spain and retakes Madrid :: 1808.9180327868853 // Peninsular War // 
+Battle of Jena-Auerstedt :: 1806.7506849315068 // War of the Fourth Coalition // 
+American Civil War :: 1861 - 1865 //  // 
+William McKinley :: 1897 - 1901 // Presidents of the U.S. // 
+The light bulb :: 1867 - 1900 // The light bulb // 
+Augustus :: -27 - 14 // Julio-Claudian dynasty // 
+William H. Harrison :: 1841 // Presidents of the U.S. // 
+February Revolution :: 1917.1835616438357 //  // 
+British army lands in Portugal under the command of Sir Arthur Wellesley :: 1808.5846994535518 // Peninsular War // 
+Abraham Lincoln :: 1861 - 1865 // Presidents of the U.S. // 
+President Hindenburg appoints Hitler as chancellor after two parliamentary elections without a majority government :: 1933.0027397260274 // Hitlers rise to power // 
+Monarchy abolished; Republic declared (Year One of the French Republican Calendar) :: 1792.6693989071039 // French Revolution // 
+Monaco :: 1861 // Monaco // 
+Zachary Taylor :: 1849 - 1850 // Presidents of the U.S. // 
+King Louis XVI executed :: 1793.0027397260274 // French Revolution // 
+Theodore Roosevelt :: 1901 - 1909 // Presidents of the U.S. // 
+Democratic Republic of the Congo :: 1960 // Democratic Republic of the Congo // 
+Thomas Jefferson :: 1801 - 1809 // Presidents of the U.S. // 
+Hundred Days :: 1815.164383561644 - 1815.4986301369863 //  // 
+Dwight D. Eisenhower :: 1953 - 1961 // Presidents of the U.S. // 
+Pinochets military dictatorship of Chile :: 1973 - 1990 //  // 
+Millard Fillmore :: 1850 - 1853 // Presidents of the U.S. // 
+Vanuatu :: 1980 // Vanuatu // 
+Battle of Wagram :: 1809.4986301369863 // War of the Fifth Coalition // 
+Franklin D. Roosevelt :: 1933 - 1945 // Presidents of the U.S. // 
+Gas lighting :: 1767 - 1800 // Gas lighting // 
+Friedrich Nietzsche :: 1851 - 1901 //  // 
+Sinking of the Lusitania :: 1915.331506849315 //  // 
+Middle Kingdom :: -2000 - -1667 // Ancient Egyptian periods // 
+Late Period :: -667 - -334 // Ancient Egyptian periods // 
+Storming of the Tuileries Palace :: 1792.5846994535518 // French Revolution // 
+Hitler in prison; writes Mein Kampf :: 1924 // Hitlers rise to power // 
+George W. Bush :: 2001 - 2009 // Presidents of the U.S. // 
+Popular uprisings begin :: 1808.3360655737704 // Peninsular War // 
+Panama canal :: 1914 //  // 
+Adolf Hitler :: 1889 - 1945.3287671232877 //  // 
+Chester A. Arthur :: 1881 - 1885 // Presidents of the U.S. // 
+Namibia :: 1990 // Namibia // 
+Wellesley captures Madrid :: 1812 // Peninsular War // 
+The Gambia :: 1965 // The Gambia // 
+Declaration of Pillnitz (by Frederick II of Prussia and the Habsburg Holy Roman Emperor Leopold II, who was Marie Antoinettes brother) :: 1791.5835616438355 // French Revolution // 
+Cuban Missile Crisis :: 1962 //  // 
+Napoleon crowned as Emperor Napoleon I :: 1804 // Rise of Napoleon // 
+Vladimir Lenin :: 1922 - 1924 // Leaders of the Soviet Union // 
+The French retreat :: 1812.7513661202186 // French invasion of Russia // 
+Reichstag fire and the Reichstag Fire Decree :: 1933.0876712328768 // Hitlers rise to power // 
+Francis Bacon :: 1550 - 1617 //  // 
+Cyprus U.N. Buffer Zone :: 1974 // Cyprus U.N. Buffer Zone // 
+New Kingdom :: -1500 - -1000 // Ancient Egyptian periods // 
+NSDAP wins 18% of the vote in the Reichstag elections :: 1930 // Hitlers rise to power // 
+John Adams :: 1797 - 1801 // Presidents of the U.S. // 
+France and Spain invade Portugal :: 1807 // Peninsular War // 
+Winter War :: 1939.835616438356 - 1940.1666666666667 //  // 
+France occupies Madrid :: 1808.1666666666667 // Peninsular War // 
+Martin Luther starts the Reformation by posting his "95 Theses" on the church door in Wittenberg. :: 1517 //  // 
+Great Lisbon Earthquake :: 1755.835616438356 //  // 
+Caligula :: 37 - 41 // Julio-Claudian dynasty // 
+Fall of Constantinople :: 1453 //  // 
+Napoleon Bonaparte :: 1769 - 1821 //  // 
+War of the Sixth Coalition :: 1812 - 1814 // War of the Sixth Coalition // 
+Tiberius :: 14 - 37 // Julio-Claudian dynasty // 
+Joseph Stalin :: 1924 - 1953 // Leaders of the Soviet Union // 
+Gerald R. Ford :: 1974 - 1977 // Presidents of the U.S. // 
+Herbert Spencer :: 1801 - 1901 //  // 
+Battle of the Pyramids :: 1798.4986301369863 // Rise of Napoleon // 
+Ulysses S. Grant :: 1869 - 1877 // Presidents of the U.S. // 
+French invasion of Russia :: 1812.4180327868853 - 1812.9180327868853 // French invasion of Russia // 
+Hot air balloon :: 1767 - 1800 // Hot air balloon // 
+Jimmy Carter :: 1977 - 1981 // Presidents of the U.S. // 
+John Quincy Adams :: 1825 - 1829 // Presidents of the U.S. // 
+William H. Taft :: 1909 - 1913 // Presidents of the U.S. // 
+War of the Fourth Coalition :: 1806 - 1807 // War of the Fourth Coalition // 
+Comoros :: 1975 // Comoros // 
+Weimar Republic :: 1919 - 1933 //  // 
+Herbert Hoover :: 1929 - 1933 // Presidents of the U.S. // 
+Francois-Marie Arouet/Voltaire :: 1701 - 1801 //  // 
+Battle of Marengo :: 1800 // War of the Second Coalition // 
+Yuri Andropov :: 1982 - 1984 // Leaders of the Soviet Union // 
+James K. Polk :: 1845 - 1849 // Presidents of the U.S. // 
+Vietnam War (Second Indochina War) :: 1955 - 1975 //  // 
+Republic of Amalfi :: 851 - 1151 // Republic of Amalfi // 
+Warren G. Harding :: 1921 - 1923 // Presidents of the U.S. // 
+Battle of Friedland :: 1807.4164383561645 // War of the Fourth Coalition // 
+Unification of Germany :: 1871 //  // 
+Battle of Berezina :: 1812.8360655737704 // French invasion of Russia // 
+Womens March on Versailles :: 1789.7506849315068 // French Revolution // 
 Woodrow Wilson :: 1913 - 1921 // Presidents of the U.S. // 
 Corinthian order :: -434 - -401 // Corinthian order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Corinthian order
-France and Spain invade Portugal :: 1807 // Peninsular War // 
-John F. Kennedy :: 1961 - 1963 // Presidents of the U.S. // 
-American Civil War :: 1861 - 1865 //  // 
-Battle of Wagram :: 1809.4986301369863 // War of the Fifth Coalition // 
-Reichstag fire and the Reichstag Fire Decree :: 1933.0876712328768 // Hitlers rise to power // 
-Hitler becomes chairman of the NSDAP :: 1921 // Hitlers rise to power // 
-Battle of Neuve Chapelle :: 1915.164383561644 //  // 
-Battle of France (Including the Low Countries) :: 1940.3333333333333 - 1940.4180327868853 //  // 
-Anschluss :: 1938.164383561644 //  // 
-Nikita Khrushchev :: 1955 - 1964 // Leaders of the Soviet Union // 
-Treaty of Brest-Litovsk :: 1918.164383561644 //  // 
-Aruba :: 1986 // Aruba // 
-Saint Pierre and Miquelon :: 1816 // Saint Pierre and Miquelon // 
-Dwight D. Eisenhower :: 1953 - 1961 // Presidents of the U.S. // 
-Sinking of the Lusitania :: 1915.331506849315 //  // 
-British army lands in Portugal under the command of Sir Arthur Wellesley :: 1808.5846994535518 // Peninsular War // 
-Czech Republic :: 1993 // Czech Republic // 
-Battle of Valmy :: 1792 // War of the First Coalition // 
-Bay of Pigs Invasion :: 1961 //  // 
-Thomas Jefferson :: 1801 - 1809 // Presidents of the U.S. // 
+Step Pyramid of Djoser :: -2700 - -2600 // Step Pyramid of Djoser // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ancient Egypt\Saqqara.jpg
+Battle of Trafalgar :: 1805.7506849315068 // War of the Third Coalition // 
+Sino-Vietnamese War (Third Indochina War) :: 1979 //  // 
+Maximilien Robespierre heads the Committee of Public Safety - Reign of Terror :: 1793 - 1794 // French Revolution // 
+Andrew Johnson :: 1865 - 1869 // Presidents of the U.S. // 
+Airplane :: 1903 // Airplane // 
+Arthur Schopenhauer :: 1783 - 1850 //  // 
+Ionic order :: -567 - -534 // Ionic order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ionic order
+Papua New Guinea :: 1975 // Papua New Guinea // 
+Battle of Waterloo :: 1815.4164383561645 //  // 
+George H. W. Bush :: 1989 - 1993 // Presidents of the U.S. // 
+Move into Syria :: 1799.0027397260274 // Rise of Napoleon // 
+War of the Fifth Coalition :: 1809 // War of the Fifth Coalition // 
+Socrates :: -484 - -399 //  // 
+Battle of Vitoria: Wellesley decisively defeats the French army :: 1813 // Peninsular War // 
+Arsenale di Venezia :: 1100 // Arsenale di Venezia // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Arsenale di Venezia.jpg
 Tennis Court Oath :: 1789.4164383561645 // French Revolution // 
-Popular uprisings begin :: 1808.3360655737704 // Peninsular War // 
+Hitler becomes chairman of the NSDAP :: 1921 // Hitlers rise to power // 
+Baruch Spinoza :: 1601 - 1701 //  // 
+Coup of 18 Brumaire - Napoleon becomes First Consul :: 1799.835616438356 // Rise of Napoleon // 
+October Revolution :: 1917.854794520548 //  // 
+Homer :: -800 - -700 //  // 
+Nikita Khrushchev :: 1955 - 1964 // Leaders of the Soviet Union // 
+John F. Kennedy :: 1961 - 1963 // Presidents of the U.S. // 
+Benjamin Harrison :: 1889 - 1893 // Presidents of the U.S. // 
+Andrew Jackson :: 1829 - 1837 // Presidents of the U.S. // 
+Claudius :: 41 - 54 // Julio-Claudian dynasty // 
+Battle of Aspern-Essling :: 1809.331506849315 // War of the Fifth Coalition // 
+Battle of Austerlitz :: 1805.9178082191781 // War of the Third Coalition // 
+Greece :: 1832 // Greece // 
+Battle of Valmy :: 1792 // War of the First Coalition // 
+War of the Third Coalition :: 1803 - 1806 // War of the Third Coalition // 
+Czech Republic :: 1993 // Czech Republic // 
+Saint Pierre and Miquelon :: 1816 // Saint Pierre and Miquelon // 
+James A. Garfield :: 1881 // Presidents of the U.S. // 
+Konstantin Chernenko :: 1984 - 1985 // Leaders of the Soviet Union // 
+German Workers Party (DAP) changes name to NSDAP :: 1920 // Hitlers rise to power // 
+Constitution of the Year III - Establishment of the Directory :: 1795 // French Revolution // 
+United States Virgin Islands :: 1917 // United States Virgin Islands // 
+Bay of Pigs Invasion :: 1961 //  // 
+Old Kingdom :: -3000 - -2000 // Ancient Egyptian periods // 
+Haiti :: 1934 // Haiti // 
+War of the Second Coalition :: 1798 - 1802 // War of the Second Coalition // 
+Aruba :: 1986 // Aruba // 
+Unification of Italy :: 1861 //  // 
+Cuban revolutionists win :: 1959 //  // 
+Crimean War :: 1853 - 1856 // Crimean War // 
+Plato :: -418 - -351 //  // 
+Estates-General :: 1789.331506849315 // French Revolution // 
+Croatia :: 1991 // Croatia // 
+Liberia :: 1847 // Liberia // 
+American Revolutionary War :: 1775 - 1783 //  // 
+Ronald Reagan :: 1981 - 1989 // Presidents of the U.S. // 
+The Berlin Wall :: 1961 - 1989 //  // 
+Return to France :: 1799.5835616438355 // Rise of Napoleon // 
+Barack Obama :: 2009 - 2015 // Presidents of the U.S. // 
+Battle of Eylau :: 1807.0876712328768 // War of the Fourth Coalition // 
+Norway :: 1905 // Norway // 
+Siege of Toulon :: 1793 // Rise of Napoleon // 
 Rutherford B. Hayes :: 1877 - 1881 // Presidents of the U.S. // 
+War of the First Coalition :: 1792 - 1797 // War of the First Coalition // 
+Coup of 18 Brumaire - Napoleon becomes First Consul (Usually viewed as the end of the French Revolution) :: 1799.835616438356 // French Revolution // 
+Battle of Lutzen :: 1813.331506849315 // War of the Sixth Coalition // 
+James Monroe :: 1817 - 1825 // Presidents of the U.S. // 
+John Tyler :: 1841 - 1845 // Presidents of the U.S. // 
+Gabon :: 1960 // Gabon // 
+Hesiod :: -800 - -700 // Hesiod // 
+Georg Wilhelm Friedrich Hegel :: 1783 - 1817 //  // 
+NSDAP wins 44% of the vote in the Reichstag elections; the Reichstag passes the Enabling Act :: 1933.164383561644 // Hitlers rise to power // 
+Franklin Pierce :: 1853 - 1857 // Presidents of the U.S. // 
 Napoleon embarks for Egypt :: 1798.331506849315 // Rise of Napoleon // 
 Night of the long knives :: 1934.4164383561645 //  // 
-Andrew Johnson :: 1865 - 1869 // Presidents of the U.S. // 
-King Louis XVI executed :: 1793.0027397260274 // French Revolution // 
-Leonid Brezhnev :: 1964 - 1982 // Leaders of the Soviet Union // 
-Battle of Dresden :: 1813.5835616438355 // War of the Sixth Coalition // 
-Benjamin Harrison :: 1889 - 1893 // Presidents of the U.S. // 
-D-Day :: 1944.431693989071 //  // 
-Battle of Austerlitz :: 1805.9178082191781 // War of the Third Coalition // 
-Repubblica di Amalfi :: 851 - 1151 // Repubblica di Amalfi // 
-Konstantin Chernenko :: 1984 - 1985 // Leaders of the Soviet Union // 
-William H. Taft :: 1909 - 1913 // Presidents of the U.S. // 
-Beer hall putsch :: 1923 // Hitlers rise to power // 
-Herbert Spencer :: 1801 - 1901 //  // 
-Failed Italian offensive in Greece; they also lose eastern Libya to the British :: 1940 //  // 
-Slovenia :: 1991 // Slovenia // 
-Battle of Friedland :: 1807.4164383561645 // War of the Fourth Coalition // 
-Sino-Vietnamese War (Third Indochina War) :: 1979 //  // 
-James Buchanan :: 1857 - 1861 // Presidents of the U.S. // 
-Attack on Pearl Harbor :: 1941.9342465753425 //  // 
-The British declare war on Germany :: 1914.5917808219178 //  // 
-Late Period :: -667 - -334 // Ancient Egyptian periods // 
-Napoleon Bonaparte :: 1769 - 1821 //  // 
-Womens March on Versailles :: 1789.7506849315068 // French Revolution // 
-Siege of Toulon :: 1793 // Rise of Napoleon // 
-Battle of Sarikamish :: 1914.9178082191781 - 1915.0027397260274 //  // 
-Battle of Liege :: 1914.5945205479452 - 1914.6246575342466 //  // 
-Wellesley captures Madrid :: 1812 // Peninsular War // 
-Middle Kingdom :: -2000 - -1667 // Ancient Egyptian periods // 
-John Adams :: 1797 - 1801 // Presidents of the U.S. // 
-Liberia :: 1847 // Liberia // 
-Great Lisbon Earthquake :: 1755.835616438356 //  // 
-Italy invades Albania :: 1939 //  // 
-Hot air balloon :: 1767 - 1800 // Hot air balloon // 
-Napoleon returns to Spain and retakes Madrid :: 1808.9180327868853 // Peninsular War // 
-Napoleon crowned as Emperor Napoleon I :: 1804 // Rise of Napoleon // 
-Baruch Spinoza :: 1601 - 1701 //  // 
-Italy surrenders and civil war begins :: 1943.668493150685 //  // 
-Hitler in prison; writes Mein Kampf :: 1924 // Hitlers rise to power // 
-Barack Hussein Obama :: 2009 - 2015 // Presidents of the U.S. // 
-Battle of Jena-Auerstedt :: 1806.7506849315068 // War of the Fourth Coalition // 
-Armistice of Compiegne :: 1918.86301369863 //  // 
-Panama canal :: 1914 //  // 
-Romania enters WWI :: 1916.5846994535518 //  // 
-Ptolemaic Kingdom :: -334 - -1 // Ancient Egyptian periods // 
-El Salvador :: 1841 // El Salvador // 
-Battle of the Pyramids :: 1798.4986301369863 // Rise of Napoleon // 
-Hesiod :: -800 - -700 // Hesiod // 
-Germany declares war on Russia :: 1914.5835616438355 //  // 
-France occupies the Ruhr (in response to the Weimar Republics failure to continue its reparation payments) :: 1923 - 1925 // Hitlers rise to power // 
-Germany invades Denmark and Norway :: 1940.2513661202186 - 1940.4180327868853 //  // 
+Hitler joins the German Workers Party :: 1919 // Hitlers rise to power // 
 Richard M. Nixon :: 1969 - 1974 // Presidents of the U.S. // 
-War of the Second Coalition :: 1798 - 1802 // War of the Second Coalition // 
-Battle of Berezina :: 1812.8360655737704 // French invasion of Russia // 
-Ronald Reagan :: 1981 - 1989 // Presidents of the U.S. // 
-Yalta Conference :: 1945.0876712328768 //  // 
-Doric order :: -700 - -600 // Doric order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Doric order
-Allies capture Rome :: 1944.4180327868853 //  // 
-Tiberius :: 14 - 37 // Julio-Claudian dynasty // 
-Old Kingdom :: -3000 - -2000 // Ancient Egyptian periods // 
-Unification of Italy :: 1861 //  // 
-Franklin D. Roosevelt :: 1933 - 1945 // Presidents of the U.S. // 
-Molotov-Ribbentrop Pact :: 1939.5835616438355 //  // 
-Abraham Lincoln :: 1861 - 1865 // Presidents of the U.S. // 
-War of the Fifth Coalition :: 1809 // War of the Fifth Coalition // 
-Jimmy Carter :: 1977 - 1981 // Presidents of the U.S. // 
-France occupies Madrid :: 1808.1666666666667 // Peninsular War // 
-Cyprus U.N. Buffer Zone :: 1974 // Cyprus U.N. Buffer Zone // 
-President Hindenburg appoints Hitler as chancellor after two parliamentary elections without a majority government :: 1933.0027397260274 // Hitlers rise to power // 
-Allies liberate Paris :: 1944.5846994535518 //  // 
-Coup of 18 Brumaire - Napoleon becomes First Consul (Usually viewed as the end of the French Revolution) :: 1799.835616438356 // French Revolution // 
-Storming of the Bastille :: 1789.5342465753424 // French Revolution // 
-Ottoman Empire enters WWI :: 1914.7506849315068 //  // 
-Japan officially signs its surrender :: 1945.6712328767123 //  // 
-Battle of Borodino :: 1812.6693989071039 // French invasion of Russia // 
-Weimar Republic :: 1919 - 1933 //  // 
-Germany invades Belgium :: 1914.5917808219178 //  // 
-Treaty of Versailles :: 1919.490410958904 //  // 
-Battle of the Somme :: 1916.5 - 1916.8360655737704 //  // 
-Battle of the Nile :: 1798.5835616438355 // Rise of Napoleon // 
 The Third of May 1808 :: 1814 // The Third of May 1808 // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Goya - The Third of May 1808.jpg
-The Berlin Wall :: 1961 - 1989 //  // 
-James Monroe :: 1817 - 1825 // Presidents of the U.S. // 
-Battle of Eylau :: 1807.0876712328768 // War of the Fourth Coalition // 
-James K. Polk :: 1845 - 1849 // Presidents of the U.S. // 
-War of the First Coalition :: 1792 - 1797 // War of the First Coalition // 
-Andrew Jackson :: 1829 - 1837 // Presidents of the U.S. // 
-Vatican City :: 1929 // Vatican City // 
-Siege of Leningrad (Saint Petersburg) :: 1941.668493150685 - 1944.0027322404371 //  // 
-Ulysses S. Grant :: 1869 - 1877 // Presidents of the U.S. // 
-NSDAP wins 18% of the vote in the Reichstag elections :: 1930 // Hitlers rise to power // 
-Suez canal :: 1869 //  // 
-Calvin Coolidge :: 1923 - 1929 // Presidents of the U.S. // 
-Haiti :: 1934 // Haiti // 
-February Revolution :: 1917.1835616438357 //  // 
-Germany occupies Czechoslovakia (Protectorate of Bohemia and Moravia) :: 1939.164383561644 //  // 
-War of the Sixth Coalition :: 1812 - 1814 // War of the Sixth Coalition // 
-The light bulb :: 1867 - 1900 // The light bulb // 
-Adolf Hitler :: 1889 - 1945 //  // 
-Germany declares war on France :: 1914.5890410958905 //  // 
-Augustus :: -27 - 14 // Julio-Claudian dynasty // 
-Gallipoli campaign :: 1915.2493150684932 - 1916.0027322404371 //  // 
-War of the Third Coalition :: 1803 - 1806 // War of the Third Coalition // 
-Herbert Hoover :: 1929 - 1933 // Presidents of the U.S. // 
-Estates-General :: 1789.331506849315 // French Revolution // 
-Chester A. Arthur :: 1881 - 1885 // Presidents of the U.S. // 
-Declaration of Pillnitz (by Frederick II of Prussia and the Habsburg Holy Roman Emperor Leopold II, who was Marie Antoinettes brother) :: 1791.5835616438355 // French Revolution // 
-Democratic Republic of the Congo :: 1960 // Democratic Republic of the Congo // 
-Papua New Guinea :: 1975 // Papua New Guinea // 
-Joseph Stalin :: 1924 - 1953 // Leaders of the Soviet Union // 
-Gorlice-Tarnow Offensive :: 1915.331506849315 - 1915.4164383561645 //  // 
-Friedrich Nietzsche :: 1851 - 1901 //  // 
-Battle of Marengo :: 1800 // War of the Second Coalition // 
-Peninsular War :: 1807 - 1814 // Peninsular War // 
-Capture of Malta :: 1798.4164383561645 // Rise of Napoleon // 
-Caligula :: 37 - 41 // Julio-Claudian dynasty // 
-Vietnam War (Second Indochina War) :: 1955 - 1975 //  // 
-Unification of Germany :: 1871 //  // 
-Greece :: 1832 // Greece // 
-(Royal) Flight to Varennes :: 1791.4164383561645 // French Revolution // 
-Storming of the Tuileries Palace :: 1792.5846994535518 // French Revolution // 
-Atomic bombing of Nagasaki :: 1945.6054794520549 //  // 
-Georgy Malenkov :: 1953 - 1955 // Leaders of the Soviet Union // 
-American Revolutionary War :: 1775 - 1783 //  // 
-Korean War :: 1950 - 1953 //  // 
-Germany attacks the Soviet Union :: 1941.4739726027397 //  // 
-Zachary Taylor :: 1849 - 1850 // Presidents of the U.S. // 
-Homer :: -800 - -700 //  // 
-Vanuatu :: 1980 // Vanuatu // 
-Battle of Ulm :: 1805.7506849315068 // War of the Third Coalition // 
-Bill Clinton :: 1993 - 2001 // Presidents of the U.S. // 
-Battle of Leipzig :: 1813.7506849315068 // War of the Sixth Coalition // 
-Atomic bombing of Hiroshima :: 1945.5972602739726 //  // 
-Allied invasion of Sicily :: 1943.4986301369863 - 1943.5835616438355 //  // 
-Coup of 18 Brumaire - Napoleon becomes First Consul :: 1799.835616438356 // Rise of Napoleon // 
-Declaration of the Rights of Man and of the Citizen :: 1789.5835616438355 // French Revolution // 
+Battle of Borodino :: 1812.6693989071039 // French invasion of Russia // 
+Ptolemaic Kingdom :: -334 - -1 // Ancient Egyptian periods // 
+First Indochina War :: 1946 - 1954 //  // 
+Martin Van Buren :: 1837 - 1841 // Presidents of the U.S. // 
+James Madison :: 1809 - 1817 // Presidents of the U.S. // 
 United Kingdom :: 1707 // United Kingdom // 
-Serenissima Repubblica di Venezia :: 697 - 1797 // Serenissima Repubblica di Venezia // 
-Constitution of the Year III - Establishment of the Directory :: 1795 // French Revolution // 
-Arthur Schopenhauer :: 1783 - 1850 //  // 
-Bulgaria enters WWI :: 1915.7506849315068 //  // 
-October Revolution :: 1917.854794520548 //  // 
-Battle of Midway :: 1942.4164383561645 //  // 
-Aristotle :: -384 - -322 //  // 
-Battle of Britain :: 1940.5 - 1940.7513661202186 //  // 
-German Workers Party (DAP) changes name to NSDAP :: 1920 // Hitlers rise to power // 
-Battle of Bautzen :: 1813.331506849315 // War of the Sixth Coalition // 
-William H. Harrison :: 1841 // Presidents of the U.S. // 
-Munich Agreement: Germany annexes Sudetenland (Czechoslovakias border regions) :: 1938.668493150685 //  // 
-Japan surrenders :: 1945.6219178082192 //  // 
+13 Vendemiaire - Defense of the Tuileries Palace :: 1795 // Rise of Napoleon // 
+Grover Cleveland :: 1893 - 1897 // Presidents of the U.S. // 
+Constitution of the Year X - Napoleon becomes First Consul for life :: 1802 // Rise of Napoleon // 
+Battle of Dresden :: 1813.5835616438355 // War of the Sixth Coalition // 
+Republic of Genoa :: 1051 - 1797 // Republic of Genoa // 
+Bill Clinton :: 1993 - 2001 // Presidents of the U.S. // 
 Hitler gets 35% of the vote in the presidential elections :: 1932 // Hitlers rise to power // 
+Declaration of the Rights of Man and of the Citizen :: 1789.5835616438355 // French Revolution // 
+Benito Mussolini :: 1883 - 1945.323287671233 //  // 
+John Wycliffe :: 1301 - 1401 //  // 
+Storming of the Bastille :: 1789.5342465753424 // French Revolution // 
+Hatshepsut :: -1667 - -1334 //  // 
+Battle of Leipzig :: 1813.7506849315068 // War of the Sixth Coalition // 
+Cross of Lothair :: 1000 // Cross of Lothair // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Lothair
+Immanuel Kant :: 1701 - 1801 //  // 
+Battle of Bautzen :: 1813.331506849315 // War of the Sixth Coalition // 

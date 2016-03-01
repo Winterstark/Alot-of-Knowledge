@@ -1167,7 +1167,6 @@ namespace AlotGUI
                 }
 
                 questionEntities = msg.Split('+');
-
                 viz.Highlight(questionEntities, mapQType);
             }
 
@@ -1221,7 +1220,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
 
-            processMsg("map 1 United Kingdom");
+            //processMsg("map 3 Germany");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1284,49 +1283,63 @@ namespace AlotGUI
 
         private void formMain_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mouseDown)
-                switch (mode)
-                {
-                    case DisplayMode.Timeline:
-                        timelineLB = prevTimelineLB - convertPixelsToDate(e.X - prevMX);
-                        calcTimelineUB();
-                        this.Invalidate();
-                        break;
-                    case DisplayMode.FamilyTree:
-                        treeX += e.X - prevMX;
-                        treeY += e.Y - prevMY;
-                        prevMX = e.X;
-                        prevMY = e.Y;
-                        this.Invalidate();
-                        break;
-                    case DisplayMode.Map:
-                        viz.MoveViewport(e.X - prevMX, e.Y - prevMY);
-                        prevMX = e.X;
-                        prevMY = e.Y;
-
-                        this.Invalidate();
-                        break;
-                }
-            else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3))
+            try
             {
-                string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
-                if (mouseOverRegion != mapMouseOverRegion)
-                {
-                    viz.Highlight(mouseOverRegion.Split('+'), -mapQType);
-                    this.Invalidate();
+                if (mouseDown)
+                    switch (mode)
+                    {
+                        case DisplayMode.Timeline:
+                            timelineLB = prevTimelineLB - convertPixelsToDate(e.X - prevMX);
+                            calcTimelineUB();
+                            this.Invalidate();
+                            break;
+                        case DisplayMode.FamilyTree:
+                            treeX += e.X - prevMX;
+                            treeY += e.Y - prevMY;
+                            prevMX = e.X;
+                            prevMY = e.Y;
+                            this.Invalidate();
+                            break;
+                        case DisplayMode.Map:
+                            viz.MoveViewport(e.X - prevMX, e.Y - prevMY);
+                            prevMX = e.X;
+                            prevMY = e.Y;
 
-                    mapMouseOverRegion = mouseOverRegion;
+                            this.Invalidate();
+                            break;
+                    }
+                else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3))
+                {
+                    string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
+                    if (mouseOverRegion != mapMouseOverRegion)
+                    {
+                        viz.Highlight(mouseOverRegion.Split('+'), -mapQType);
+                        this.Invalidate();
+
+                        mapMouseOverRegion = mouseOverRegion;
+                    }
                 }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Exception in MouseMove: " + exc.Message);
             }
         }
 
         private void formMain_MouseUp(object sender, MouseEventArgs e)
         {
-            mouseDown = false;
+            try
+            {
+                mouseDown = false;
 
-            if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) &&
-                Math.Abs(e.X - initialMX) + Math.Abs(e.Y - initialMY) < 2) //check if the user actually clicked or was just dragging
-                sendFeedbackToAlot(viz.ArrayContainsString(questionEntities, viz.GetSelectedArea(e.X, e.Y)));            
+                if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) &&
+                    Math.Abs(e.X - initialMX) + Math.Abs(e.Y - initialMY) < 2) //check if the user actually clicked or was just dragging
+                    sendFeedbackToAlot(viz.ArrayContainsString(questionEntities, viz.GetSelectedArea(e.X, e.Y)));
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Exception in MouseUp: " + exc.Message);
+            }
         }
 
         private void formMain_MouseWheel(object sender, MouseEventArgs e)

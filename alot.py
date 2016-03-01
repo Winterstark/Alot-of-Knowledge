@@ -621,7 +621,7 @@ def checkForExit(answer):
 	return answer, exit, immediately
 
 
-def removeTypos(userAnswer, originalCorrectAnswer):
+def removeTypos(userAnswer, originalCorrectAnswer, indentLevel=0):
 	userAnswer = userAnswer.lower()
 	correctAnswer = originalCorrectAnswer.lower()
 
@@ -632,26 +632,26 @@ def removeTypos(userAnswer, originalCorrectAnswer):
 	if len(userAnswer) >= len(correctAnswer):
 		for i in range(len(correctAnswer)-1):
 			if userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:len(correctAnswer)] == correctAnswer:
-				print("You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 				return userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:]
 
 	#check for extra letters
 	for i in range(len(correctAnswer)+1):
 		if userAnswer[:i] + userAnswer[i+1:len(correctAnswer)+1] == correctAnswer:
-			print("You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+			print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 			return userAnswer[:i] + userAnswer[i+1:]
 
 	#check for missing letters
 	for i in range(len(correctAnswer)):
 		if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
-			print("You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+			print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 			return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
 
 	#check for a mistyped letter
 	if len(userAnswer) >= len(correctAnswer):
 		for i in range(len(correctAnswer)):
 			if userAnswer[:i] == correctAnswer[:i] and userAnswer[i+1:len(correctAnswer)] == correctAnswer[i+1:]:
-				print("You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 				return userAnswer[:i] + correctAnswer[i] + userAnswer[i+1:]
 
 	return userAnswer
@@ -1219,7 +1219,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 		answer, exit, immediately = checkForExit(input(prompt))
 		tryAgain = False
 
-		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint):
+		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel):
 			correct = True
 		else:
 			if catalot != None and a in catalot:
@@ -1271,7 +1271,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 	return correct, exit, immediately
 
 
-def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False):
+def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0):
 	aStr = toString(a, False)
 
 	#ignore segments in parentheses
@@ -1279,7 +1279,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False):
 	correctAnswer = removeParentheses(aStr)
 
 	if showFullAnswer and len(aStr) != len(correctAnswer):
-		print("Full answer: " + aStr)
+		print('\t'*indentLevel + "Full answer: " + aStr)
 
 	if aIsDate:
 		#ensure the same format
@@ -1292,7 +1292,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False):
 
 	#check answer
 	if getType(a) is Type.String and not aIsDate:
-		answer = removeTypos(answer, correctAnswer)
+		answer = removeTypos(answer, correctAnswer, indentLevel=indentLevel)
 
 	return answer == correctAnswer
 

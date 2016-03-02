@@ -1301,6 +1301,17 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 
+		if answer != correctAnswer:
+			#ignore "the"
+			if "the" + answer == correctAnswer:
+				answer = "the" + answer
+				if showFullAnswer:
+					print('\t'*indentLevel + "Exact answer: " + aStr)
+			elif answer.replace("the", "") == correctAnswer:
+				answer = answer.replace("the", "")
+				if showFullAnswer:
+					print('\t'*indentLevel + "Exact answer: " + aStr)
+
 	return answer == correctAnswer
 
 
@@ -1822,6 +1833,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 		
 		key = random.choice(ready)
+		key = "Hundred Days"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]

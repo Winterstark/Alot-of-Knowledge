@@ -621,12 +621,19 @@ def checkForExit(answer):
 	return answer, exit, immediately
 
 
-def removeTypos(userAnswer, originalCorrectAnswer, indentLevel=0):
+def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel=0):
+	if originalCorrectAnswer == "":
+		originalCorrectAnswer = correctAnswer
+
 	userAnswer = userAnswer.lower()
-	correctAnswer = originalCorrectAnswer.lower()
+	correctAnswer = correctAnswer.lower()
 
 	if userAnswer[:len(correctAnswer)] == correctAnswer or len(userAnswer) < len(correctAnswer) - 1: #if the answer is correct or hopelessly wrong (more than just a typo)
-		return userAnswer
+		if len(userAnswer) == len(correctAnswer) + 1: #check for an extra letter at the end of user's answer
+			print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+			return userAnswer[:len(correctAnswer)]
+		else:
+			return userAnswer
 
 	#check for a swapped pair of letters
 	if len(userAnswer) >= len(correctAnswer):
@@ -1292,7 +1299,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 
 	#check answer
 	if getType(a) is Type.String and not aIsDate:
-		answer = removeTypos(answer, correctAnswer, indentLevel=indentLevel)
+		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 
 	return answer == correctAnswer
 

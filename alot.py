@@ -1760,7 +1760,7 @@ def quizSet(setKey, items, step, color):
 			for item in itemsLCaseWithoutParentheses:
 				correctedAnswer = removeTypos(answer, item)
 				if correctedAnswer != answer:
-					answer = correctedAnswer
+					answer = correctedAnswer[:len(item)]
 					if answer in itemsLCaseWithoutParentheses:
 						typos = True
 					break
@@ -1833,7 +1833,6 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("\n")
 		
 		key = random.choice(ready)
-		key = "Hundred Days"
 		entry = catalot[key]
 		entryType = getType(entry)
 		meta = metacatalot[key]

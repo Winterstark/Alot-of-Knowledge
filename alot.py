@@ -752,7 +752,7 @@ def getType(entry):
 		return Type.List
 	elif entryType is dict:
 		return Type.Class
-	elif entryType is set:
+	elif entryType is set or entryType is frozenset:
 		return Type.Set
 	else:
 		print("UNRECOGNIZED ENTRY TYPE:", entryType)
@@ -813,6 +813,8 @@ def toString(answer, makeMoreReadable=True):
 			return repr(answer[0]) + " - " + repr(answer[1])
 	elif answerType is Type.Class:
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "")
+	elif answerType is Type.Set:
+		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "")
 	else:
 		return str(answer)
 
@@ -1730,20 +1732,27 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 
 
 def quizSet(setKey, items, step, color):
-	if step != 1:
-		colorPrint("{0} ({1}):".format(setKey, pluralizeIfNecessary(len(items), "item")), color)
+	itemsCopy = list(items)
+	hasSubSets, itemsSets = unwrapSets(itemsCopy)
 
+	nSubSets = max(itemsSets)
+	if 0 in itemsSets: #0 represents items that don't belong to sub sets
+		nSubSets += 1
+
+	itemsLCaseWithoutParentheses = list(itemsCopy)
+	itemsLCaseWithoutParentheses = [removeParentheses(item.lower()) for item in itemsLCaseWithoutParentheses]
+	correct = True
+	setOfPreviousAnswer = -1
+	itemsSetJumps = 0
+
+	if step != 1:
+		colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(len(items), "set")), color)
 	else:
 		colorPrint(setKey, color)
 
 		#print hints
-		for item in items:
+		for item in itemsCopy:
 			print("> " + constructHint(item))
-
-	itemsCopy = list(items)
-	itemsLCaseWithoutParentheses = list(itemsCopy)
-	itemsLCaseWithoutParentheses = [removeParentheses(item.lower()) for item in itemsLCaseWithoutParentheses]
-	correct = True
 
 	while len(itemsLCaseWithoutParentheses) > 0:
 		answer, exit, immediately = checkForExit(input("> "))
@@ -1780,13 +1789,54 @@ def quizSet(setKey, items, step, color):
 		else:
 			fullAnswer = ""
 
+		if setOfPreviousAnswer != -1 and setOfPreviousAnswer != itemsSets[index]:
+			itemsSetJumps += 1
+		setOfPreviousAnswer = itemsSets[index]
+
 		del itemsLCaseWithoutParentheses[index]
 		del itemsCopy[index]
+		del itemsSets[index]
 		
 		if fullAnswer != "":
 			print(fullAnswer)
 
+	answeredOutOfOrder = itemsSetJumps >= nSubSets #user mixed items from different subSets while answering
+	if type(correct) is bool and hasSubSets and answeredOutOfOrder:
+		print("Properly grouped items:")
+		for item in items:
+			print(toString(item))
+
 	return correct, exit, immediately
+
+
+#removes all sets and adds their values to the list
+def unwrapSets(items):
+	foundSubSets = False
+	sets = getSetsInList(items)
+	itemsSets = [0] * len(items) #used to differentiate items from different sub sets
+	itemsSetInd = 1
+
+	while len(sets) > 0:
+		foundSubSets = True
+		for s in sets:
+			ind = items.index(s)
+			items.remove(s)
+			items[ind:ind] = list(s)
+
+			del itemsSets[ind]
+			itemsSets[ind:ind] = [itemsSetInd] * len(s)
+			itemsSetInd += 1
+		sets = getSetsInList(items)
+
+	return foundSubSets, itemsSets
+
+
+def getSetsInList(items):	
+	sets = []
+	for item in items:
+		if getType(item) is Type.Set:
+			sets.append(item)
+	return sets
 
 
 def quizGeo(catalot, key, step, color, attribute=""):
@@ -1893,7 +1943,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						firstQuestion = False
 					else:
 						print("\n")
-
+					
 					attributeType = getType(entry[attribute])
 					if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)

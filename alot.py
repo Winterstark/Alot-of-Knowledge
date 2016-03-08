@@ -816,6 +816,8 @@ def toString(answer, makeMoreReadable=True):
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "")
 	elif answerType is Type.Set:
 		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "")
+	elif answerType is Type.Tuple:
+		return str(answer).replace('(', '').replace(')', '').replace("'", "")
 	else:
 		return str(answer)
 
@@ -1486,23 +1488,15 @@ def qType_RecognizeItem(listKey, items, color):
 	colorPrint(listKey, color)
 	index = random.randint(0, len(items)-1)
 
-	if random.randint(0, 3) == 0:
-		answer, exit, immediately = checkForExit(input("What is the index of this item: " + toString(items[index]) + "? "))
+	answer, exit, immediately = checkForExit(input("What is the index of this item: " + toString(items[index]) + "? "))
 
-		try:
-			if int(answer)-1 == index:
-				return True, exit, immediately
-			else:
-				return str(index+1), exit, immediately
-		except:
-			return str(index+1), exit, immediately
-	else:
-		answer, exit, immediately = checkForExit(input("What is the {}. item in this list? ".format(index+1)))
-
-		if isAnswerCorrect(answer, items[index]):
+	try:
+		if int(answer)-1 == index:
 			return True, exit, immediately
 		else:
-			return toString(items[index]), exit, immediately
+			return str(index+1), exit, immediately
+	except:
+		return str(index+1), exit, immediately
 
 
 def qType_OrderItems(listKey, items, color):
@@ -1525,7 +1519,7 @@ def qType_OrderItems(listKey, items, color):
 
 	#get answer from user
 	for i in range(len(shuffledItems)):
-		print("{}. {}".format(i+1, removeParentheses(shuffledItems[i])))
+		print("{}. {}".format(i+1, toString(shuffledItems[i])))
 
 	answer, exit, immediately = checkForExit(input("Enter the correct order of these items: "))
 
@@ -1601,7 +1595,7 @@ def quizNumber(catalot, key, step, color, attribute=""):
 			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color, catalot=catalot)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(catalot[key][attribute], key, color, catalot=catalot)
+			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key][attribute]), key, color, catalot=catalot)
 		else:
 			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color, catalot=catalot)
 
@@ -1664,7 +1658,6 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		stepOffset = 0
 
 	correct = playSound = True
-
 	while type(correct) is bool and step <= len(items):
 		if type(items[step-1]) is list:
 			if finalStep:
@@ -1747,7 +1740,10 @@ def quizSet(setKey, items, step, color):
 	itemsSetJumps = 0
 
 	if step != 1:
-		colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(len(items), "set")), color)
+		if len(items) == 1:
+			colorPrint("{0} ({1}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item")), color)
+		else:
+			colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(len(items), "set")), color)
 	else:
 		colorPrint(setKey, color)
 
@@ -2060,8 +2056,8 @@ def quiz(category, catalot, metacatalot, corewords):
 					elif attributeType is Type.List:
 						qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
-						if qType is quizList:	
-							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), True)
+						if qType is quizList:
+							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)
 						else:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 					elif attributeType is Type.Set:
@@ -2071,7 +2067,6 @@ def quiz(category, catalot, metacatalot, corewords):
 							correct, exit, immediately = qType_RecognizeList(key + ", " + attribute, entry[attribute], color)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
-				qType = quizList
 
 				if qType == quizList:	
 					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), learned=True)

@@ -1740,10 +1740,10 @@ def quizSet(setKey, items, step, color):
 	itemsSetJumps = 0
 
 	if step != 1:
-		if len(items) == 1:
+		if nSubSets == 1:
 			colorPrint("{0} ({1}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item")), color)
 		else:
-			colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(len(items), "set")), color)
+			colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(nSubSets, "set")), color)
 	else:
 		colorPrint(setKey, color)
 

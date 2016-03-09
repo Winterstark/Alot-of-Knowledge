@@ -641,27 +641,28 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 			if userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:len(correctAnswer)] == correctAnswer:
 				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 				return userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:]
-
+	
 	#check for extra letters
 	for i in range(len(correctAnswer)+1):
 		if userAnswer[:i] + userAnswer[i+1:len(correctAnswer)+1] == correctAnswer:
 			print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 			return userAnswer[:i] + userAnswer[i+1:]
-
-	#check for missing letters
-	for i in range(len(correctAnswer)):
-		if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
-			if userAnswer[i:len(correctAnswer)-1].isalnum(): #if the typo is a missing period or comma, ignore it completely
-				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
-			return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
-
+	
 	#check for a mistyped letter
 	if len(userAnswer) >= len(correctAnswer):
 		for i in range(len(correctAnswer)):
 			if userAnswer[:i] == correctAnswer[:i] and userAnswer[i+1:len(correctAnswer)] == correctAnswer[i+1:]:
 				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 				return userAnswer[:i] + correctAnswer[i] + userAnswer[i+1:]
-
+	
+	#check for missing letters
+	for i in range(len(correctAnswer)):
+		missingLetter = userAnswer[i:len(correctAnswer)-1]
+		if userAnswer[:i] + correctAnswer[i] + missingLetter == correctAnswer:
+			if missingLetter == '' or missingLetter.isalnum(): #if the typo is a missing period or comma, ignore it completely
+				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+			return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
+	
 	return userAnswer
 
 

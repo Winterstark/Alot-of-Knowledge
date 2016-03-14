@@ -669,7 +669,7 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 def pluralizeIfNecessary(n, s):
 	if abs(n) != 1:
 		if s[-1] != 's':
-			if s[-1] == 'y' and len(s) >= 2 and s[-2] in ['a', 'e', 'i', 'o', 'u']:
+			if s[-1] == 'y' and len(s) >= 2 and s[-2] not in ['a', 'e', 'i', 'o', 'u']:
 				s = s[:-1] + "ies"
 			else:
 				s += 's'
@@ -2345,19 +2345,18 @@ for filename in os.listdir(DIR):
 		if nNew > 0 or nExp > 0 or nDel > 0:
 			print(filename + " changed: ", end="")
 			if nNew > 0:
-				#print(str(nNew) + " new entries", end="")
 				print(pluralizeIfNecessary(nNew, "new entry"), end="")
 				
 				if nExp + nDel > 0:
 					print(", ", end="")
 				else:
-					print("\n")
+					print("")
 			if nExp > 0:
 				print(str(nExp) + " expanded entries", end="")
 				if nDel > 0:
 					print(", ", end="")
 				else:
-					print("\n")
+					print("")
 			if nDel > 0:
 				print(str(nDel) + " deletions")
 

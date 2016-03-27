@@ -1220,7 +1220,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
 
-            //processMsg("map 3 Germany");
+            //processMsg("map 1 Lake Malawi");
         }
 
         protected override void OnPaint(PaintEventArgs e)

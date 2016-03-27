@@ -1,9 +1,9 @@
 {
 	'Charles Dickens - A Tale of Two Cities': 'It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way - in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only.',
-	'Voltaire': "Il est triste que souvent, pour etre bon patriote, on soit l'ennemi du reste des hommes.",
-	'Edgar Allan Poe - The Raven': 'Once upon a midnight dreary, while I pondered weak and weary,\nOver many a quaint and curious volume of forgotten lore,\nWhile I nodded, nearly napping, suddenly there came a tapping,\nAs of some one gently rapping, rapping at my chamber door.\n"\'Tis some visitor," I muttered, "tapping at my chamber door -\nOnly this, and nothing more."\n...\nQuoth the raven, "Nevermore."',
-	"Rigoletto: La donna e' mobile": "La donna e' mobile\nQual piuma al vento,\nmuta d'accento\ne di pensiero.\n\nSempre un amabile,\nleggiadro viso,\nin pianto o in riso,\ne' menzognero.",
 	'Emily Dickinson - Success is Counted Sweetest': "Success is counted sweetest\nBy those who ne'er succeed.",
-	'Robert Frost - The Road Not Taken': 'Two roads diverged in a wood, and I,\nI took the one less traveled by,\nAnd that has made all the difference.',
+	"Rigoletto: La donna e' mobile": "La donna e' mobile\nQual piuma al vento,\nmuta d'accento\ne di pensiero.\n\nSempre un amabile,\nleggiadro viso,\nin pianto o in riso,\ne' menzognero.",
 	'William Butler Yeats - The Second Coming': 'And what rough beast, its hour come round at last,\nSlouches towards Bethlehem to be born?',
+	'Edgar Allan Poe - The Raven': 'Once upon a midnight dreary, while I pondered weak and weary,\nOver many a quaint and curious volume of forgotten lore,\nWhile I nodded, nearly napping, suddenly there came a tapping,\nAs of some one gently rapping, rapping at my chamber door.\n"\'Tis some visitor," I muttered, "tapping at my chamber door -\nOnly this, and nothing more."\n...\nQuoth the raven, "Nevermore."',
+	'Robert Frost - The Road Not Taken': 'Two roads diverged in a wood, and I,\nI took the one less traveled by,\nAnd that has made all the difference.',
+	'Voltaire': "Il est triste que souvent, pour etre bon patriote, on soit l'ennemi du reste des hommes.",
 }

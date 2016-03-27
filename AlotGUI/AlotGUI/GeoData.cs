@@ -135,7 +135,7 @@ namespace AlotGUI
 
         void checkViewportBounds()
         {
-            return;
+            //return;
             if (360 * zoom < windowSize.Width) //don't unzoom so much that the world map is smaller than the window
                 zoom = (float)windowSize.Width / 360.0f;
 
@@ -221,7 +221,7 @@ namespace AlotGUI
                 imgGfx.TranslateTransform(imgW / 2, imgH / 2);
                 imgGfx.ScaleTransform(zoom, -zoom);
 
-                drawMapImage(imgGfx);
+                drawMapImage(imgGfx, preDrawing: true);
 
                 imgGfx.Dispose();
             }
@@ -233,9 +233,14 @@ namespace AlotGUI
         {
             if (preDrawnMap != null)
             {
-                gfx.DrawImageUnscaled(preDrawnMap, (int)viewportX, (int)viewportY);
-                gfx.DrawRectangle(Pens.Red, (int)viewportX, (int)viewportY, preDrawnMap.Width, preDrawnMap.Height);
+                //gfx.DrawImageUnscaled(preDrawnMap, 0, 0);
+                gfx.DrawImageUnscaled(preDrawnMap, (int)viewportX - preDrawnMap.Width / 2, (int)viewportY - preDrawnMap.Height / 2);
+                //gfx.DrawImageUnscaled(preDrawnMap, windowSize.Width / 2 - preDrawnMap.Width / 2, windowSize.Height / 2 - preDrawnMap.Height / 2);
 
+                //gfx.DrawRectangle(Pens.Red, (int)viewportX, (int)viewportY, preDrawnMap.Width, preDrawnMap.Height);
+
+                gfx.TranslateTransform(viewportX, viewportY);
+                gfx.ScaleTransform(zoom, -zoom);
                 drawHighlightedRegions(gfx);
             }
             else
@@ -246,7 +251,7 @@ namespace AlotGUI
             }
         }
 
-        void drawMapImage(Graphics gfx)
+        void drawMapImage(Graphics gfx, bool preDrawing = false)
         {
             gfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
             gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -261,21 +266,22 @@ namespace AlotGUI
             if (qType == 1)
             {
                 if (qGeoType == GeoType.Region)
-                    drawEntityCollection(gfx, GeoType.Region);
+                    drawEntityCollection(gfx, GeoType.Region, preDrawing);
                 else
                 {
                     if (qGeoType == GeoType.PhysicalRegion)
-                        drawEntityCollection(gfx, GeoType.PhysicalRegion);
+                        drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
 
-                    drawEntityCollection(gfx, GeoType.Country);
-                    drawEntityCollection(gfx, GeoType.City);
+                    drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                    drawEntityCollection(gfx, GeoType.City, preDrawing);
 
-                    drawHighlightedRegions(gfx);
+                    if (!preDrawing)
+                        drawHighlightedRegions(gfx);
 
                     if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
                     {
-                        drawEntityCollection(gfx, GeoType.River);
-                        drawEntityCollection(gfx, GeoType.Lake);
+                        drawEntityCollection(gfx, GeoType.River, preDrawing);
+                        drawEntityCollection(gfx, GeoType.Lake, preDrawing);
                     }
                 }
             }
@@ -284,14 +290,15 @@ namespace AlotGUI
                 worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
                 worldLandmass.Draw(gfx);
 
-                drawHighlightedRegions(gfx);
+                if (!preDrawing)
+                    drawHighlightedRegions(gfx);
             }
         }
 
-        void drawEntityCollection(Graphics gfx, GeoType type)
+        void drawEntityCollection(Graphics gfx, GeoType type, bool preDrawing)
         {
             foreach (var entity in mapEntities)
-                if (entity.Value.GeoType == type && (type == GeoType.City || entity.Value.Box.IntersectsWith(viewportBox)))
+                if (entity.Value.GeoType == type && (type == GeoType.City || preDrawing || entity.Value.Box.IntersectsWith(viewportBox)))
                     entity.Value.Draw(gfx);
         }
 
@@ -409,6 +416,7 @@ namespace AlotGUI
                     newZoom = Math.Min(newZoom, 200);
 
                     zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
+                    preDrawMap();
                 }
             }
         }

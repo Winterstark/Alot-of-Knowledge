@@ -1191,7 +1191,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLevel=0):
+def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLevel=0, otherNames={}):
 	if type(q) is not str:
 		q = str(q)
 
@@ -1235,13 +1235,13 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 		answer, exit, immediately = checkForExit(input(prompt))
 		tryAgain = False
 
-		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel):
+		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames):
 			correct = True
 		else:
 			if catalot != None and a in catalot:
 				#check if the user's answer is correct, even if it isn't the target answer
 				for key in catalot:
-					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate=aIsDate, showFullAnswer=not showHint):
+					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
 						print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
 						tryAgain = True
 						break
@@ -1287,7 +1287,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 	return correct, exit, immediately
 
 
-def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0):
+def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}):
 	aStr = toString(a, False)
 
 	#ignore segments in parentheses
@@ -1321,6 +1321,17 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 				if showFullAnswer:
 					print('\t'*indentLevel + "Exact answer: " + aStr)
 
+	if answer != correctAnswer and len(otherNames) > 0:
+		#check other names
+		for alt in otherNames:
+			cleanAlt = removeParentheses(alt.lower())
+			answer = removeTypos(answer, cleanAlt, originalCorrectAnswer=alt, indentLevel=indentLevel)
+
+			if cleanAlt == answer:
+				print("Expected answer: " + a)
+				answer = correctAnswer
+				break
+	
 	return answer == correctAnswer
 
 
@@ -1538,7 +1549,7 @@ def qType_OrderItems(listKey, items, color):
 		return correctOrder, exit, immediately
 
 
-def qType_Image(imageKey, path, learned=False):
+def qType_Image(imageKey, path, learned=False, otherNames={}):
 	if learned:
 		color = COLOR_LEARNED
 	else:
@@ -1555,33 +1566,33 @@ def qType_Image(imageKey, path, learned=False):
 		msgGUI("I {}".format(path))
 		answer, quit, immediately = checkForExit(input("What is this image associated with?\n> "))
 
-	if isAnswerCorrect(answer, correctAnswer):
+	if isAnswerCorrect(answer, correctAnswer, otherNames=otherNames):
 		return True, quit, immediately
 	else:
 		return correctAnswer, quit, immediately
 
 
-def qType_Timeline(key):
+def qType_Timeline(key, otherNames={}):
 	msgGUI("timeline " + key + " ?")
 	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
 
-	if isAnswerCorrect(answer, key):
+	if isAnswerCorrect(answer, key, otherNames=otherNames):
 		return True, quit, immediately
 	else:
 		return key, quit, immediately
 
 
-def qType_FamilyTree(catalot, key):
+def qType_FamilyTree(catalot, key, otherNames={}):
 	msgGUI("ftree " + exportFamilyTree(catalot, key, True))
 	answer, quit, immediately = checkForExit(input("Who (???) is highlighted in the family tree?\n> "))
 
-	if isAnswerCorrect(answer, key):
+	if isAnswerCorrect(answer, key, otherNames=otherNames):
 		return True, quit, immediately
 	else:
 		return key, quit, immediately
 
 
-def quizNumber(catalot, key, step, color, attribute=""):
+def quizNumber(catalot, key, step, color, attribute="", otherNames={}):
 	if step == 1:
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(catalot, key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
@@ -1594,14 +1605,14 @@ def quizNumber(catalot, key, step, color, attribute=""):
 			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color, catalot=catalot)
+			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color, catalot=catalot, otherNames=otherNames)
 		else:
-			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color, catalot=catalot)
+			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color, catalot=catalot, otherNames=otherNames)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key][attribute]), key, color, catalot=catalot)
+			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key][attribute]), key, color, catalot=catalot, otherNames=otherNames)
 		else:
-			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color, catalot=catalot)
+			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color, catalot=catalot, otherNames=otherNames)
 
 	return correct, exit, immediately
 
@@ -1840,7 +1851,7 @@ def getSetsInList(items):
 	return sets
 
 
-def quizGeo(catalot, key, step, color, attribute=""):
+def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
 	 #ignore "GEO:"
 	if attribute == "":
 		geoName = catalot[key][4:]
@@ -1865,7 +1876,7 @@ def quizGeo(catalot, key, step, color, attribute=""):
 		print("Find the {} on the map.".format(geoType))
 		correct, exit, immediately = getFeedbackFromGUI()
 	elif step == 4:
-		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color)
+		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color, otherNames=otherNames)
 
 	return correct, exit, immediately
 
@@ -1909,6 +1920,9 @@ def quiz(category, catalot, metacatalot, corewords):
 				usedGUI = True
 			elif entryType is Type.Class:
 				#custom class
+				if "Other names" in entry:
+					otherNames = entry["Other names"]
+
 				#select attributes not yet learned
 				correct = {}
 				unlearnedAttributes = []
@@ -1947,18 +1961,18 @@ def quiz(category, catalot, metacatalot, corewords):
 					
 					attributeType = getType(entry[attribute])
 					if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
-						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute)
+						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
 						usedGUI = True
 						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
 					elif attributeType is Type.Image:
 						usedGUI = True
-						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False)
+						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False, otherNames=otherNames)
 					elif attributeType is Type.String:
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
 					elif attributeType is Type.Geo:
-						correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute)
+						correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute, otherNames=otherNames)
 						usedGUI = True
 					elif attributeType is Type.List:
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
@@ -2009,6 +2023,9 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:
+				if "Other names" in entry:
+					otherNames = entry["Other names"]
+
 				nFTreeAttributes = 0
 				if "Parents" in entry:
 					nFTreeAttributes += 1
@@ -2016,7 +2033,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					nFTreeAttributes += 1
 
 				if random.randint(0, len(entry)-1) < nFTreeAttributes:
-					correct, exit, immediately = qType_FamilyTree(catalot, key)
+					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
 				else:
 					attribute = random.choice(list(entry.keys()))
 					attributeType = getType(entry[attribute])
@@ -2038,12 +2055,12 @@ def quiz(category, catalot, metacatalot, corewords):
 							usedGUI = True
 
 					if attributeType is Type.Number or attributeType is Type.Range:
-						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
+						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 					elif attributeType is Type.Date:
 						if random.randint(0, 1) == 0:
-							correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute)
+							correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 						else:
-							correct, exit, immediately = qType_Timeline(key)
+							correct, exit, immediately = qType_Timeline(key, otherNames=otherNames)
 							usedGUI = True
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
@@ -2054,7 +2071,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
 					elif attributeType is Type.Image:
 						usedGUI = True
-						correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True)
+						correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True, otherNames=otherNames)
 					elif attributeType is Type.String:
 						correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
 					elif attributeType is Type.List:

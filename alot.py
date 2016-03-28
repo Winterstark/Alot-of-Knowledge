@@ -657,9 +657,8 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 	
 	#check for missing letters
 	for i in range(len(correctAnswer)):
-		missingLetter = userAnswer[i:len(correctAnswer)-1]
-		if userAnswer[:i] + correctAnswer[i] + missingLetter == correctAnswer:
-			if missingLetter == '' or missingLetter.isalnum(): #if the typo is a missing period or comma, ignore it completely
+		if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
+			if correctAnswer[i].isalnum(): #if the typo is a missing period or comma, ignore it completely
 				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 			return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
 	

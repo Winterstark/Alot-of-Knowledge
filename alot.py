@@ -1861,7 +1861,8 @@ def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
 		geoName = catalot[key][4:]
 	else:
 		geoName = catalot[key][attribute][4:]
-		step = step[attribute]
+		if type(step) is dict:
+			step = step[attribute]
 
 	separator = geoName.index('/')
 	geoType = geoName[:separator].lower()
@@ -2082,6 +2083,9 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True, otherNames=otherNames)
 					elif attributeType is Type.String:
 						correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
+					elif attributeType is Type.Geo:
+						correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
+						usedGUI = True
 					elif attributeType is Type.List:
 						qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

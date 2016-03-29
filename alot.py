@@ -2031,6 +2031,8 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Class:
 				if "Other names" in entry:
 					otherNames = entry["Other names"]
+				else:
+					otherNames = {}
 
 				nFTreeAttributes = 0
 				if "Parents" in entry:

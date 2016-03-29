@@ -810,9 +810,6 @@ def toString(answer, makeMoreReadable=True):
 						return str(answer[0].d) + " " + Date.fullMonthName(answer[0].m) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
 			
 			return str(answer[0]) + " - " + str(answer[1])
-		#elif makeMoreReadable:
-		#else:
-			#return str(answer[0]) + " - " + str(answer[1])
 		else:
 			return repr(answer[0]) + " - " + repr(answer[1])
 	elif answerType is Type.Class:
@@ -821,6 +818,8 @@ def toString(answer, makeMoreReadable=True):
 		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "")
 	elif answerType is Type.Tuple:
 		return str(answer).replace('(', '').replace(')', '').replace("'", "")
+	elif answerType is Type.List:
+		return str(answer).replace('[', '').replace(']', '').replace("'", "")
 	else:
 		return str(answer)
 

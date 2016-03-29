@@ -1037,15 +1037,19 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 	return finalAnswers
 
 
-def removeParentheses(s):
+def removeParentheses(s, concealContents=False):
 	while True:
 		try:
 			lb = s.index('(')
 			ub = s.index(')', lb) + 1
-			s = s[:lb] + s[ub:]
-			s = s.rstrip().replace("  ", " ")
+
+			if concealContents:
+				s = s[:lb] + "[[[???]]]" + s[ub:]
+			else:
+				s = s[:lb] + s[ub:]
+				s = s.rstrip().replace("  ", " ")
 		except:
-			return s
+			return s.replace("[[[", "(").replace("]]]", ")")
 
 
 def fullPath(relativePath):
@@ -1534,7 +1538,7 @@ def qType_OrderItems(listKey, items, color):
 
 	#get answer from user
 	for i in range(len(shuffledItems)):
-		print("{}. {}".format(i+1, toString(shuffledItems[i])))
+		print("{}. {}".format(i+1, removeParentheses(toString(shuffledItems[i]), True))) #hide the contents of the parentheses because it might reveal the answer to the user
 
 	answer, exit, immediately = checkForExit(input("Enter the correct order of these items: "))
 

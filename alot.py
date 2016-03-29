@@ -651,16 +651,18 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 	#check for a mistyped letter
 	if len(userAnswer) >= len(correctAnswer):
 		for i in range(len(correctAnswer)):
-			if userAnswer[:i] == correctAnswer[:i] and userAnswer[i+1:len(correctAnswer)] == correctAnswer[i+1:]:
+			#don't accept mistyped numbers as typos
+			if not correctAnswer[i].isdigit() and userAnswer[:i] == correctAnswer[:i] and userAnswer[i+1:len(correctAnswer)] == correctAnswer[i+1:]:
 				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
 				return userAnswer[:i] + correctAnswer[i] + userAnswer[i+1:]
 	
 	#check for missing letters
-	for i in range(len(correctAnswer)):
-		if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
-			if correctAnswer[i].isalnum(): #if the typo is a missing period or comma, ignore it completely
-				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
-			return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
+	if len(userAnswer) + 1 == len(correctAnswer):
+		for i in range(len(correctAnswer)):
+			if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
+				if correctAnswer[i].isalnum(): #if the typo is a missing period or comma, ignore it completely
+					print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
+				return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
 	
 	return userAnswer
 

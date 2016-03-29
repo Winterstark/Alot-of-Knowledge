@@ -1926,6 +1926,8 @@ def quiz(category, catalot, metacatalot, corewords):
 				#custom class
 				if "Other names" in entry:
 					otherNames = entry["Other names"]
+				else:
+					otherNames = {}
 
 				#select attributes not yet learned
 				correct = {}

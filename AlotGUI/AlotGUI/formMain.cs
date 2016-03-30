@@ -1224,7 +1224,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
 
-            //processMsg("map 2 Namibia");
+            //processMsg("map 2 Flores (Lesser Sunda Islands)");
         }
 
         protected override void OnPaint(PaintEventArgs e)

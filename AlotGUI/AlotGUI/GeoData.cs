@@ -731,6 +731,7 @@ namespace AlotGUI
             {
                 double angle = 0;
                 avgDistance = 0;
+                int nPts = 0;
 
                 for (int i = 0; i < part.Length - 1; i++)
                 {
@@ -753,13 +754,21 @@ namespace AlotGUI
                     
                     //calculate the distance between (x, y) and the polygon's points
                     avgDistance += Math.Sqrt(x1 * x1 + y1 * y1);
+                    nPts++;
+
                     if (i == part.Length - 2)
+                    {
                         avgDistance += Math.Sqrt(x2 * x2 + y2 * y2);
+                        nPts++;
+                    }
                 }
 
                 //if the sum of all angles is not 0 then the point is in the polygon
                 if (Math.Abs(angle) > 0.01)
+                {
+                    avgDistance /= nPts;
                     return true;
+                }
             }
 
             avgDistance = double.MaxValue;

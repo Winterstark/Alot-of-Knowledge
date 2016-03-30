@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.timerFeedback = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // lblStatus
@@ -38,6 +40,11 @@
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 13);
             this.lblStatus.TabIndex = 0;
+            // 
+            // timerFeedback
+            // 
+            this.timerFeedback.Interval = 500;
+            this.timerFeedback.Tick += new System.EventHandler(this.timerFeedback_Tick);
             // 
             // formMain
             // 
@@ -64,6 +71,7 @@
         #endregion
 
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Timer timerFeedback;
     }
 }
 

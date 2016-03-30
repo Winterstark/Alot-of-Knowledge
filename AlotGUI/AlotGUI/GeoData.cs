@@ -215,9 +215,6 @@ namespace AlotGUI
                 preDrawnMap = new Bitmap(imgW, imgH);
 
                 Graphics imgGfx = Graphics.FromImage(preDrawnMap);
-
-                //imgGfx.TranslateTransform(windowSize.Width / 2, windowSize.Height / 2 - 90 * zoom);
-                //imgGfx.TranslateTransform(viewportX, viewportY);
                 imgGfx.TranslateTransform(imgW / 2, imgH / 2);
                 imgGfx.ScaleTransform(zoom, -zoom);
 
@@ -233,11 +230,7 @@ namespace AlotGUI
         {
             if (preDrawnMap != null)
             {
-                //gfx.DrawImageUnscaled(preDrawnMap, 0, 0);
                 gfx.DrawImageUnscaled(preDrawnMap, (int)viewportX - preDrawnMap.Width / 2, (int)viewportY - preDrawnMap.Height / 2);
-                //gfx.DrawImageUnscaled(preDrawnMap, windowSize.Width / 2 - preDrawnMap.Width / 2, windowSize.Height / 2 - preDrawnMap.Height / 2);
-
-                //gfx.DrawRectangle(Pens.Red, (int)viewportX, (int)viewportY, preDrawnMap.Width, preDrawnMap.Height);
 
                 gfx.TranslateTransform(viewportX, viewportY);
                 gfx.ScaleTransform(zoom, -zoom);
@@ -313,6 +306,9 @@ namespace AlotGUI
         {
             foreach (var ent in mapEntities)
                 ent.Value.Highlighted = false;
+
+            if (entities == null)
+                return;
 
             bool mapEntitiesExist = true;
             foreach (string mapEnt in entities)

@@ -361,12 +361,17 @@ def getFeedbackFromGUI():
 			sleep(0.2)
 
 	pipe.seek(0)
-	feedback = pipe.read(1) == b"\x01"
+	n = struct.unpack('B', pipe.read(1))[0]
 
-	if feedback == False:
-		feedback = "AlotGUI sends its regards: False"
+	correct = n == 1
+	if not correct:
+		correct = "FalseGEO"
+		userSelection = pipe.read(n).decode("utf-8")
 
-	return feedback, False, False
+		if userSelection != "":
+			correct += " You selected -> " + userSelection
+
+	return correct, False, False
 
 
 def addNodeToFamilyTree(catalot, key, visited=[]):
@@ -1065,6 +1070,9 @@ def feedback(msg, playSound=True):
 	correct = not "Wrong" in msg
 
 	if msg != "":
+		if "Correct answer: False" in msg:
+			msg = msg.replace("Correct answer: False", "") #this shouldn't be printed
+
 		if correct:
 			color = Fore.GREEN
 		else:
@@ -1993,6 +2001,8 @@ def quiz(category, catalot, metacatalot, corewords):
 							feedback("Correct!")
 						elif correct[attribute] == "AlotGUI sends its regards: False":
 							feedback("Wrong!")
+						elif "FalseGEO" in correct:
+							feedback("Wrong!" + correct.replace("FalseGEO", ""))
 						elif correct[attribute] != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
 
@@ -2113,7 +2123,7 @@ def quiz(category, catalot, metacatalot, corewords):
 
 		if usedGUI:
 			msgGUI("logo")
-		
+
 		if not immediately:
 			#log result
 			#the variable correct will be bool if the user entered the right answer. If he failed, correct will be a string holding the actual correct answer
@@ -2222,6 +2232,8 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						if correct == "AlotGUI sends its regards: False":
 							feedback("Wrong!")
+						elif "FalseGEO" in correct:
+							feedback("Wrong!" + correct.replace("FalseGEO", ""))
 						elif correct != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback("Wrong! Correct answer: " + correct)
 						

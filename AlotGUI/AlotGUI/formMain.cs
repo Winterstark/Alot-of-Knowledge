@@ -111,7 +111,8 @@ namespace AlotGUI
         Visualizer viz;
         string[] questionEntities;
         string mapMouseOverRegion;
-        int mapQType;
+        int mapQType, nRemainingFeedbackTicks;
+        bool isAnswerHighlighted;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -189,7 +190,7 @@ namespace AlotGUI
             }
         }
 
-        void sendFeedbackToAlot(bool feedback)
+        void sendFeedbackToAlot(string feedback)
         {
             try
             {
@@ -197,7 +198,10 @@ namespace AlotGUI
                 server.WaitForConnection();
 
                 var bw = new BinaryWriter(server);
-                bw.Write(feedback);
+                if (feedback == "True")
+                    bw.Write(true);
+                else
+                    bw.Write(feedback);
 
                 server.Close();
                 server.Dispose();
@@ -1220,7 +1224,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR);
 
-            //processMsg("map 1 Lake Malawi");
+            //processMsg("map 2 Namibia");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1308,7 +1312,7 @@ namespace AlotGUI
                             this.Invalidate();
                             break;
                     }
-                else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3))
+                else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) && !timerFeedback.Enabled)
                 {
                     string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
                     if (mouseOverRegion != mapMouseOverRegion)
@@ -1334,7 +1338,22 @@ namespace AlotGUI
 
                 if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) &&
                     Math.Abs(e.X - initialMX) + Math.Abs(e.Y - initialMY) < 2) //check if the user actually clicked or was just dragging
-                    sendFeedbackToAlot(viz.ArrayContainsString(questionEntities, viz.GetSelectedArea(e.X, e.Y)));
+                {
+                    string selectedArea = viz.GetSelectedArea(e.X, e.Y);
+                    bool correct = viz.ArrayContainsString(questionEntities, selectedArea);
+
+                    if (correct)
+                        sendFeedbackToAlot("True");
+                    else
+                    {
+                        sendFeedbackToAlot(selectedArea);
+
+                        //display the correct answer on the map
+                        isAnswerHighlighted = false;
+                        nRemainingFeedbackTicks = 6;
+                        timerFeedback.Enabled = true;
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -1376,6 +1395,21 @@ namespace AlotGUI
             file.WriteLine(this.Width);
             file.WriteLine(this.Height);
             file.Close();
+        }
+
+        private void timerFeedback_Tick(object sender, EventArgs e)
+        {
+            if (!isAnswerHighlighted)
+                viz.Highlight(questionEntities, -mapQType);
+            else
+                viz.Highlight(null, -mapQType);
+            isAnswerHighlighted = !isAnswerHighlighted;
+
+            this.Invalidate();
+
+            nRemainingFeedbackTicks--;
+            if (nRemainingFeedbackTicks == 0)
+                timerFeedback.Enabled = false;
         }
     }
 }

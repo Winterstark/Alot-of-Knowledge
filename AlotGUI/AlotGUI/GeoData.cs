@@ -17,6 +17,7 @@ namespace AlotGUI
         Dictionary<string, Shape> mapEntities;
         List<Shape> highlightedEntities;
 
+        Action ForceDraw;
         Bitmap preDrawnMap;
         Brush seaBrush, highlightBrush;
         Pen pen, highlightPen;
@@ -27,14 +28,14 @@ namespace AlotGUI
         GeoType qGeoType;
 
 
-        public Visualizer(Size windowSize, string geoDir)
+        public Visualizer(Size windowSize, string geoDir, Action ForceDraw)
         {
             this.windowSize = windowSize;
+            this.ForceDraw = ForceDraw;
 
             zoom = (float)windowSize.Width / 360;
             viewportX = 180.0f * zoom;
             viewportY = 90.0f * zoom;
-            //zoomOnPoint(180.0f * zoom, 90.0f * zoom, zoom);
 
             seaBrush = new SolidBrush(Color.FromArgb(222, 229, 237));
             highlightBrush = new SolidBrush(Color.Purple);
@@ -119,6 +120,17 @@ namespace AlotGUI
 
             //zoom
             zoomOnPoint(viewportCenterX, viewportCenterY, zoom + diff);
+
+            preDrawMap();
+        }
+
+        public void FastZoomIn(int mx, int my)
+        {
+            float lon = (mx - viewportX) / zoom;
+            float lat = -(my - viewportY) / zoom;
+
+            //zoom
+            zoomOnPoint(lon, lat, 3 * zoom);
 
             preDrawMap();
         }
@@ -221,6 +233,7 @@ namespace AlotGUI
                 drawMapImage(imgGfx, preDrawing: true);
 
                 imgGfx.Dispose();
+                ForceDraw();
             }
             else
                 preDrawnMap = null;

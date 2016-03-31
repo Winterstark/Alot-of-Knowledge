@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.lblStatus = new System.Windows.Forms.Label();
             this.timerFeedback = new System.Windows.Forms.Timer(this.components);
+            this.timerDoubleClick = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // lblStatus
@@ -45,6 +46,10 @@
             // 
             this.timerFeedback.Interval = 500;
             this.timerFeedback.Tick += new System.EventHandler(this.timerFeedback_Tick);
+            // 
+            // timerDoubleClick
+            // 
+            this.timerDoubleClick.Tick += new System.EventHandler(this.timerDoubleClick_Tick);
             // 
             // formMain
             // 
@@ -72,6 +77,7 @@
 
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Timer timerFeedback;
+        private System.Windows.Forms.Timer timerDoubleClick;
     }
 }
 

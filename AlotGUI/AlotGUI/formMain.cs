@@ -85,13 +85,13 @@ namespace AlotGUI
 
         //timeline globals
         Font labelFont, labelMonthFont;
+        Point initialMousePoint, previousMousePoint;
         List<TimelineEvent> timeline;
         int[,] reservedLabelRows, reservedPeriodRows; //used to prevent overlapping labels/periods
         string questionEvent;
         float timelineLB, timelineUB, prevTimelineLB; //lower and upper date bounds of the timeline
         float timelineNotchPeriod;
         int timelinePenWidth, timelineNotchWidth, timelineLabelFrequency, timelineMonthNotchFrequency, timelineMonthLabelFrequency;
-        int initialMX, initialMY, prevMX, prevMY;
         int timelineImageHeightInRows;
         bool mouseDown, concealQuestionEvent;
 
@@ -109,6 +109,7 @@ namespace AlotGUI
 
         //map globals
         Visualizer viz;
+        Point mouseClickPoint;
         string[] questionEntities;
         string mapMouseOverRegion;
         int mapQType, nRemainingFeedbackTicks;
@@ -227,6 +228,11 @@ namespace AlotGUI
             }
             else
                 lblStatus.Text = status;
+        }
+
+        bool arePointsCloseEnough(Point pt1, Point pt2)
+        {
+            return Math.Abs(pt1.X - pt2.X) <= SystemInformation.DoubleClickSize.Width && Math.Abs(pt1.Y - pt2.Y) <= SystemInformation.DoubleClickSize.Height;
         }
 
         #region Mosaic
@@ -1178,6 +1184,11 @@ namespace AlotGUI
             this.BackgroundImage = null;
             this.Refresh();
         }
+
+        public void ForceDraw()
+        {
+            this.Invalidate();
+        }
         #endregion
 
 
@@ -1213,6 +1224,8 @@ namespace AlotGUI
             questionEvent = "";
             mapMouseOverRegion = "";
 
+            timerDoubleClick.Interval = SystemInformation.DoubleClickTime;
+
             //init worker
             pipeWorker = new BackgroundWorker();
             pipeWorker.DoWork += new DoWorkEventHandler(pipeWorker_DoWork);
@@ -1222,9 +1235,9 @@ namespace AlotGUI
 
             //load data
             loadTimelineData();
-            viz = new Visualizer(this.ClientSize, GEO_DIR);
+            viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 2 Flores (Lesser Sunda Islands)");
+            //processMsg("map 3 Namibia");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1277,10 +1290,8 @@ namespace AlotGUI
 
         private void formMain_MouseDown(object sender, MouseEventArgs e)
         {
-            initialMX = e.X;
-            initialMY = e.Y;
-            prevMX = e.X;
-            prevMY = e.Y;
+            initialMousePoint = e.Location;
+            previousMousePoint = e.Location;
             prevTimelineLB = timelineLB;
             mouseDown = true;
         }
@@ -1293,21 +1304,21 @@ namespace AlotGUI
                     switch (mode)
                     {
                         case DisplayMode.Timeline:
-                            timelineLB = prevTimelineLB - convertPixelsToDate(e.X - prevMX);
+                            timelineLB = prevTimelineLB - convertPixelsToDate(e.X - previousMousePoint.X);
                             calcTimelineUB();
                             this.Invalidate();
                             break;
                         case DisplayMode.FamilyTree:
-                            treeX += e.X - prevMX;
-                            treeY += e.Y - prevMY;
-                            prevMX = e.X;
-                            prevMY = e.Y;
+                            treeX += e.X - previousMousePoint.X;
+                            treeY += e.Y - previousMousePoint.Y;
+                            previousMousePoint.X = e.X;
+                            previousMousePoint.Y = e.Y;
                             this.Invalidate();
                             break;
                         case DisplayMode.Map:
-                            viz.MoveViewport(e.X - prevMX, e.Y - prevMY);
-                            prevMX = e.X;
-                            prevMY = e.Y;
+                            viz.MoveViewport(e.X - previousMousePoint.X, e.Y - previousMousePoint.Y);
+                            previousMousePoint.X = e.X;
+                            previousMousePoint.Y = e.Y;
 
                             this.Invalidate();
                             break;
@@ -1335,23 +1346,22 @@ namespace AlotGUI
             try
             {
                 mouseDown = false;
-
+                
                 if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) &&
-                    Math.Abs(e.X - initialMX) + Math.Abs(e.Y - initialMY) < 2) //check if the user actually clicked or was just dragging
+                    arePointsCloseEnough(e.Location, initialMousePoint)) //check if the user actually clicked or was just dragging
                 {
-                    string selectedArea = viz.GetSelectedArea(e.X, e.Y);
-                    bool correct = viz.ArrayContainsString(questionEntities, selectedArea);
-
-                    if (correct)
-                        sendFeedbackToAlot("True");
-                    else
+                    if (!timerDoubleClick.Enabled)
                     {
-                        sendFeedbackToAlot(selectedArea);
+                        mouseClickPoint = e.Location;
+                        timerDoubleClick.Enabled = true;
+                    }
+                    else if (arePointsCloseEnough(e.Location, mouseClickPoint))
+                    {
+                        //user performed a doubleclick
+                        timerDoubleClick.Enabled = false;
 
-                        //display the correct answer on the map
-                        isAnswerHighlighted = false;
-                        nRemainingFeedbackTicks = 6;
-                        timerFeedback.Enabled = true;
+                        if (mode == DisplayMode.Map)
+                            viz.FastZoomIn(mouseClickPoint.X, mouseClickPoint.Y);
                     }
                 }
             }
@@ -1410,6 +1420,27 @@ namespace AlotGUI
             nRemainingFeedbackTicks--;
             if (nRemainingFeedbackTicks == 0)
                 timerFeedback.Enabled = false;
+        }
+
+        private void timerDoubleClick_Tick(object sender, EventArgs e)
+        {
+            //double click period expired -> execute a single click
+            timerDoubleClick.Enabled = false;
+            
+            string selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
+            bool correct = viz.ArrayContainsString(questionEntities, selectedArea);
+
+            if (correct)
+                sendFeedbackToAlot("True");
+            else
+            {
+                sendFeedbackToAlot(selectedArea);
+
+                //display the correct answer on the map
+                isAnswerHighlighted = false;
+                nRemainingFeedbackTicks = 6;
+                timerFeedback.Enabled = true;
+            }
         }
     }
 }

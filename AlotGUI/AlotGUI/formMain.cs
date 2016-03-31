@@ -111,7 +111,7 @@ namespace AlotGUI
         Visualizer viz;
         Point mouseClickPoint;
         string[] questionEntities;
-        string mapMouseOverRegion;
+        string mapMouseOverRegion, selectedArea;
         int mapQType, nRemainingFeedbackTicks;
         bool isAnswerHighlighted;
 
@@ -1237,7 +1237,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Namibia");
+            //processMsg("map 2 South China Sea");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1419,7 +1419,10 @@ namespace AlotGUI
 
             nRemainingFeedbackTicks--;
             if (nRemainingFeedbackTicks == 0)
+            {
                 timerFeedback.Enabled = false;
+                sendFeedbackToAlot(selectedArea);
+            }
         }
 
         private void timerDoubleClick_Tick(object sender, EventArgs e)
@@ -1427,15 +1430,13 @@ namespace AlotGUI
             //double click period expired -> execute a single click
             timerDoubleClick.Enabled = false;
             
-            string selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
+            selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
             bool correct = viz.ArrayContainsString(questionEntities, selectedArea);
 
             if (correct)
                 sendFeedbackToAlot("True");
             else
             {
-                sendFeedbackToAlot(selectedArea);
-
                 //display the correct answer on the map
                 isAnswerHighlighted = false;
                 nRemainingFeedbackTicks = 6;

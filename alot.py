@@ -1203,7 +1203,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLevel=0, otherNames={}):
+def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, otherNames={}, geoType=""):
 	if type(q) is not str:
 		q = str(q)
 
@@ -1247,16 +1247,32 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 		answer, exit, immediately = checkForExit(input(prompt))
 		tryAgain = False
 
-		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames):
+		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, geoType=geoType):
 			correct = True
 		else:
 			if catalot != None and a in catalot:
-				#check if the user's answer is correct, even if it isn't the target answer
-				for key in catalot:
-					if key != a and toString(catalot[key]) == q and isAnswerCorrect(key, answer, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
-						print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
-						tryAgain = True
-						break
+				#check if the user's answer is correct for another entry
+				if attribute == "":
+					for key in catalot:
+						if key != a and toString(catalot[key]) == q and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
+							print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+							tryAgain = True
+							break
+				else:
+					for key in catalot:
+						if key != a and attribute in catalot[key]:
+							#check if entry contains the items in question
+							entryContainsAllTimes = True
+							for item in items:
+								if item not in catalot[key][attribute]:
+									entryContainsAllTimes = False
+									break
+
+							#is this the user's answer?
+							if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
+								print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+								tryAgain = True
+								break
 
 			if not tryAgain and firstAttempt:
 				if aIsDate:
@@ -1270,7 +1286,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 						answerRange = answer.split(' - ')
 						if len(answerRange) == 2:
 							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
-								print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+								print('\t'*indentLevel + "Your ankswer is almost correct. You may try once more.")
 								tryAgain = True
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
@@ -1299,7 +1315,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, alwaysShowHint=False, indentLev
 	return correct, exit, immediately
 
 
-def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}):
+def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}, geoType=""):
 	aStr = toString(a, False)
 
 	#ignore segments in parentheses
@@ -1322,8 +1338,8 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 
-		if answer != correctAnswer:
-			#ignore "the"
+		#if wrong -> ignore "the"
+		if answer != correctAnswer:	
 			if "the" + answer == correctAnswer:
 				answer = "the" + answer
 				if showFullAnswer:
@@ -1333,16 +1349,28 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 				if showFullAnswer:
 					print('\t'*indentLevel + "Exact answer: " + aStr)
 
-	if answer != correctAnswer and len(otherNames) > 0:
-		#check other names
-		for alt in otherNames:
-			cleanAlt = removeParentheses(alt.lower())
-			answer = removeTypos(answer, cleanAlt, originalCorrectAnswer=alt, indentLevel=indentLevel)
+		#if wrong -> check other names
+		if answer != correctAnswer and len(otherNames) > 0:	
+			for alt in otherNames:
+				cleanAlt = removeParentheses(alt.lower())
+				answer = removeTypos(answer, cleanAlt, originalCorrectAnswer=alt, indentLevel=indentLevel)
 
-			if cleanAlt == answer:
-				print("Expected answer: " + a)
+				if cleanAlt == answer:
+					print("Expected answer: " + aStr)
+					answer = correctAnswer
+					break
+
+		#if wrong -> ignore geoType errors ("Victoria" == "Lake Victoria")
+		if answer != correctAnswer and geoType != "":
+			geoType = ''.join(e for e in geoType.lower() if e.isalnum())
+			answer = answer.replace(geoType.lower(), "").strip()
+			correctAnswer = correctAnswer.replace(geoType.lower(), "").strip()
+
+			answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
+
+			if correctAnswer == answer:
+				print("Exact answer: " + aStr)
 				answer = correctAnswer
-				break
 	
 	return answer == correctAnswer
 
@@ -1494,7 +1522,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 	return allCorrect, exit, immediately
 
 
-def qType_RecognizeList(listKey, items, color):
+def qType_RecognizeList(catalot, listKey, items, color, attribute=""):
 	#pick 3 random items
 	randomItems = list(items)
 	random.shuffle(randomItems)
@@ -1508,7 +1536,7 @@ def qType_RecognizeList(listKey, items, color):
 	else:
 		itemsType = "set"
 
-	return qType_EnterAnswer("What {} do these items belong to? ".format(itemsType), listKey, color)
+	return qType_EnterAnswer("What {} do these ({}) items belong to? ".format(itemsType, attribute), listKey, color, catalot=catalot, attribute=attribute, items=randomItems)
 
 
 def qType_RecognizeItem(listKey, items, color):
@@ -1889,7 +1917,7 @@ def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
 		print("Find the {} on the map.".format(geoType))
 		correct, exit, immediately = getFeedbackFromGUI()
 	elif step == 4:
-		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color, otherNames=otherNames)
+		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color, otherNames=otherNames, geoType=geoType)
 
 	return correct, exit, immediately
 
@@ -2107,7 +2135,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color)
 						else:
-							correct, exit, immediately = qType_RecognizeList(key + ", " + attribute, entry[attribute], color)
+							correct, exit, immediately = qType_RecognizeList(catalot, key, entry[attribute], color, attribute=attribute)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
@@ -2119,7 +2147,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				if random.randint(0, 1) == 0:
 					correct, exit, immediately = quizSet(key, entry, 1, color)
 				else:
-					correct, exit, immediately = qType_RecognizeList(key, entry, color)
+					correct, exit, immediately = qType_RecognizeList(catalot, key, entry, color)
 
 		if usedGUI:
 			msgGUI("logo")

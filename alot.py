@@ -580,8 +580,6 @@ def parseFile(path):
 					if metadata[key]["learned"]:
 						metadata[key]["learned"] = False
 						metadata[key]["nextTest"] = datetime.now() + timedelta(hours=22)
-						for attrib in metadata[key]["step"]:
-							metadata[key]["step"][attrib] = 1
 
 					nExp += 1
 					changes = True

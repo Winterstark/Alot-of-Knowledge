@@ -1529,7 +1529,9 @@ def qType_RecognizeList(catalot, listKey, items, color, attribute=""):
 	for item in randomItems:
 		print(toString(item))
 
-	if getType(items) is Type.List:
+	if attribute != "":
+		itemsType = "entry"
+	elif getType(items) is Type.List:
 		itemsType = "list"
 	else:
 		itemsType = "set"

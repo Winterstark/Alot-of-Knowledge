@@ -120,8 +120,6 @@ namespace AlotGUI
 
             //zoom
             zoomOnPoint(viewportCenterX, viewportCenterY, zoom + diff);
-
-            preDrawMap();
         }
 
         public void FastZoomIn(int mx, int my)
@@ -131,8 +129,6 @@ namespace AlotGUI
 
             //zoom
             zoomOnPoint(lon, lat, 3 * zoom);
-
-            preDrawMap();
         }
 
         void zoomOnPoint(float x, float y, float newZoom)
@@ -141,8 +137,9 @@ namespace AlotGUI
 
             viewportX = -x * zoom + (float)windowSize.Width / 2;
             viewportY = y * zoom + (float)windowSize.Height / 2;
-
             checkViewportBounds();
+
+            preDrawMap();
         }
 
         void checkViewportBounds()
@@ -425,7 +422,6 @@ namespace AlotGUI
                     newZoom = Math.Min(newZoom, 200);
 
                     zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
-                    preDrawMap();
                 }
             }
         }

@@ -2030,9 +2030,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
 						elif type(correct[attribute]) is not str:
 							feedback("Correct!")
-						elif correct[attribute] == "AlotGUI sends its regards: False":
-							feedback("Wrong!")
-						elif "FalseGEO" in correct:
+						elif "FalseGEO" in correct[attribute]:
 							feedback("Wrong!" + correct.replace("FalseGEO", ""))
 						elif correct[attribute] != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
@@ -2261,9 +2259,7 @@ def quiz(category, catalot, metacatalot, corewords):
 								print("Entry progress @ {}%.".format(100*(meta["step"]-1)//maxSteps(entry)))
 								meta["nextTest"] = datetime.now() + timedelta(hours=22)
 					else:
-						if correct == "AlotGUI sends its regards: False":
-							feedback("Wrong!")
-						elif "FalseGEO" in correct:
+						if "FalseGEO" in correct:
 							feedback("Wrong!" + correct.replace("FalseGEO", ""))
 						elif correct != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback("Wrong! Correct answer: " + correct)

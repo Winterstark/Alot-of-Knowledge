@@ -1264,8 +1264,12 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 				if attribute == "":
 					for key in catalot:
 						if key != a and toString(catalot[key]) == q and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
-							print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
-							tryAgain = True
+							if color == COLOR_UNLEARNED:
+								print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+								tryAgain = True
+							else:
+								print('\t'*indentLevel + "Expected answer:", a)
+								correct = True
 							break
 				else:
 					for key in catalot:
@@ -1279,11 +1283,17 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 
 							#is this the user's answer?
 							if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
-								print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
-								tryAgain = True
+								if color == COLOR_UNLEARNED:
+									print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+									tryAgain = True
+								else:
+									print('\t'*indentLevel + "Expected answer:", a)
+									correct = True
 								break
 
-			if not tryAgain and firstAttempt:
+			if correct:
+				break
+			elif not tryAgain and firstAttempt:
 				if aIsDate:
 					if getType(originalA) is Type.Date:
 						#check if the user's answer is relatively close to the correct Date
@@ -1295,7 +1305,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 						answerRange = answer.split(' - ')
 						if len(answerRange) == 2:
 							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
-								print('\t'*indentLevel + "Your ankswer is almost correct. You may try once more.")
+								print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
 								tryAgain = True
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
@@ -1548,9 +1558,11 @@ def qType_RecognizeList(listKey, items, color, catalot=None, attribute=""):
 		itemsType = "set"
 
 	if attribute != "":
-		attribute = '(' + attribute + ") "
+		attributeName = '(' + attribute + ") "
+	else:
+		attributeName = ""
 
-	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attribute), listKey, color, catalot=catalot, attribute=attribute, items=randomItems)
+	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems)
 
 
 def qType_RecognizeItem(listKey, items, color):

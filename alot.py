@@ -1055,6 +1055,17 @@ def removeParentheses(s, concealContents=False):
 			return s.replace("[[[", "(").replace("]]]", ")")
 
 
+def hideDates(s):
+	newS = ""
+	for item in s.split(", "):
+		if not Date.isValid(item):
+			newS += item + ", "
+
+	if newS[-2:] == ", ":
+		newS = newS[:-2]
+	return newS
+
+
 def fullPath(relativePath):
 	path = DIR + os.sep + "!IMAGES" + os.sep + relativePath
 
@@ -1577,7 +1588,9 @@ def qType_OrderItems(listKey, items, color):
 
 	#get answer from user
 	for i in range(len(shuffledItems)):
-		print("{}. {}".format(i+1, removeParentheses(toString(shuffledItems[i]), True))) #hide the contents of the parentheses because it might reveal the answer to the user
+		item = removeParentheses(toString(shuffledItems[i]), True) #hide the contents of the parentheses because it might reveal the answer to the user
+		item = hideDates(item) #hide dates for the same reason
+		print("{}. {}".format(i+1, item))
 
 	answer, exit, immediately = checkForExit(input("Enter the correct order of these items: "))
 

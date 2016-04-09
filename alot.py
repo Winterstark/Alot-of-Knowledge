@@ -457,9 +457,9 @@ def exportTimelineForGUI(alot):
 	with open("timeline.txt", "w") as f:
 		for key in timeline:
 			if getType(timeline[key][0]) is Type.Date:
-				f.write("{} :: {} // {} // {}\n".format(key, timeline[key][0].toGUIFormat(False), timeline[key][1], timeline[key][2]).replace("'", ""))
+				f.write("{} :: {} // {} // {}\n".format(key, timeline[key][0].toGUIFormat(False), timeline[key][1], timeline[key][2]).replace("'", "").replace('"', ''))
 			else:
-				f.write("{} :: {} - {} // {} // {}\n".format(key, timeline[key][0][0].toGUIFormat(True), timeline[key][0][1].toGUIFormat(True), timeline[key][1], timeline[key][2]).replace("'", ""))
+				f.write("{} :: {} - {} // {} // {}\n".format(key, timeline[key][0][0].toGUIFormat(True), timeline[key][0][1].toGUIFormat(True), timeline[key][1], timeline[key][2]).replace("'", "").replace('"', ''))
 
 
 def convertToDateIfAnyInTuple(tpl):
@@ -818,13 +818,13 @@ def toString(answer, makeMoreReadable=True):
 		else:
 			return repr(answer[0]) + " - " + repr(answer[1])
 	elif answerType is Type.Class:
-		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "")
+		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "").replace('"', '')
 	elif answerType is Type.Set:
-		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "")
+		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
 	elif answerType is Type.Tuple:
-		return str(answer).replace('(', '').replace(')', '').replace("'", "")
+		return str(answer).replace('(', '').replace(')', '').replace("'", "").replace('"', '')
 	elif answerType is Type.List:
-		return str(answer).replace('[', '').replace(']', '').replace("'", "")
+		return str(answer).replace('[', '').replace(']', '').replace("'", "").replace('"', '')
 	else:
 		return str(answer)
 

@@ -1291,7 +1291,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 									correct = True
 								break
 
-			if correct:
+			if "correct" in locals() and correct:
 				break
 			elif not tryAgain and firstAttempt:
 				if aIsDate:

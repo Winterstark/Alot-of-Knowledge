@@ -1237,7 +1237,10 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Great Bear Lake");
+            //processMsg("map 3 Lake Huron");
+            //processMsg("map 4 Sulu Sea");
+            //processMsg("map 1 Lake Tanganyika");
+            //processMsg("map 4 Saint Pierre and Miquelon");
         }
 
         protected override void OnPaint(PaintEventArgs e)

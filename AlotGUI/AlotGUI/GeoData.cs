@@ -238,63 +238,73 @@ namespace AlotGUI
 
         public void Draw(Graphics gfx)
         {
-            if (preDrawnMap != null)
+            try
             {
-                gfx.DrawImageUnscaled(preDrawnMap, (int)viewportX - preDrawnMap.Width / 2, (int)viewportY - preDrawnMap.Height / 2);
+                if (preDrawnMap != null)
+                {
+                    gfx.DrawImageUnscaled(preDrawnMap, (int)viewportX - preDrawnMap.Width / 2, (int)viewportY - preDrawnMap.Height / 2);
 
-                gfx.TranslateTransform(viewportX, viewportY);
-                gfx.ScaleTransform(zoom, -zoom);
-                drawHighlightedRegions(gfx);
+                    gfx.TranslateTransform(viewportX, viewportY);
+                    gfx.ScaleTransform(zoom, -zoom);
+                    drawHighlightedRegions(gfx);
+                }
+                else
+                {
+                    gfx.TranslateTransform(viewportX, viewportY);
+                    gfx.ScaleTransform(zoom, -zoom);
+                    drawMapImage(gfx);
+                }
             }
-            else
+            catch (Exception e)
             {
-                gfx.TranslateTransform(viewportX, viewportY);
-                gfx.ScaleTransform(zoom, -zoom);
-                drawMapImage(gfx);
+                MessageBox.Show("Exception in Draw(): " + e.Message);
             }
         }
 
         void drawMapImage(Graphics gfx, bool preDrawing = false)
         {
-            gfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-            //gfx.TranslateTransform(windowSize.Width / 2, windowSize.Height / 2 - 90 * zoom);
-            //gfx.TranslateTransform(viewportX, viewportY);
-            //gfx.ScaleTransform(zoom, -zoom);
-
-            gfx.FillRectangle(seaBrush, -180, -90, 360, 180); //ocean background
-            gfx.DrawRectangle(pen, -180, -90, 360, 180); //world frame
-
-            if (qType == 1)
+            try
             {
-                if (qGeoType == GeoType.Region)
-                    drawEntityCollection(gfx, GeoType.Region, preDrawing);
+                gfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                gfx.FillRectangle(seaBrush, -180, -90, 360, 180); //ocean background
+                gfx.DrawRectangle(pen, -180, -90, 360, 180); //world frame
+
+                if (qType == 1)
+                {
+                    if (qGeoType == GeoType.Region)
+                        drawEntityCollection(gfx, GeoType.Region, preDrawing);
+                    else
+                    {
+                        if (qGeoType == GeoType.PhysicalRegion)
+                            drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
+
+                        drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                        drawEntityCollection(gfx, GeoType.City, preDrawing);
+
+                        if (!preDrawing)
+                            drawHighlightedRegions(gfx);
+
+                        if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
+                        {
+                            drawEntityCollection(gfx, GeoType.River, preDrawing);
+                            drawEntityCollection(gfx, GeoType.Lake, preDrawing);
+                        }
+                    }
+                }
                 else
                 {
-                    if (qGeoType == GeoType.PhysicalRegion)
-                        drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
-
-                    drawEntityCollection(gfx, GeoType.Country, preDrawing);
-                    drawEntityCollection(gfx, GeoType.City, preDrawing);
+                    worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
+                    worldLandmass.Draw(gfx);
 
                     if (!preDrawing)
                         drawHighlightedRegions(gfx);
-
-                    if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
-                    {
-                        drawEntityCollection(gfx, GeoType.River, preDrawing);
-                        drawEntityCollection(gfx, GeoType.Lake, preDrawing);
-                    }
                 }
             }
-            else
+            catch (Exception e)
             {
-                worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
-                worldLandmass.Draw(gfx);
-
-                if (!preDrawing)
-                    drawHighlightedRegions(gfx);
+                MessageBox.Show("Exception in drawMapImage(): " + e.Message);
             }
         }
 

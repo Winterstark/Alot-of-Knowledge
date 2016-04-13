@@ -2314,6 +2314,8 @@ def quiz(category, catalot, metacatalot, corewords):
 			meta["lastTest"] = datetime.now()
 			nTested += 1
 
+		saveToFile(catalot, metacatalot, DIR + os.sep + category + ".txt") #save changes
+
 		ready.remove(key)
 		if exit:
 			break
@@ -2479,11 +2481,6 @@ try:
 except:
     print("Uh-oh: " + str(traceback.format_exception(*sys.exc_info())))
     immediately = False
-    
-finally: #save changes
-	for category in alot:
-		if changes[category]:
-			saveToFile(alot[category], metalot[category], DIR + os.sep + category + ".txt")
 
 if not immediately:
 	print("Press Enter to exit...")

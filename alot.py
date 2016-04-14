@@ -548,8 +548,6 @@ def parseFile(path):
 		print("New file: " + os.path.basename(path))
 		metadata = {}
 
-	changes = False
-
 	#new entries?
 	nNew = 0
 	nExp = 0
@@ -570,7 +568,6 @@ def parseFile(path):
 					metadata[key]["step"][attribute] = 1
 			
 			nNew += 1
-			changes = True
 		elif type(data[key]) is dict:
 			#check if Class has been expanded
 			for attribute in data[key]:
@@ -582,7 +579,6 @@ def parseFile(path):
 						metadata[key]["nextTest"] = datetime.now() + timedelta(hours=22)
 
 					nExp += 1
-					changes = True
 
 
 	#deleted entries?
@@ -593,12 +589,11 @@ def parseFile(path):
 		if key not in data:
 			toDel.append(key)
 			nDel += 1
-			changes = True
 
 	for key in toDel:
 		del metadata[key]
 
-	return data, metadata, changes, nNew, nExp, nDel
+	return data, metadata, nNew, nExp, nDel
 
 
 def saveToFile(data, metadata, path):
@@ -2326,10 +2321,8 @@ def quiz(category, catalot, metacatalot, corewords):
 		print("Score: {0} / {1} ({2}%)".format(nCorrect, nTested, 100*nCorrect//nTested))
 	print("\n")
 
-	return nTested > 0
 
-
-def mainLoop(alot, metalot, changes):
+def mainLoop(alot, metalot):
 	#load corewords
 	if os.path.isfile("corewords.txt"):
 		with open("corewords.txt") as f:
@@ -2398,12 +2391,12 @@ def mainLoop(alot, metalot, changes):
 				#msgGUI("timeline")
 			elif choice == "all": #test all categories one by one
 				for category in alot:
-					changes[category] = quiz(category, alot[category], metalot[category], corewords)
+					quiz(category, alot[category], metalot[category], corewords)
 					keys, nNew, nLearned = getReadyKeys(metalot[category])
 					if nNew + nLearned > 0:
 						break
 			elif choice != "exit":
-				changes[choice] = quiz(choice, alot[choice], metalot[choice], corewords)
+				quiz(choice, alot[choice], metalot[choice], corewords)
 		else:
 			print("\nNo entries ready for testing.")
 			return False
@@ -2430,12 +2423,11 @@ DIR = os.path.normpath(DIR)
 #load knowledge
 alot = {}
 metalot = {}
-changes = {}
 
 for filename in os.listdir(DIR):
 	if ".txt" in filename:
 		category = os.path.splitext(filename)[0]
-		alot[category], metalot[category], changes[category], nNew, nExp, nDel = parseFile(DIR + os.sep + filename)
+		alot[category], metalot[category], nNew, nExp, nDel = parseFile(DIR + os.sep + filename)
 
 		if nNew > 0 or nExp > 0 or nDel > 0:
 			print(filename + " changed: ", end="")
@@ -2454,6 +2446,8 @@ for filename in os.listdir(DIR):
 					print("")
 			if nDel > 0:
 				print(str(nDel) + " deletions")
+
+			saveToFile(alot[category], metalot[category], DIR + os.sep + category + ".txt") #save changes
 
 #init GUI
 exportTimelineForGUI(alot)
@@ -2477,7 +2471,7 @@ print("\rEstablished connection to AlotGUI.")
 
 #show "main menu"
 try:
-	immediately = mainLoop(alot, metalot, changes)
+	immediately = mainLoop(alot, metalot)
 except:
     print("Uh-oh: " + str(traceback.format_exception(*sys.exc_info())))
     immediately = False

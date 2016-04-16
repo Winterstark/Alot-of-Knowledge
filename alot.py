@@ -655,7 +655,7 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 				return userAnswer[:i] + correctAnswer[i] + userAnswer[i+1:]
 	
 	#check for missing letters
-	if len(userAnswer) + 1 == len(correctAnswer):
+	if len(userAnswer) + 1 >= len(correctAnswer):
 		for i in range(len(correctAnswer)):
 			if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
 				if correctAnswer[i].isalnum(): #if the typo is a missing period or comma, ignore it completely

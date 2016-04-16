@@ -1288,34 +1288,34 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 
 			if "correct" in locals() and correct:
 				break
-			elif not tryAgain and firstAttempt:
-				if aIsDate:
+			elif not tryAgain:
+				if aIsDate and firstAttempt:
 					if getType(originalA) is Type.Date:
 						#check if the user's answer is relatively close to the correct Date
 						if originalA.isAlmostCorrect(answer):
-							print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+							print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
 							tryAgain = True
 							firstAttempt = False
 					else:
 						answerRange = answer.split(' - ')
 						if len(answerRange) == 2:
 							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
-								print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+								print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
 								tryAgain = True
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
 					#check if the user's answer is relatively close to the correct Number
 					try:
 						answer = int(answer)
-
 						relativeError = abs(answer - a) / a
+
 						if relativeError < 0.05:
 							#close enough; accept the answer
 							print("Exact number: " + str(a))
 							correct = True
 							break
-						elif relativeError < 0.10:
-							print('\t'*indentLevel + "Your answer is almost correct. You may try once more.")
+						elif firstAttempt and relativeError < 0.10:
+							print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
 							tryAgain = True
 							firstAttempt = False
 					except:

@@ -2051,7 +2051,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						elif type(correct[attribute]) is not str:
 							feedback("Correct!")
 						elif "FalseGEO" in correct[attribute]:
-							feedback("Wrong!" + correct.replace("FalseGEO", ""))
+							feedback("Wrong!" + correct[attribute].replace("FalseGEO", ""))
 						elif correct[attribute] != "False": #if it is "False" then quizList has already printed the correct answer
 							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
 

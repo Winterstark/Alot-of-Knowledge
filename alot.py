@@ -401,7 +401,7 @@ def addNodeToFamilyTree(catalot, key, visited=[]):
 				checkNodes.append(k)
 
 		for node in checkNodes:
-			if node not in visited:
+			if node not in visited and type(node) is str:
 				nodeOutput += addNodeToFamilyTree(catalot, node)
 
 		return nodeOutput

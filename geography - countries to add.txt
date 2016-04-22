@@ -1,8 +1,4 @@
 {
-	'Nauru': {'Official name': '', 'Date': '', 'Capital': 'Yaren', 'Map': 'GEO:Sovereign country/Nauru', 'Flag': 'history\\flags\\Nauru.png', 'Population': 10084, 'Currency': '', 'Official languages': {''}},
-	'Oman': {'Official name': '', 'Date': '', 'Capital': 'Muscat', 'Map': 'GEO:Sovereign country/Oman', 'Flag': 'history\\flags\\Oman.png', 'Population': 4296168, 'Currency': '', 'Official languages': {''}},
-	'Peru': {'Official name': '', 'Date': '', 'Capital': 'Lima', 'Map': 'GEO:Sovereign country/Peru', 'Flag': 'history\\flags\\Peru.png', 'Population': 31151643, 'Currency': '', 'Official languages': {''}},
-	'Iran': {'Official name': '', 'Date': '', 'Capital': 'Tehran', 'Map': 'GEO:Sovereign country/Iran', 'Flag': 'history\\flags\\Iran.png', 'Population': 78810500, 'Currency': '', 'Official languages': {''}},
 	'Scarborough Reef': {'Official name': '', 'Date': '', 'Map': 'GEO:Disputed territory/Scarborough Reef', 'Currency': '', 'Official languages': {''}},
 	'Japan': {'Official name': '', 'Date': '', 'Capital': 'Tokyo', 'Map': 'GEO:Sovereign country/Japan', 'Flag': 'history\\flags\\Japan.png', 'Population': 126890000, 'Currency': '', 'Official languages': {''}},
 	'Saint Vincent and the Grenadines': {'Official name': '', 'Date': '', 'Capital': 'Kingstown', 'Map': 'GEO:Sovereign country/Saint Vincent and the Grenadines', 'Flag': 'history\\flags\\Saint Vincent and the Grenadines.png', 'Population': 109991, 'Currency': '', 'Official languages': {''}},

@@ -1143,7 +1143,10 @@ def constructHint(a):
 		for i in range(len(key)):
 			if key[i].isalnum():
 				if (showFirstLetters and firstLetter) or insideParentheses:
-					hint += key[i]
+					if key[i].isdigit():
+						hint += '_'
+					else:
+						hint += key[i]
 					firstLetter = False
 				else:
 					hint += '_'

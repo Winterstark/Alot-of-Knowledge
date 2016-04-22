@@ -1600,7 +1600,10 @@ def qType_OrderItems(listKey, items, color):
 
 	#get answer from user
 	for i in range(len(shuffledItems)):
-		item = removeParentheses(toString(shuffledItems[i]), True) #hide the contents of the parentheses because it might reveal the answer to the user
+		item = toString(shuffledItems[i])
+		if "), (" in item:
+			item = item.replace("), (", ", ").replace('(', '').replace(')', '') #item contains several sub items
+		item = removeParentheses(item, True) #hide the contents of the parentheses because it might reveal the answer to the user
 		item = hideDates(item) #hide dates for the same reason
 		print("{}. {}".format(i+1, item))
 

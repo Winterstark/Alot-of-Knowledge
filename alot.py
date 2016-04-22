@@ -1564,7 +1564,9 @@ def qType_RecognizeItem(listKey, items, color):
 	colorPrint(listKey, color)
 	index = random.randint(0, len(items)-1)
 
-	answer, exit, immediately = checkForExit(input("What is the index of this item: " + toString(items[index]) + "? "))
+	item = removeParentheses(toString(items[index]), True) #hide the contents of the parentheses because it might reveal the answer to the user
+	item = hideDates(item) #hide dates for the same reason
+	answer, exit, immediately = checkForExit(input("What is the index of this item: " + item + "? "))
 
 	try:
 		if int(answer)-1 == index:

@@ -1355,16 +1355,18 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 
-		#if wrong -> ignore "the"
-		if answer != correctAnswer:	
-			if "the" + answer == correctAnswer:
-				answer = "the" + answer
-				if showFullAnswer:
-					print('\t'*indentLevel + "Exact answer: " + aStr)
-			elif answer.replace("the", "") == correctAnswer:
-				answer = answer.replace("the", "")
-				if showFullAnswer:
-					print('\t'*indentLevel + "Exact answer: " + aStr)
+		#if wrong -> ignore "the" and "of"
+		if answer != correctAnswer:
+			tmpAnswer = answer
+			tmpCorrectAnswer = correctAnswer
+			for ignoredWord in ["the", "of"]:
+				tmpAnswer = tmpAnswer.replace(ignoredWord, "")
+				tmpCorrectAnswer = tmpCorrectAnswer.replace(ignoredWord, "")
+			tmpAnswer = removeTypos(tmpAnswer, tmpCorrectAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
+
+			if tmpAnswer == tmpCorrectAnswer:
+				answer = correctAnswer
+				print('\t'*indentLevel + "Exact answer: " + aStr)
 
 		#if wrong -> check other names
 		if answer != correctAnswer and len(otherNames) > 0:	

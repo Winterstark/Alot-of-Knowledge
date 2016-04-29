@@ -1307,6 +1307,18 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 								tryAgain = True
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
+					#check if the answer contains 'k' or 'm' (shorthand for thousand and million)
+					if answer[-1:].lower() == 'k':
+						try:
+							answer = str(int(float(answer[:-1]) * 1000))
+						except:
+							pass
+					elif answer[-1:].lower() == 'm':
+						try:
+							answer = str(int(float(answer[:-1]) * 1000000))
+						except:
+							pass
+
 					#check if the user's answer is relatively close to the correct Number
 					try:
 						answer = int(answer)

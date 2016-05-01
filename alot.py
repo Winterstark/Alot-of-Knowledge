@@ -1701,16 +1701,21 @@ def qType_Image(imageKey, path, learned=False, otherNames={}):
 		correctAnswer = str(random.randint(1, 6))
 		msgGUI("C{0} {1}".format(correctAnswer, path))
 		answer, quit, immediately = checkForExit(input("Which image represents {}?\n> ".format(imageKey)))
+
+		if answer.strip() == correctAnswer:
+			return True, quit, immediately
+		else:
+			return correctAnswer, quit, immediately
 	else:
 		#identify image
 		correctAnswer = imageKey
 		msgGUI("I {}".format(path))
 		answer, quit, immediately = checkForExit(input("What is this image associated with?\n> "))
 
-	if isAnswerCorrect(answer, correctAnswer, otherNames=otherNames):
-		return True, quit, immediately
-	else:
-		return correctAnswer, quit, immediately
+		if isAnswerCorrect(answer, correctAnswer, otherNames=otherNames):
+			return True, quit, immediately
+		else:
+			return correctAnswer, quit, immediately
 
 
 def qType_Timeline(key, otherNames={}):

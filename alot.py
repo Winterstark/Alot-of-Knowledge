@@ -245,7 +245,9 @@ class Date:
 
 
 	def isAlmostCorrect(self, answer):
-		if Date.isValid(answer):
+		if getType(answer) is Type.Date:
+			answerDate = answer
+		elif Date.isValid(answer):
 			answerDate = Date(answer)
 		else:
 			return False
@@ -731,7 +733,9 @@ def maxSteps(answer):
 		print("TYPE NOT SUPPORTED FOR MAXSTEPS():", answerType)
 
 
-def getType(entry):
+def getType(entry, attribute=""):
+	if attribute != "":
+		entry = entry[attribute]
 	entryType = type(entry)
 
 	if entryType is int:
@@ -849,13 +853,6 @@ def isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
 			return attribute not in catalot[key] or catalot[key][attribute] != catalot[targetKey][attribute]
 
 
-def isEntryOrAttributeDate(entry, attribute):
-	if attribute == "":
-		return getType(entry) is Type.Date or getType(entry) is Type.Range
-	else:
-		return getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.Range
-
-
 def getDatePrecision(entry, attribute):
 	if attribute == "":
 		if getType(entry) is Type.Date:
@@ -897,19 +894,18 @@ def getDateDayDifference(entry, attribute, targetTotalDays):
 
 def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 	answers = {}
-
 	for key in catalot:
 		if isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 			answers[key] = catalot[key]
-
-	if isEntryOrAttributeDate(catalot[targetKey], attribute):
+	
+	if getType(catalot[targetKey], attribute) is Type.Date or getType(catalot[targetKey], attribute) is Type.Range:
 		#find difference in days between dates/ranges; discard duplicate answers
 		diff = {}
 		toDel = []
 		targetTotalDays = getDateTotalDays(catalot[targetKey], attribute)
 		
 		for key in answers:
-			if isEntryOrAttributeDate(answers[key], attribute):
+			if getType(answers[key], attribute) is Type.Date or getType(answers[key], attribute) is Type.Range:
 				days = getDateDayDifference(answers[key], attribute, targetTotalDays)
 			else:
 				days = 0
@@ -933,6 +929,22 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		for key in toDel:
 			if len(answers) <= 5:
 				break #keep at least 5 answers whatever their precision
+			del answers[key]
+
+		#discard dates that are too close to the target date
+		toDel.clear()
+		if attribute == "":
+			for key in answers:
+				if catalot[targetKey].isAlmostCorrect(catalot[key]):
+					toDel.append(key)
+		else:
+			for key in answers:
+				if catalot[targetKey][attribute].isAlmostCorrect(catalot[key][attribute]):
+					toDel.append(key)
+
+		for key in toDel:
+			if len(answers) <= 5:
+				break #keep at least 5 answers even if they are too close
 			del answers[key]
 
 		#select the 5 closest unique dates (put them at the start of the array)
@@ -983,6 +995,50 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 					if returnKeys:
 						finalAnswers[i] = nextA
 					del answers[nextA]
+	elif getType(catalot[targetKey], attribute) is Type.Number:
+		#discard numbers that are too close to the target number
+		toDel = []
+		if attribute == "":
+			for key in answers:
+				if abs(catalot[key] - catalot[targetKey]) / catalot[targetKey] < 0.10:
+					toDel.append(key)
+		else:
+			for key in answers:
+				if abs(catalot[key][attribute] - catalot[targetKey][attribute]) / catalot[targetKey][attribute] < 0.10:
+					toDel.append(key)
+
+		for key in toDel:
+			if len(answers) <= 5:
+				break #keep at least 5 answers even if they are too close
+			del answers[key]
+
+		#select the 5 closest numbers (put them at the start of the array)
+		minDiffs = [sys.maxsize] * 5
+		finalAnswers = [""] * 5
+
+		for key in answers:
+			if attribute == "":
+				diff = abs(catalot[key] - catalot[targetKey])
+			else:
+				diff = abs(catalot[key][attribute] - catalot[targetKey][attribute])
+
+			i = 0
+			while i < 5 and diff >= minDiffs[i]:
+				i += 1
+
+			if i < 5:
+				for j in range(4, i, -1):
+					minDiffs[j] = minDiffs[j-1]
+					finalAnswers[j] = finalAnswers[j-1]
+
+				minDiffs[i] = diff
+				if returnKeys:
+					finalAnswers[i] = key
+				else:
+					if attribute == "":
+						finalAnswers[i] = catalot[key]
+					else:
+						finalAnswers[i] = catalot[key][attribute]
 	else:
 		finalAnswers = []
 

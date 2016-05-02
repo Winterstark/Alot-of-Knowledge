@@ -572,8 +572,10 @@ def parseFile(path):
 			nNew += 1
 		elif type(data[key]) is dict:
 			#check if entry has been expanded
+			hasExpanded = False
 			if type(metadata[key]["step"]) is not dict:
 				metadata[key]["step"] = {}
+				hasExpanded = True
 
 			for attribute in data[key]:
 				if attribute not in metadata[key]["step"]:
@@ -583,7 +585,10 @@ def parseFile(path):
 						metadata[key]["learned"] = False
 						metadata[key]["nextTest"] = datetime.now() + timedelta(hours=22)
 
-					nExp += 1
+					hasExpanded = True
+
+			if hasExpanded:
+				nExp += 1
 
 
 	#deleted entries?

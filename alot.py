@@ -571,7 +571,10 @@ def parseFile(path):
 			
 			nNew += 1
 		elif type(data[key]) is dict:
-			#check if Class has been expanded
+			#check if entry has been expanded
+			if type(metadata[key]["step"]) is not dict:
+				metadata[key]["step"] = {}
+
 			for attribute in data[key]:
 				if attribute not in metadata[key]["step"]:
 					metadata[key]["step"][attribute] = 1

@@ -1055,6 +1055,10 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 						finalAnswers[i] = catalot[key]
 					else:
 						finalAnswers[i] = catalot[key][attribute]
+
+		#remove blank entries
+		while finalAnswers[-1] == "":
+			finalAnswers = finalAnswers[:-1]
 	else:
 		finalAnswers = []
 

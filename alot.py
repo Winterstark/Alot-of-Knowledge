@@ -1691,6 +1691,10 @@ def qType_OrderItems(listKey, items, color):
 			item = item.replace("), (", ", ").replace('(', '').replace(')', '') #item contains several sub items
 		item = removeParentheses(item, True) #hide the contents of the parentheses because it might reveal the answer to the user
 		item = hideDates(item) #hide dates for the same reason
+
+		if item == "(???)":
+			item = toString(shuffledItems[i]) #don't hide items that are just titles
+
 		print("{}. {}".format(i+1, item))
 
 	answer, exit, immediately = checkForExit(input("Enter the correct order of these items: "))

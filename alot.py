@@ -1439,11 +1439,11 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 
-		#if wrong -> ignore "the" and "of"
+		#if wrong -> ignore "the" and "of"; also ignore geoType errors ("Victoria" == "Lake Victoria")
 		if answer != correctAnswer:
 			tmpAnswer = answer
 			tmpCorrectAnswer = correctAnswer
-			for ignoredWord in ["the", "of"]:
+			for ignoredWord in ["the", "of", geoType]:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")
 				tmpCorrectAnswer = tmpCorrectAnswer.replace(ignoredWord, "")
 			tmpAnswer = removeTypos(tmpAnswer, tmpCorrectAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
@@ -1462,18 +1462,6 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 					print("Expected answer: " + aStr)
 					answer = correctAnswer
 					break
-
-		#if wrong -> ignore geoType errors ("Victoria" == "Lake Victoria")
-		if answer != correctAnswer and geoType != "":
-			geoType = ''.join(e for e in geoType.lower() if e.isalnum())
-			answer = answer.replace(geoType.lower(), "").strip()
-			correctAnswer = correctAnswer.replace(geoType.lower(), "").strip()
-
-			answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
-
-			if correctAnswer == answer:
-				print("Exact answer: " + aStr)
-				answer = correctAnswer
 	
 	return answer == correctAnswer
 
@@ -2249,7 +2237,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 						usedGUI = True
 					elif attributeType is Type.List:
-						qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
+						dqType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
 						if qType is quizList:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)

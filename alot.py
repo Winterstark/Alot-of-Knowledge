@@ -1613,7 +1613,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 	return allCorrect, exit, immediately
 
 
-def qType_RecognizeList(listKey, items, color, catalot=None, attribute=""):
+def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames={}):
 	#pick 3 random items
 	randomItems = list(items)
 	random.shuffle(randomItems)
@@ -1634,7 +1634,7 @@ def qType_RecognizeList(listKey, items, color, catalot=None, attribute=""):
 	else:
 		attributeName = ""
 
-	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems)
+	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems, otherNames=otherNames)
 
 
 def qType_RecognizeItem(listKey, items, color):
@@ -2241,13 +2241,15 @@ def quiz(category, catalot, metacatalot, corewords):
 
 						if qType is quizList:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)
+						elif qType is qType_RecognizeList:
+							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color, otherNames=otherNames)
 						else:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 					elif attributeType is Type.Set:
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color)
 						else:
-							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute)
+							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

@@ -951,7 +951,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 						toDel.append(key)
 		else:
 			for key in answers:
-				if getType(catalot[targetKey]) is Type.Date:
+				if getType(catalot[targetKey][attribute]) is Type.Date:
 					if catalot[targetKey][attribute].isAlmostCorrect(catalot[key][attribute]):
 						toDel.append(key)
 				else:

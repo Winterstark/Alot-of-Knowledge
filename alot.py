@@ -1917,10 +1917,12 @@ def quizSet(setKey, items, step, color):
 			colorPrint("{0} ({1}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item")), color)
 		else:
 			colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(nSubSets, "set")), color)
+		showFullAnswer = True
 	else:
 		colorPrint(setKey, color)
 
 		#print hints
+		showFullAnswer = False
 		for item in itemsCopy:
 			print("> " + constructHint(item))
 
@@ -1937,11 +1939,9 @@ def quizSet(setKey, items, step, color):
 			typos = False
 
 			for item in itemsLCaseWithoutParentheses:
-				correctedAnswer = removeTypos(answer, item)
-				if correctedAnswer != answer:
-					answer = correctedAnswer[:len(item)]
-					if answer in itemsLCaseWithoutParentheses:
-						typos = True
+				if isAnswerCorrect(answer, item, showFullAnswer=showFullAnswer):
+					typos = True
+					answer = item
 					break
 
 			if not typos:

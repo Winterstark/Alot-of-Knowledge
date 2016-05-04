@@ -2241,7 +2241,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 						usedGUI = True
 					elif attributeType is Type.List:
-						dqType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
+						qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
 						if qType is quizList:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)

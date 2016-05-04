@@ -1,5 +1,4 @@
-{	
-	'Saint Vincent and the Grenadines': {'Official name': '', 'Date': '', 'Capital': 'Kingstown', 'Map': 'GEO:Sovereign country/Saint Vincent and the Grenadines', 'Flag': 'history\\flags\\Saint Vincent and the Grenadines.png', 'Population': 109991, 'Currency': '', 'Official languages': {''}},
+{
 	'Tonga': {'Official name': '', 'Date': '', 'Capital': "Nuku'alofa", 'Map': 'GEO:Sovereign country/Tonga', 'Flag': 'history\\flags\\Tonga.png', 'Population': 103252, 'Currency': '', 'Official languages': {''}},
 	'Cambodia': {'Official name': '', 'Date': '', 'Capital': 'Phnom Penh', 'Map': 'GEO:Sovereign country/Cambodia', 'Flag': 'history\\flags\\Cambodia.png', 'Population': 15405157, 'Currency': '', 'Official languages': {''}},
 	'Libya': {'Official name': '', 'Date': '', 'Capital': 'Tripoli', 'Map': 'GEO:Sovereign country/Libya', 'Flag': 'history\\flags\\Libya.png', 'Population': 6278000, 'Currency': '', 'Official languages': {''}},

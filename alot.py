@@ -2536,13 +2536,13 @@ for filename in os.listdir(DIR):
 				else:
 					print("")
 			if nExp > 0:
-				print(str(nExp) + " expanded entries", end="")
+				print(pluralizeIfNecessary(nExp, "expanded entry"), end="")
 				if nDel > 0:
 					print(", ", end="")
 				else:
 					print("")
 			if nDel > 0:
-				print(str(nDel) + " deletions")
+				print(pluralizeIfNecessary(nDel, "deletion"))
 
 			saveToFile(alot[category], metalot[category], DIR + os.sep + category + ".txt") #save changes
 

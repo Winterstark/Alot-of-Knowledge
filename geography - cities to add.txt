@@ -6686,7 +6686,6 @@
 	"Labrador City": {"GEO:City/Labrador City", "Country": "Canada"},
 	"Ebolowa": {"GEO:City/Ebolowa", "Country": "Cameroon"},
 	"Bambari": {"GEO:City/Bambari", "Country": "Central African Republic"},
-	"Venice": {"GEO:City/Venice", "Country": "Italy"},
 	"El Calafate": {"GEO:City/El Calafate", "Country": "Argentina"},
 	"San Juan (Argentina)": {"GEO:City/San Juan (Argentina)", "Country": "Argentina"},
 	"Rawson": {"GEO:City/Rawson", "Country": "Argentina"},

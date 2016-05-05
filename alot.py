@@ -905,7 +905,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 	for key in catalot:
 		if isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 			answers[key] = catalot[key]
-	
+
 	if getType(catalot[targetKey], attribute) is Type.Date or getType(catalot[targetKey], attribute) is Type.Range:
 		#find difference in days between dates/ranges; discard duplicate answers
 		diff = {}
@@ -2051,7 +2051,7 @@ def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
 	msgGUI("map {} {}".format(step, geoName))
 
 	if step == 1:
-		correct, exit, immediately = qType_MultipleChoice(None, "What is the name of the highlighted {}?".format(geoType), key, getAltAnswers(catalot, key, True), color)
+		correct, exit, immediately = qType_MultipleChoice(None, "What is the name of the highlighted {}?".format(geoType), key, getAltAnswers(catalot, key, True, attribute), color)
 	elif step == 2:
 		colorPrint(key, color)
 		print("Select this {} on the map.".format(geoType))

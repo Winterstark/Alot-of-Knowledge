@@ -1,13 +1,4 @@
 {
-	'Tonga': {'Official name': '', 'Date': '', 'Capital': "Nuku'alofa", 'Map': 'GEO:Sovereign country/Tonga', 'Flag': 'history\\flags\\Tonga.png', 'Population': 103252, 'Currency': '', 'Official languages': {''}},
-	'Cambodia': {'Official name': '', 'Date': '', 'Capital': 'Phnom Penh', 'Map': 'GEO:Sovereign country/Cambodia', 'Flag': 'history\\flags\\Cambodia.png', 'Population': 15405157, 'Currency': '', 'Official languages': {''}},
-	'Libya': {'Official name': '', 'Date': '', 'Capital': 'Tripoli', 'Map': 'GEO:Sovereign country/Libya', 'Flag': 'history\\flags\\Libya.png', 'Population': 6278000, 'Currency': '', 'Official languages': {''}},
-	'Armenia': {'Official name': '', 'Date': '', 'Capital': 'Yerevan', 'Map': 'GEO:Sovereign country/Armenia', 'Flag': 'history\\flags\\Armenia.png', 'Population': 3004000, 'Currency': '', 'Official languages': {''}},
-	'Republic of the Congo': {'Official name': '', 'Date': '', 'Capital': 'Brazzaville', 'Map': 'GEO:Sovereign country/Republic of the Congo', 'Flag': 'history\\flags\\Republic of the Congo.png', 'Population': 4620000, 'Currency': '', 'Official languages': {''}},
-	'Gibraltar': {'Official name': '', 'Date': '', 'Capital': 'Gibraltar', 'Map': 'GEO:Dependency/Gibraltar', 'Flag': 'history\\flags\\Gibraltar.png', 'Population': 32734, 'Currency': '', 'Official languages': {''}},
-	'Bosnia and Herzegovina': {'Official name': '', 'Date': '', 'Capital': 'Sarajevo', 'Map': 'GEO:Sovereign country/Bosnia and Herzegovina', 'Flag': 'history\\flags\\Bosnia and Herzegovina.png', 'Population': 3791622, 'Currency': '', 'Official languages': {''}},
-	'Zimbabwe': {'Official name': '', 'Date': '', 'Capital': 'Harare', 'Map': 'GEO:Sovereign country/Zimbabwe', 'Flag': 'history\\flags\\Zimbabwe.png', 'Population': 13061239, 'Currency': '', 'Official languages': {''}},
-	'Taiwan': {'Official name': '', 'Date': '', 'Capital': 'Taipei', 'Map': 'GEO:Sovereign country/Taiwan', 'Flag': 'history\\flags\\Taiwan.png', 'Population': 23476640, 'Currency': '', 'Official languages': {''}},
 	'Philippines': {'Official name': '', 'Date': '', 'Capital': 'Manila', 'Map': 'GEO:Sovereign country/Philippines', 'Flag': 'history\\flags\\Philippines.png', 'Population': 102400100, 'Currency': '', 'Official languages': {''}},
 	'Macau': {'Official name': '', 'Date': '', 'Capital': 'Macau', 'Map': 'GEO:Country/Macau', 'Flag': 'history\\flags\\Macau.png', 'Population': 643100, 'Currency': '', 'Official languages': {''}},
 	'Honduras': {'Official name': '', 'Date': '', 'Capital': 'Tegucigalpa', 'Map': 'GEO:Sovereign country/Honduras', 'Flag': 'history\\flags\\Honduras.png', 'Population': 8576532, 'Currency': '', 'Official languages': {''}},

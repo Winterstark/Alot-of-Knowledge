@@ -1059,6 +1059,29 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		#remove blank entries
 		while finalAnswers[-1] == "":
 			finalAnswers = finalAnswers[:-1]
+	elif getType(catalot[targetKey], attribute) is Type.Geo:
+		#discard entries of a different geo type
+		toDel = []
+		targetGeoType, targetGeoName = splitGeoName(catalot[targetKey], attribute)
+		
+		for key in answers:
+			geoType, geoName = splitGeoName(catalot[key], attribute)
+		
+			if geoType != targetGeoType:
+				toDel.append(key)
+
+		for key in toDel:
+			if len(answers) <= 5:
+				break #keep at least 5 answers whatever their geo type
+			del answers[key]
+
+		#select random keys (geo questions only ever require keys (returnKeys is always True))
+		finalAnswers = []
+
+		while len(finalAnswers) < 5 and len(answers) > 0:
+			nextA = random.choice(list(answers.keys()))
+			finalAnswers.append(nextA)
+			del answers[nextA]
 	else:
 		finalAnswers = []
 
@@ -2009,19 +2032,22 @@ def getSetsInList(items):
 	return sets
 
 
-def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
+def splitGeoName(geoName, attribute):
 	 #ignore "GEO:"
 	if attribute == "":
-		geoName = catalot[key][4:]
+		geoName = geoName[4:]
 	else:
-		geoName = catalot[key][attribute][4:]
-		if type(step) is dict:
-			step = step[attribute]
+		geoName = geoName[attribute][4:]
 
 	separator = geoName.index('/')
-	geoType = geoName[:separator].lower()
-	geoName = geoName[separator+1:]
+	return geoName[:separator].lower(), geoName[separator+1:]
 
+
+def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
+	if attribute != "" and type(step) is dict:
+		step = step[attribute]
+
+	geoType, geoName = splitGeoName(catalot[key], attribute)
 	msgGUI("map {} {}".format(step, geoName))
 
 	if step == 1:

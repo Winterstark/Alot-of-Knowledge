@@ -228,12 +228,12 @@ namespace AlotGUI
                 imgGfx.ScaleTransform(zoom, -zoom);
 
                 drawMapImage(imgGfx, preDrawing: true);
-
                 imgGfx.Dispose();
-                ForceDraw();
             }
             else
                 preDrawnMap = null;
+
+            ForceDraw();
         }
 
         public void Draw(Graphics gfx)
@@ -281,22 +281,29 @@ namespace AlotGUI
                             drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
 
                         drawEntityCollection(gfx, GeoType.Country, preDrawing);
-                        drawEntityCollection(gfx, GeoType.City, preDrawing);
 
                         if (!preDrawing)
                             drawHighlightedRegions(gfx);
 
-                        if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country)
+                        if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country || qGeoType == GeoType.City)
                         {
                             drawEntityCollection(gfx, GeoType.River, preDrawing);
                             drawEntityCollection(gfx, GeoType.Lake, preDrawing);
                         }
+
+                        drawEntityCollection(gfx, GeoType.City, preDrawing);
                     }
                 }
                 else
                 {
-                    worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
+                    worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.City; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
                     worldLandmass.Draw(gfx);
+
+                    if (qGeoType == GeoType.City)
+                    {
+                        drawEntityCollection(gfx, GeoType.River, preDrawing);
+                        drawEntityCollection(gfx, GeoType.Lake, preDrawing);
+                    }
 
                     if (!preDrawing)
                         drawHighlightedRegions(gfx);

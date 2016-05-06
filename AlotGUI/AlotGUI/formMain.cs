@@ -113,8 +113,7 @@ namespace AlotGUI
         string[] questionEntities;
         string mapMouseOverRegion, selectedArea;
         int mapQType, nRemainingFeedbackTicks;
-        bool isAnswerHighlighted;
-        int counter = 0;
+        bool isAnswerHighlighted, mapFrozen;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -1182,6 +1181,7 @@ namespace AlotGUI
             }
 
             mode = DisplayMode.Map;
+            mapFrozen = false;
             this.BackgroundImage = null;
             this.Refresh();
         }
@@ -1238,7 +1238,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Lake Huron");
+            //processMsg("map 2 Venice");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1324,7 +1324,7 @@ namespace AlotGUI
                             this.Invalidate();
                             break;
                     }
-                else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) && !timerFeedback.Enabled)
+                else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) && !timerFeedback.Enabled && !mapFrozen)
                 {
                     string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
                     if (mouseOverRegion != mapMouseOverRegion)
@@ -1353,12 +1353,14 @@ namespace AlotGUI
                 {
                     if (!timerDoubleClick.Enabled)
                     {
+                        mapFrozen = true;
                         mouseClickPoint = e.Location;
                         timerDoubleClick.Enabled = true;
                     }
                     else if (arePointsCloseEnough(e.Location, mouseClickPoint))
                     {
                         //user performed a doubleclick
+                        mapFrozen = false;
                         timerDoubleClick.Enabled = false;
 
                         if (mode == DisplayMode.Map)

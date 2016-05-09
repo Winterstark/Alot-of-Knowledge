@@ -1786,12 +1786,12 @@ def quizNumber(catalot, key, step, color, attribute="", otherNames={}):
 			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color, catalot=catalot, otherNames=otherNames)
+			correct, exit, immediately = qType_EnterAnswer(key + ", " + attribute, catalot[key][attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames)
 		else:
 			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color, catalot=catalot, otherNames=otherNames)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key][attribute]), key, color, catalot=catalot, otherNames=otherNames)
+			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key][attribute]), key, color, catalot=catalot, attribute=attribute, otherNames=otherNames)
 		else:
 			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color, catalot=catalot, otherNames=otherNames)
 

@@ -280,10 +280,19 @@ namespace AlotGUI
                         if (qGeoType == GeoType.PhysicalRegion)
                             drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
 
-                        drawEntityCollection(gfx, GeoType.Country, preDrawing);
-
-                        if (!preDrawing)
-                            drawHighlightedRegions(gfx);
+                        if (qGeoType == GeoType.MarineArea)
+                        {
+                            //marine areas need to be drawn before countries, so the islands don't get erased from the map
+                            if (!preDrawing)
+                                drawHighlightedRegions(gfx);
+                            drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                        }
+                        else
+                        {
+                            drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                            if (!preDrawing)
+                                drawHighlightedRegions(gfx);
+                        }
 
                         if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country || qGeoType == GeoType.City)
                         {
@@ -297,7 +306,8 @@ namespace AlotGUI
                 else
                 {
                     worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.City; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
-                    worldLandmass.Draw(gfx);
+                    if (qGeoType != GeoType.MarineArea) //marine areas need to be drawn before the landmass, so the islands don't get erased from the map
+                        drawLandmass(gfx);
 
                     if (qGeoType == GeoType.City)
                     {
@@ -307,12 +317,24 @@ namespace AlotGUI
 
                     if (!preDrawing)
                         drawHighlightedRegions(gfx);
+
+                    if (qGeoType == GeoType.MarineArea)
+                        drawLandmass(gfx);
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show("Exception in drawMapImage(): " + e.Message);
             }
+        }
+
+        void drawLandmass(Graphics gfx)
+        {
+            worldLandmass.Draw(gfx); 
+
+            //draw the Caspian Sea after the landmass
+            mapEntities["Caspian Sea"].Draw(gfx);
+            mapEntities["Garabogaz Bay"].Draw(gfx);
         }
 
         void drawEntityCollection(Graphics gfx, GeoType type, bool preDrawing)
@@ -722,6 +744,7 @@ namespace AlotGUI
                     highlightedBrush = new SolidBrush(Color.FromArgb(192, MAP_COLORS[color]));
                     break;
                 case Visualizer.GeoType.MarineArea:
+                    brush = new SolidBrush(Color.FromArgb(222, 229, 237));
                     highlightedBrush = Brushes.LightBlue;
                     break;
                 case Visualizer.GeoType.Lake:

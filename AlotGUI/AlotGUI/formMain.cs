@@ -1238,7 +1238,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 2 Venice");
+            //processMsg("map 3 Caspian Sea");
         }
 
         protected override void OnPaint(PaintEventArgs e)

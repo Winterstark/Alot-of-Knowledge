@@ -760,7 +760,7 @@ def getType(entry, attribute=""):
 	elif entryType is str:
 		if entry[:4] == "GEO:":
 			return Type.Geo
-		if os.path.exists(fullPath(entry)):
+		if os.path.isfile(fullPath(entry)):
 			return Type.Image
 		else:
 			return Type.String

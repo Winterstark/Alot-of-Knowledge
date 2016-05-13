@@ -1,9 +1,4 @@
 {
-	'Philippines': {'Official name': '', 'Date': '', 'Capital': 'Manila', 'Map': 'GEO:Sovereign country/Philippines', 'Flag': 'history\\flags\\Philippines.png', 'Population': 102400100, 'Currency': '', 'Official languages': {''}},
-	'Macau': {'Official name': '', 'Date': '', 'Capital': 'Macau', 'Map': 'GEO:Country/Macau', 'Flag': 'history\\flags\\Macau.png', 'Population': 643100, 'Currency': '', 'Official languages': {''}},
-	'Honduras': {'Official name': '', 'Date': '', 'Capital': 'Tegucigalpa', 'Map': 'GEO:Sovereign country/Honduras', 'Flag': 'history\\flags\\Honduras.png', 'Population': 8576532, 'Currency': '', 'Official languages': {''}},
-	'Egypt': {'Official name': '', 'Date': '', 'Capital': 'Cairo', 'Map': 'GEO:Sovereign country/Egypt', 'Flag': 'history\\flags\\Egypt.png', 'Population': 89908900, 'Currency': '', 'Official languages': {''}},
-	'Dominican Republic': {'Official name': '', 'Date': '', 'Capital': 'Santo Domingo', 'Map': 'GEO:Sovereign country/Dominican Republic', 'Flag': 'history\\flags\\Dominican Republic.png', 'Population': 10528000, 'Currency': '', 'Official languages': {''}},
 	'Paraguay': {'Official name': '', 'Date': '', 'Capital': 'Asuncion', 'Map': 'GEO:Sovereign country/Paraguay', 'Flag': 'history\\flags\\Paraguay.png', 'Population': 7003406, 'Currency': '', 'Official languages': {''}},
 	'Ashmore and Cartier Islands': {'Official name': '', 'Date': '', 'Map': 'GEO:Dependency/Ashmore and Cartier Islands', 'Currency': '', 'Official languages': {''}},
 	'Botswana': {'Official name': '', 'Date': '', 'Capital': 'Gaborone', 'Map': 'GEO:Sovereign country/Botswana', 'Flag': 'history\\flags\\Botswana.png', 'Population': 2070984, 'Currency': '', 'Official languages': {''}},

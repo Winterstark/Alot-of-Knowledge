@@ -1598,9 +1598,12 @@ def qType_FillString(q, s, difficulty, corewords, color):
 		extraAnswerChars = extraAnswerChars.lstrip()
 		if extraAnswerChars != "":
 			#the user previously entered more than one blank, so check if the rest of his answer is correct
-			extraAnswerChars = removeTypos(extraAnswerChars, parts[i])
+			nextPartIsCorrect = extraAnswerChars[:nChars].lower() == parts[i].lower()
+			if not nextPartIsCorrect:
+				extraAnswerChars = removeTypos(extraAnswerChars, parts[i])
+				nextPartIsCorrect = extraAnswerChars[:nChars].lower() == parts[i].lower()
 
-			if extraAnswerChars[:nChars].lower() == parts[i].lower():
+			if nextPartIsCorrect:
 				extraAnswerChars = extraAnswerChars[nChars:]
 
 				if i not in noSpaceAfterThisPart and i < len(parts)-1 and extraAnswerChars != "": #if this is not the last part, the next letter must be a space
@@ -1619,13 +1622,14 @@ def qType_FillString(q, s, difficulty, corewords, color):
 				print(" ", end="")
 		else:
 			answer, exit, immediately = checkForExit(input(""))
-			answer = removeTypos(answer, parts[i])
 
 			if answer[:nChars].lower() != parts[i].lower():
-				allCorrect = False
-				break
-			else:
-				extraAnswerChars = answer[nChars:].rstrip() #if the user entered more than one blank entry, save the rest of his answer
+				answer = removeTypos(answer, parts[i])
+				if answer[:nChars].lower() != parts[i].lower():
+					allCorrect = False
+					break
+
+			extraAnswerChars = answer[nChars:].rstrip() #if the user entered more than one blank entry, save the rest of his answer
 
 			if exit:
 				allCorrect = i == max(blanks) #if this was the last blank part then the answer is allCorrect

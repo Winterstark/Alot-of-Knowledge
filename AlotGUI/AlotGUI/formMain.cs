@@ -1167,13 +1167,21 @@ namespace AlotGUI
                 if (msg.Contains(".."))
                 {
                     //expand shortened expression, for example: "Nile..3" -> "Nile+Nile 2+Nile 3"
-                    int ind = msg.IndexOf("..");
-                    int n = int.Parse(msg.Substring(ind + 2));
-                    msg = msg.Substring(0, ind);
+                    int lb = msg.IndexOf("..");
+                    int ub = msg.IndexOf('+', lb);
+                    if (ub == -1)
+                        ub = msg.Length;
+
+                    int n = int.Parse(msg.Substring(lb + 2, ub - (lb + 2)));
+                    
+                    string msgRemainder = msg.Substring(ub);
+                    msg = msg.Substring(0, lb);
                     string baseName = msg;
 
                     for (int i = 2; i <= n; i++)
                         msg += "+" + baseName + " " + i.ToString();
+
+                    msg += msgRemainder;
                 }
 
                 questionEntities = msg.Split('+');
@@ -1238,7 +1246,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Sibenik");
+            //processMsg("map 1 Kagera..3");
         }
 
         protected override void OnPaint(PaintEventArgs e)

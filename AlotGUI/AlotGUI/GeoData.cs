@@ -17,6 +17,9 @@ namespace AlotGUI
         Dictionary<string, Shape> mapEntities;
         List<Shape> highlightedEntities;
 
+        Dictionary<string, string[]> countryRegions;
+        List<string> selectedCountries;
+
         Action ForceDraw;
         Bitmap preDrawnMap;
         Brush seaBrush, highlightBrush;
@@ -97,6 +100,29 @@ namespace AlotGUI
                 file.Close();
             }
 
+            //load list of regions (to know what country they belong to)
+            StreamReader fileRegions = new StreamReader(Application.StartupPath + "\\list of regions by country.txt");
+            countryRegions = new Dictionary<string, string[]>();
+
+            while (!fileRegions.EndOfStream)
+            {
+                string line = fileRegions.ReadLine();
+
+                if (line.Contains("Buffer"))
+                {
+                    int x = 9;
+                }
+
+                string[] parts = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length == 1)
+                    countryRegions.Add(parts[0], new string[0]);
+                else
+                    countryRegions.Add(parts[0], parts[1].Split(new string[] { " && " }, StringSplitOptions.RemoveEmptyEntries));
+            }
+
+            fileRegions.Close();
+
             preDrawMap();
         }
 
@@ -173,12 +199,25 @@ namespace AlotGUI
             {
                 float lon = (mx - viewportX) / zoom;
                 float lat = -(my - viewportY) / zoom;
+                
+                return GetSelectedArea(new PointF(lon, lat), qGeoType);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Exception in GetSelectedArea(int, int): " + exc.Message);
+                return "";
+            }
+        }
 
+        public string GetSelectedArea(PointF coords, GeoType geoType)
+        {
+            try
+            {
                 List<Tuple<string, double>> enclosingAreas = new List<Tuple<string, double>>();
                 double avgDistance;
 
                 foreach (var entity in mapEntities)
-                    if (entity.Value.GeoType == qGeoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(lon, lat)) && entity.Value.IsSelected(lon, lat, out avgDistance))
+                    if (entity.Value.GeoType == geoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(coords)) && entity.Value.IsSelected(coords.X, coords.Y, out avgDistance))
                         enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
 
                 //there may be more than one enclosing area if the user selected an enclave (e.g. San Marino or Lesotho), so select the one whose points are on average closest to the point of selection
@@ -192,7 +231,7 @@ namespace AlotGUI
                         minAvgDistance = area.Item2;
                     }
 
-                if (selectedArea != "" && qGeoType == GeoType.River)
+                if (selectedArea != "" && geoType == GeoType.River)
                 {
                     //rivers often have more than one segment; selectedArea needs to include them all
                     string baseName = selectedArea = getRiverBaseName(selectedArea);
@@ -206,7 +245,7 @@ namespace AlotGUI
             }
             catch (Exception exc)
             {
-                MessageBox.Show("Exception in GetSelectedArea: " + exc.Message);
+                MessageBox.Show("Exception in GetSelectedArea(float, float, GeoType): " + exc.Message);
                 return "";
             }
         }
@@ -273,53 +312,62 @@ namespace AlotGUI
 
                 if (qType == 1)
                 {
-                    if (qGeoType == GeoType.Region)
-                        drawEntityCollection(gfx, GeoType.Region, preDrawing);
+                    if (qGeoType == GeoType.PhysicalRegion)
+                        drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
+
+                    if (qGeoType == GeoType.MarineArea)
+                    {
+                        //marine areas need to be drawn before countries, so the islands don't get erased from the map
+                        if (!preDrawing)
+                            drawHighlightedRegions(gfx);
+                        drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                    }
                     else
                     {
-                        if (qGeoType == GeoType.PhysicalRegion)
-                            drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
+                        drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                        if (qGeoType == GeoType.Region)
+                            drawEntityCollection(gfx, GeoType.Region, preDrawing);
 
-                        if (qGeoType == GeoType.MarineArea)
-                        {
-                            //marine areas need to be drawn before countries, so the islands don't get erased from the map
-                            if (!preDrawing)
-                                drawHighlightedRegions(gfx);
-                            drawEntityCollection(gfx, GeoType.Country, preDrawing);
-                        }
-                        else
-                        {
-                            drawEntityCollection(gfx, GeoType.Country, preDrawing);
-                            if (!preDrawing)
-                                drawHighlightedRegions(gfx);
-                        }
-
-                        if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country || qGeoType == GeoType.City)
-                        {
-                            drawEntityCollection(gfx, GeoType.River, preDrawing);
-                            drawEntityCollection(gfx, GeoType.Lake, preDrawing);
-                        }
-
-                        drawEntityCollection(gfx, GeoType.City, preDrawing);
+                        if (!preDrawing)
+                            drawHighlightedRegions(gfx);
                     }
-                }
-                else
-                {
-                    worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.City; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
-                    if (qGeoType != GeoType.MarineArea) //marine areas need to be drawn before the landmass, so the islands don't get erased from the map
-                        drawLandmass(gfx);
 
-                    if (qGeoType == GeoType.City)
+                    if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.City)
+                        drawSelectedCountryRegions(gfx, preDrawing);
+                    
+                    if (qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.Country || qGeoType == GeoType.Region || qGeoType == GeoType.City)
                     {
                         drawEntityCollection(gfx, GeoType.River, preDrawing);
                         drawEntityCollection(gfx, GeoType.Lake, preDrawing);
                     }
 
-                    if (!preDrawing)
-                        drawHighlightedRegions(gfx);
+                    drawEntityCollection(gfx, GeoType.City, preDrawing);
+                }
+                else
+                {
+                    if (!preDrawing && qGeoType == GeoType.MarineArea)
+                        drawHighlightedRegions(gfx); //marine areas need to be drawn before the landmass, so the islands don't get erased from the map
 
-                    if (qGeoType == GeoType.MarineArea)
+                    if (qGeoType == GeoType.Landmass || qGeoType == GeoType.Country)
+                    {
+                        worldLandmass.Highlighted = qGeoType == GeoType.Lake || qGeoType == GeoType.River || qGeoType == GeoType.City; //change the landmass color if the qType involves lakes or rivers to make them more noticeable
                         drawLandmass(gfx);
+                    }
+                    else
+                    {
+                        drawEntityCollection(gfx, GeoType.Country, preDrawing);
+                        drawSelectedCountryRegions(gfx, preDrawing);
+
+                        if (qGeoType != GeoType.River || Math.Abs(qType) != 3)
+                            drawEntityCollection(gfx, GeoType.River, preDrawing);
+                        if (qGeoType != GeoType.Lake || Math.Abs(qType) != 3)
+                            drawEntityCollection(gfx, GeoType.Lake, preDrawing);
+                        if (qGeoType != GeoType.City || Math.Abs(qType) != 3)
+                            drawEntityCollection(gfx, GeoType.City, preDrawing);
+                    }
+
+                    if (!preDrawing && qGeoType != GeoType.MarineArea)
+                        drawHighlightedRegions(gfx);
                 }
             }
             catch (Exception e)
@@ -344,6 +392,15 @@ namespace AlotGUI
                     entity.Value.Draw(gfx);
         }
 
+        void drawSelectedCountryRegions(Graphics gfx, bool preDrawing)
+        {
+            foreach (var entity in mapEntities)
+                if (entity.Value.GeoType == GeoType.Region)
+                    foreach (string country in selectedCountries)
+                        if (ArrayContainsString(countryRegions[country], entity.Key) && (preDrawing || entity.Value.Box.IntersectsWith(viewportBox)))
+                            entity.Value.Draw(gfx);
+        }
+
         void drawHighlightedRegions(Graphics gfx)
         {
             foreach (var entity in highlightedEntities)
@@ -351,8 +408,11 @@ namespace AlotGUI
                     entity.Draw(gfx);
         }
 
-        public void Highlight(string[] entities, int qType)
+        public void Highlight(string[] entities, int qType, bool initQuestion = false)
         {
+            if (initQuestion)
+                selectedCountries = new List<string>();
+
             foreach (var ent in mapEntities)
                 ent.Value.Highlighted = false;
 
@@ -437,6 +497,7 @@ namespace AlotGUI
 
                             neighbors.RemoveAt(index);
                         }
+                        
                         break;
                     case 3:
                         zoomOnPoint(0, 0, windowSize.Width / 360); //unzoom all the way
@@ -445,6 +506,10 @@ namespace AlotGUI
 
                 foreach (string ent in entities)
                     highlightedEntities.Add(mapEntities[ent]);
+                
+                if (Math.Abs(qType) != 3 || qGeoType == GeoType.MarineArea)
+                    foreach (Shape ent in highlightedEntities) //enable these Shapes
+                        ent.Enabled = true;
 
                 RectangleF highlightedEntitiesBox = new RectangleF(highlightedEntities[0].Box.X, highlightedEntities[0].Box.Y, highlightedEntities[0].Box.Width, highlightedEntities[0].Box.Height);
                 for (int i = 1; i < highlightedEntities.Count; i++)
@@ -462,7 +527,40 @@ namespace AlotGUI
 
                     zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
                 }
+
+                if (initQuestion && qGeoType == GeoType.City)
+                {
+                    //find out what countries the target cities are located in
+                    foreach (Shape ent in highlightedEntities)
+                    {
+                        string country = GetSelectedArea(ent.Box.Location, GeoType.Country);
+                        if (country != "" && !selectedCountries.Contains(country))
+                            selectedCountries.Add(country);
+                    }
+
+                    //apply the country color to its regions
+                    Dictionary<string, SolidBrush> mainBrushes = new Dictionary<string, SolidBrush>();
+                    foreach (string selectedCountry in selectedCountries)
+                    {
+                        Color brushColor = ((SolidBrush)((Polygon)mapEntities[selectedCountry]).MainBrush).Color;
+                        mainBrushes.Add(selectedCountry, new SolidBrush(brushColor));
+                    }
+
+                    foreach (var entity in mapEntities)
+                        if (entity.Value.GeoType == GeoType.Region)
+                            foreach (string country in selectedCountries)
+                                if (ArrayContainsString(countryRegions[country], entity.Key))
+                                    ((Polygon)entity.Value).MainBrush = mainBrushes[country];
+                }
             }
+        }
+
+        bool boxContainsBox(RectangleF bigBox, RectangleF smallBox)
+        {
+            const float ERROR_MARGIN = 0.00001f; //allow a small margin of overlap (which is the reason this function is used instead of Box.Contains())
+
+            return bigBox.Left - smallBox.Left <= ERROR_MARGIN && smallBox.Left + smallBox.Width - bigBox.Left - bigBox.Width <= ERROR_MARGIN
+                && bigBox.Top - smallBox.Top <= ERROR_MARGIN && smallBox.Top + smallBox.Height - bigBox.Top - bigBox.Height <= ERROR_MARGIN;
         }
 
         public bool ArrayContainsString(string[] arr, string s)
@@ -522,7 +620,8 @@ namespace AlotGUI
     {
         public RectangleF Box;
         public Visualizer.GeoType GeoType;
-        public bool Highlighted;
+        public bool Enabled; //true if this Shape can be clicked on the map
+        public bool Highlighted; //true when the user mouse-overs this Shape
 
 
         public abstract void Draw(Graphics gfx);
@@ -565,8 +664,11 @@ namespace AlotGUI
 
         public override void Draw(Graphics gfx)
         {
-            gfx.FillEllipse(Highlighted ? Brushes.Purple : Brushes.Black, point.X - size / 2, point.Y - size / 2, size, size);
+            if (Enabled)
+                gfx.DrawEllipse(new Pen(Color.Gray, 0.025f), point.X - 0.1f, point.Y - 0.1f, 0.2f, 0.2f);
 
+            gfx.FillEllipse(Highlighted ? Brushes.Purple : Brushes.Black, point.X - size / 2, point.Y - size / 2, size, size);
+            
             if (size >= 0.05)
             {
                 //draw larger cities with a red center circle
@@ -622,13 +724,24 @@ namespace AlotGUI
 
         public override void Draw(Graphics gfx)
         {
-            if (Highlighted)
+            if (Enabled)
             {
-                Pen highlightedPen = new Pen(Color.Purple, pen.Width + 0.1f);
-                foreach (var polyline in parts)
-                    gfx.DrawLines(highlightedPen, polyline);
+                if (Highlighted)
+                {
+                    Pen highlightedPen = new Pen(Color.Purple, pen.Width + 0.1f);
+                    foreach (var polyline in parts)
+                        gfx.DrawLines(highlightedPen, polyline);
 
-                highlightedPen.Dispose();
+                    highlightedPen.Dispose();
+                }
+                else
+                {
+                    Pen boldPen = new Pen(Color.FromArgb(54, 157, 169), pen.Width + 0.1f);
+                    foreach (var polyline in parts)
+                        gfx.DrawLines(boldPen, polyline);
+
+                    boldPen.Dispose();
+                }
             }
 
             foreach (var polyline in parts)
@@ -719,7 +832,7 @@ namespace AlotGUI
             Color.GhostWhite, //Greenland and Antarctica
             Color.ForestGreen, Color.OliveDrab, Color.DarkOrange, Color.OrangeRed, Color.Snow, Color.SaddleBrown, Color.DeepSkyBlue }; //physical regions colors (peninsula, island, desert, canyon, mountain, plateau, archipelago)
 
-        Brush brush, highlightedBrush;
+        public Brush MainBrush, HighlightedBrush;
         
         
         public Polygon(Visualizer.GeoType geoType, StreamReader file, Pen pen) : base(geoType, file, pen)
@@ -731,25 +844,25 @@ namespace AlotGUI
             switch (GeoType)
             {
                 case Visualizer.GeoType.Landmass:
-                    brush = new SolidBrush(MAP_COLORS[color]);
-                    highlightedBrush = Brushes.ForestGreen;
+                    MainBrush = new SolidBrush(MAP_COLORS[color]);
+                    HighlightedBrush = Brushes.ForestGreen;
                     break;
                 case Visualizer.GeoType.Country:
                 case Visualizer.GeoType.Region:
-                    brush = new SolidBrush(MAP_COLORS[color]);
-                    highlightedBrush = Brushes.Purple;
+                    MainBrush = new SolidBrush(MAP_COLORS[color]);
+                    HighlightedBrush = Brushes.Purple;
                     break;
                 case Visualizer.GeoType.PhysicalRegion:
-                    brush = new SolidBrush(Color.FromArgb(64, MAP_COLORS[color]));
-                    highlightedBrush = new SolidBrush(Color.FromArgb(192, MAP_COLORS[color]));
+                    MainBrush = new SolidBrush(Color.FromArgb(64, MAP_COLORS[color]));
+                    HighlightedBrush = new SolidBrush(Color.FromArgb(192, MAP_COLORS[color]));
                     break;
                 case Visualizer.GeoType.MarineArea:
-                    brush = new SolidBrush(Color.FromArgb(222, 229, 237));
-                    highlightedBrush = Brushes.LightBlue;
+                    MainBrush = new SolidBrush(Color.FromArgb(222, 229, 237));
+                    HighlightedBrush = Brushes.LightBlue;
                     break;
                 case Visualizer.GeoType.Lake:
-                    brush = Brushes.PowderBlue;
-                    highlightedBrush = Brushes.LightSkyBlue;
+                    MainBrush = Brushes.PowderBlue;
+                    HighlightedBrush = Brushes.LightSkyBlue;
                     break;
             }
         }
@@ -758,19 +871,31 @@ namespace AlotGUI
         {
             foreach (var polygon in parts)
             {
-                if (!Highlighted)
+                if (Enabled)
                 {
-                    if (brush != null)
-                        gfx.FillPolygon(brush, polygon);
+                    if (Highlighted)
+                    {
+                        if (GeoType != Visualizer.GeoType.MarineArea)
+                            gfx.DrawPolygon(new Pen(Color.Purple, 0.05f), polygon);
+
+                        if (HighlightedBrush != null)
+                            gfx.FillPolygon(HighlightedBrush, polygon);
+                    }
+                    else
+                    {
+                        gfx.DrawPolygon(new Pen(Color.Gray, 0.05f), polygon);
+                        if (MainBrush != null)
+                            gfx.FillPolygon(MainBrush, polygon);
+                    }
                 }
                 else
                 {
-                    if (highlightedBrush != null)
-                        gfx.FillPolygon(highlightedBrush, polygon);
-                }
+                    if (MainBrush != null)
+                        gfx.FillPolygon(MainBrush, polygon);
 
-                if (GeoType != Visualizer.GeoType.Lake)
-                    gfx.DrawPolygon(pen, polygon);
+                    if (GeoType != Visualizer.GeoType.Lake)
+                        gfx.DrawPolygon(pen, polygon);
+                }
             }
         }
 
@@ -822,6 +947,11 @@ namespace AlotGUI
 
             avgDistance = double.MaxValue;
             return false;
+        }
+
+        public PointF GetPointInPolygon()
+        {
+            return parts[0][0];
         }
     }
 }

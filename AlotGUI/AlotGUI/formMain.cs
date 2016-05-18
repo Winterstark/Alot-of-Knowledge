@@ -1185,7 +1185,7 @@ namespace AlotGUI
                 }
 
                 questionEntities = msg.Split('+');
-                viz.Highlight(questionEntities, mapQType);
+                viz.Highlight(questionEntities, mapQType, true);
             }
 
             mode = DisplayMode.Map;
@@ -1246,7 +1246,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 1 Kagera..3");
+            //processMsg("map 2 Akobo..2");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1356,7 +1356,7 @@ namespace AlotGUI
             {
                 mouseDown = false;
                 
-                if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) &&
+                if (mode == DisplayMode.Map &&
                     arePointsCloseEnough(e.Location, initialMousePoint)) //check if the user actually clicked or was just dragging
                 {
                     if (!timerDoubleClick.Enabled)
@@ -1440,18 +1440,24 @@ namespace AlotGUI
         {
             //double click period expired -> execute a single click
             timerDoubleClick.Enabled = false;
-            
-            selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
-            bool correct = viz.ArrayContainsString(questionEntities, selectedArea);
 
-            if (correct)
-                sendFeedbackToAlot("True");
-            else
+            if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
             {
-                //display the correct answer on the map
-                isAnswerHighlighted = false;
-                nRemainingFeedbackTicks = 6;
-                timerFeedback.Enabled = true;
+                selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
+                if (selectedArea.Contains("+"))
+                    selectedArea = selectedArea.Substring(0, selectedArea.IndexOf('+')); //keep only the river's base name
+
+                bool correct = viz.ArrayContainsString(questionEntities, selectedArea);
+
+                if (correct)
+                    sendFeedbackToAlot("True");
+                else
+                {
+                    //display the correct answer on the map
+                    isAnswerHighlighted = false;
+                    nRemainingFeedbackTicks = 6;
+                    timerFeedback.Enabled = true;
+                }
             }
         }
     }

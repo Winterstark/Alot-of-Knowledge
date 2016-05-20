@@ -943,20 +943,22 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		toDel.clear()
 		if attribute == "":
 			for key in answers:
-				if getType(catalot[targetKey]) is Type.Date:
-					if catalot[targetKey].isAlmostCorrect(catalot[key]):
-						toDel.append(key)
-				else:
-					if catalot[targetKey][0].isAlmostCorrect(catalot[key][0]) and catalot[targetKey][1].isAlmostCorrect(catalot[key][1]):
-						toDel.append(key)
+				if getType(catalot[targetKey]) == getType(answers[key]):
+					if getType(catalot[targetKey]) is Type.Date:
+						if catalot[targetKey].isAlmostCorrect(answers[key]):
+							toDel.append(key)
+					else:
+						if catalot[targetKey][0].isAlmostCorrect(answers[key][0]) and catalot[targetKey][1].isAlmostCorrect(answers[key][1]):
+							toDel.append(key)
 		else:
 			for key in answers:
-				if getType(catalot[targetKey][attribute]) is Type.Date:
-					if catalot[targetKey][attribute].isAlmostCorrect(catalot[key][attribute]):
-						toDel.append(key)
-				else:
-					if catalot[targetKey][attribute][0].isAlmostCorrect(catalot[key][attribute][0]) and catalot[targetKey][attribute][1].isAlmostCorrect(catalot[key][attribute][1]):
-						toDel.append(key)
+				if getType(catalot[targetKey][attribute]) == getType(answers[key][attribute]):
+					if getType(catalot[targetKey][attribute]) is Type.Date:
+						if catalot[targetKey][attribute].isAlmostCorrect(answers[key][attribute]):
+							toDel.append(key)
+					else:
+						if catalot[targetKey][attribute][0].isAlmostCorrect(answers[key][attribute][0]) and catalot[targetKey][attribute][1].isAlmostCorrect(answers[key][attribute][1]):
+							toDel.append(key)
 
 		for key in toDel:
 			if len(answers) <= 5:

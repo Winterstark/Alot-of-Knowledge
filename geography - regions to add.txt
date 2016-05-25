@@ -1,7 +1,11 @@
 {
-	"Minnesota": {"Map": "GEO:State/Minnesota (admin1)", "Capital": ""},
+
+	"Unknown shape 160 (admin1)": "GEO:Unknown shape 161 (admin1)/Unknown shape 160 (admin1)", //croatia islands?
+
+
+
+
 	"Montana (U.S.)": {"Map": "GEO:State/Montana 2 (admin1)", "Capital": ""},
-	"North Dakota": {"Map": "GEO:State/North Dakota", "Capital": ""},
 	"Hawaii": {"Map": "GEO:State/Hawaii", "Capital": ""},
 	"Idaho": {"Map": "GEO:State/Idaho", "Capital": ""},
 	"Washington": {"Map": "GEO:State/Washington", "Capital": ""},
@@ -13,18 +17,8 @@
 	"Oregon": {"Map": "GEO:State/Oregon", "Capital": ""},
 	"Utah": {"Map": "GEO:State/Utah", "Capital": ""},
 	"Wyoming": {"Map": "GEO:State/Wyoming", "Capital": ""},
-	"Arkansas": {"Map": "GEO:State/Arkansas (admin1)", "Capital": ""},
-	"Iowa": {"Map": "GEO:State/Iowa", "Capital": ""},
-	"Kansas": {"Map": "GEO:State/Kansas (admin1)", "Capital": ""},
-	"Missouri": {"Map": "GEO:State/Missouri (admin1)", "Capital": ""},
-	"Nebraska": {"Map": "GEO:State/Nebraska", "Capital": ""},
-	"Oklahoma": {"Map": "GEO:State/Oklahoma", "Capital": ""},
-	"South Dakota": {"Map": "GEO:State/South Dakota", "Capital": ""},
-	"Louisiana": {"Map": "GEO:State/Louisiana", "Capital": ""},
-	"Texas": {"Map": "GEO:State/Texas", "Capital": ""},
 	"Alaska": {"Map": "GEO:State/Alaska", "Capital": ""},
 	"District of Columbia": {"Map": "GEO:Federal District/District of Columbia", "Capital": ""},
-
 	"Guantanamo Bay USNB": {"Map": "GEO:Unknown shape 439 (admin1)/Guantanamo Bay USNB", "Country": "US Naval Base Guantanamo Bay"},
 
 
@@ -1668,28 +1662,6 @@
 	"Ocotepeque": {"Map": "GEO:Department/Ocotepeque", "Country": "Honduras"},
 	"Choluteca": {"Map": "GEO:Department/Choluteca (admin1)", "Country": "Honduras"},
 	"El Para??so": {"Map": "GEO:Department/El Para??so", "Country": "Honduras"},
-	"Unknown shape 160 (admin1)": {"Map": "GEO:Unknown shape 161 (admin1)/Unknown shape 160 (admin1)", "Country": "Croatia"},
-	"Dubrovacko-Neretvanska": {"Map": "GEO:County/Dubrovacko-Neretvanska", "Country": "Croatia"},
-	"??ibensko-Kninska": {"Map": "GEO:County/??ibensko-Kninska", "Country": "Croatia"},
-	"Splitsko-Dalmatinska": {"Map": "GEO:County/Splitsko-Dalmatinska", "Country": "Croatia"},
-	"Zadarska": {"Map": "GEO:County/Zadarska", "Country": "Croatia"},
-	"Krapinsko-Zagorska": {"Map": "GEO:County/Krapinsko-Zagorska", "Country": "Croatia"},
-	"Karlovacka": {"Map": "GEO:County/Karlovacka", "Country": "Croatia"},
-	"Licko-Senjska": {"Map": "GEO:County/Licko-Senjska", "Country": "Croatia"},
-	"Primorsko-Goranska": {"Map": "GEO:County/Primorsko-Goranska", "Country": "Croatia"},
-	"Sisacko-Moslavacka": {"Map": "GEO:County/Sisacko-Moslavacka", "Country": "Croatia"},
-	"Zagrebacka": {"Map": "GEO:County/Zagrebacka", "Country": "Croatia"},
-	"Grad Zagreb": {"Map": "GEO:City/Grad Zagreb", "Country": "Croatia"},
-	"Istarska": {"Map": "GEO:County/Istarska", "Country": "Croatia"},
-	"Brodsko-Posavska": {"Map": "GEO:County/Brodsko-Posavska", "Country": "Croatia"},
-	"Osjecko-Baranjska": {"Map": "GEO:County/Osjecko-Baranjska", "Country": "Croatia"},
-	"Brodsko-Posavska 2": {"Map": "GEO:County/Brodsko-Posavska 2", "Country": "Croatia"},
-	"Vukovarsko-Srijemska": {"Map": "GEO:County/Vukovarsko-Srijemska", "Country": "Croatia"},
-	"Viroviticko-Podravska": {"Map": "GEO:County/Viroviticko-Podravska", "Country": "Croatia"},
-	"Bjelovarska-Bilogorska": {"Map": "GEO:County/Bjelovarska-Bilogorska", "Country": "Croatia"},
-	"Koprivni??ko-Kri??eva??ka": {"Map": "GEO:County/Koprivni??ko-Kri??eva??ka", "Country": "Croatia"},
-	"Medimurska": {"Map": "GEO:County/Medimurska", "Country": "Croatia"},
-	"Vara??dinska": {"Map": "GEO:County/Vara??dinska", "Country": "Croatia"},
 	"Grand'Anse": {"Map": "GEO:Department/Grand'Anse", "Country": "Haiti"},
 	"Nippes": {"Map": "GEO:Department/Nippes", "Country": "Haiti"},
 	"Nord-Ouest 2": {"Map": "GEO:Department/Nord-Ouest 2", "Country": "Haiti"},
@@ -2102,7 +2074,7 @@
 	"Kagoshima": {"Map": "GEO:Prefecture/Kagoshima (admin1)", "Country": "Japan"},
 	"Okinawa": {"Map": "GEO:Prefecture/Okinawa (admin1)", "Country": "Japan"},
 	"Gunma": {"Map": "GEO:Prefecture/Gunma", "Country": "Japan"},
-	"Baykonur lease in Qyzylorda": {"Map": "GEO:Unknown shape 178 (admin1)/Baykonur lease in Qyzylorda", "Country": "Baykonur Cosmodrome"},
+	"Baykonur lease in Qyzylorda": {"Map": "GEO:Unknown shape 178 (admin1)/Baykonur lease in Qyzylorda", "Country": "Baikonur Cosmodrome"},
 	"Kashmir": {"Map": "GEO:Unknown shape 179 (admin1)/Kashmir", "Country": "Siachen Glacier"},
 	"Unknown shape 180 (admin1)": {"Map": "GEO:Unknown shape 181 (admin1)/Unknown shape 180 (admin1)", "Country": "Kazakhstan"},
 	"Aqt??be": {"Map": "GEO:Region/Aqt??be", "Country": "Kazakhstan"},

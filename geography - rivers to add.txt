@@ -1678,8 +1678,6 @@
 	"Mangoky": "GEO:River/Mangoky",
 	"Mangoky 2": "GEO:River/Mangoky 2",
 	"Mangoky 3": "GEO:River/Mangoky 3",
-	"Setit": "GEO:River/Setit",
-	"Setit 2": "GEO:River/Setit 2",
 	"Daly": "GEO:River/Daly",
 	"Daly 2": "GEO:River/Daly 2",
 	"Mamberamo": "GEO:River/Mamberamo",

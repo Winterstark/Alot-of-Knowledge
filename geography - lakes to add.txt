@@ -1057,7 +1057,6 @@
 	"Unknown shape 601": "GEO:Lake/Unknown shape 601",
 	"Unknown shape 602": "GEO:Lake/Unknown shape 602",
 	"Unknown shape 603": "GEO:Lake/Unknown shape 603",
-	"Lago Gatun": "GEO:Lake/Lago Gatun",
 	"Presa Miguel Aleman": "GEO:Lake/Presa Miguel Aleman",
 	"Lake Novillo": "GEO:Lake/Lake Novillo",
 	"Lake Mohave": "GEO:Lake/Lake Mohave",

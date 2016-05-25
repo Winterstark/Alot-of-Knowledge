@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace AlotGUI
 {
@@ -108,7 +109,8 @@ namespace AlotGUI
             {
                 string line = fileRegions.ReadLine();
 
-                if (line.Contains("Buffer"))
+                //Console.WriteLine(line);
+                if (line == "Baikonur Cosmodrome: ")
                 {
                     int x = 9;
                 }
@@ -122,6 +124,12 @@ namespace AlotGUI
             }
 
             fileRegions.Close();
+
+
+            colorRegions(false);
+            //paint each country's region with a brighter version of that country's color (brighter so that it is noticaable when the user mouse-overs it)
+            
+            //foreach (string country in )
 
             preDrawMap();
         }
@@ -199,6 +207,17 @@ namespace AlotGUI
             {
                 float lon = (mx - viewportX) / zoom;
                 float lat = -(my - viewportY) / zoom;
+
+                if (qGeoType == GeoType.City && Math.Abs(qType) == 3)
+                {
+                    string country = GetSelectedArea(new PointF(lon, lat), GeoType.Country);
+                    if (country != "" && (selectedCountries.Count == 0 || country != selectedCountries[0]))
+                    {
+                        selectedCountries.Clear();
+                        selectedCountries.Add(country);
+                        ForceDraw();
+                    }
+                }
                 
                 return GetSelectedArea(new PointF(lon, lat), qGeoType);
             }
@@ -326,7 +345,8 @@ namespace AlotGUI
                     {
                         drawEntityCollection(gfx, GeoType.Country, preDrawing);
                         if (qGeoType == GeoType.Region)
-                            drawEntityCollection(gfx, GeoType.Region, preDrawing);
+                            //drawEntityCollection(gfx, GeoType.Region, preDrawing);
+                            drawSelectedCountryRegions(gfx, preDrawing);
 
                         if (!preDrawing)
                             drawHighlightedRegions(gfx);
@@ -438,6 +458,9 @@ namespace AlotGUI
                 qGeoType = mapEntities[entities[0]].GeoType;
                 highlightedEntities.Clear();
 
+                List<string> highlightedEntitiesNames = new List<string>(); //only used for Regions (to find out what country they belong to)
+                highlightedEntitiesNames.Add(entities[0]);
+
                 switch (qType)
                 {
                     case 2:
@@ -484,7 +507,11 @@ namespace AlotGUI
                             int index = rand.Next(neighbors.Count);
 
                             if (qGeoType != GeoType.River)
-                                highlightedEntities.Add(mapEntities[neighbors.Values[index]]);
+                            {
+                                string entName = neighbors.Values[index];
+                                highlightedEntitiesNames.Add(entName);
+                                highlightedEntities.Add(mapEntities[entName]);
+                            }
                             else
                             {
                                 //add all river segments
@@ -528,31 +555,79 @@ namespace AlotGUI
                     zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
                 }
 
-                if (initQuestion && qGeoType == GeoType.City)
+                if (initQuestion)
                 {
-                    //find out what countries the target cities are located in
-                    foreach (Shape ent in highlightedEntities)
+                    if (qGeoType == GeoType.City)
                     {
-                        string country = GetSelectedArea(ent.Box.Location, GeoType.Country);
-                        if (country != "" && !selectedCountries.Contains(country))
-                            selectedCountries.Add(country);
-                    }
+                        //find out what countries the target cities are located in
+                        foreach (Shape ent in highlightedEntities)
+                        {
+                            string country = GetSelectedArea(ent.Box.Location, GeoType.Country);
+                            if (country != "" && !selectedCountries.Contains(country))
+                                selectedCountries.Add(country);
+                        }
 
-                    //apply the country color to its regions
-                    Dictionary<string, SolidBrush> mainBrushes = new Dictionary<string, SolidBrush>();
-                    foreach (string selectedCountry in selectedCountries)
+                        colorRegions(true);
+                    }
+                    else if (qGeoType == GeoType.Region)
                     {
-                        Color brushColor = ((SolidBrush)((Polygon)mapEntities[selectedCountry]).MainBrush).Color;
-                        mainBrushes.Add(selectedCountry, new SolidBrush(brushColor));
-                    }
+                        //find out what countries the target regions are located in
+                        foreach (string region in highlightedEntitiesNames)
+                            foreach (var country in countryRegions)
+                                if (ArrayContainsString(country.Value, region) && !selectedCountries.Contains(country.Key))
+                                {
+                                    selectedCountries.Add(country.Key);
+                                    break;
+                                }
 
-                    foreach (var entity in mapEntities)
-                        if (entity.Value.GeoType == GeoType.Region)
-                            foreach (string country in selectedCountries)
-                                if (ArrayContainsString(countryRegions[country], entity.Key))
-                                    ((Polygon)entity.Value).MainBrush = mainBrushes[country];
+                        colorRegions(true, highlightedEntitiesNames);
+                    }
                 }
             }
+        }
+
+        void colorRegions(bool colorOnlySelectedCountries, List<String> highlightedEntitiesNames = null)
+        {
+            List<string> countries;
+            if (colorOnlySelectedCountries)
+                countries = selectedCountries;
+            else
+                countries = countryRegions.Keys.ToList();
+
+            //apply the countries' colors to its respective regions
+            Dictionary<string, SolidBrush> mainBrushes = new Dictionary<string, SolidBrush>();
+            Dictionary<string, SolidBrush> brighterMainBrushes = new Dictionary<string, SolidBrush>();
+
+            foreach (string country in countries)
+            {
+                Color brushColor, highlightColor;
+                if (mapEntities.ContainsKey(country))
+                {
+                    brushColor = ((SolidBrush)((Polygon)mapEntities[country]).MainBrush).Color;
+                    highlightColor = Color.FromArgb(Math.Min(brushColor.R + 50, 255), Math.Min(brushColor.G + 50, 255), Math.Min(brushColor.B + 50, 255));
+                }
+                else
+                {
+                    brushColor = Color.White;
+                    highlightColor = Color.Gray;
+                }
+
+                mainBrushes.Add(country, new SolidBrush(brushColor));
+                brighterMainBrushes.Add(country, new SolidBrush(highlightColor));
+            }
+
+            foreach (var entity in mapEntities)
+                if (entity.Value.GeoType == GeoType.Region)
+                    foreach (string country in countries)
+                        if (ArrayContainsString(countryRegions[country], entity.Key))
+                        {
+                            if (!colorOnlySelectedCountries || //when coloring all countries use the brighter brush
+                                (highlightedEntitiesNames != null && highlightedEntitiesNames.Contains(entity.Key)))
+                                ((Polygon)entity.Value).MainBrush = brighterMainBrushes[country];
+                            else
+                                ((Polygon)entity.Value).MainBrush = mainBrushes[country];
+                            break;
+                        }
         }
 
         bool boxContainsBox(RectangleF bigBox, RectangleF smallBox)

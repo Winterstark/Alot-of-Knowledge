@@ -1,22 +1,9 @@
 {
-
-	"Unknown shape 160 (admin1)": "GEO:Unknown shape 161 (admin1)/Unknown shape 160 (admin1)", //croatia islands?
-
-
-
-
-	"Montana (U.S.)": {"Map": "GEO:State/Montana 2 (admin1)", "Capital": ""},
 	"Hawaii": {"Map": "GEO:State/Hawaii", "Capital": ""},
-	"Idaho": {"Map": "GEO:State/Idaho", "Capital": ""},
 	"Washington": {"Map": "GEO:State/Washington", "Capital": ""},
-	"Arizona": {"Map": "GEO:State/Arizona", "Capital": ""},
 	"California": {"Map": "GEO:State/California", "Capital": ""},
-	"Colorado": {"Map": "GEO:State/Colorado (admin1)", "Capital": ""},
 	"Nevada": {"Map": "GEO:State/Nevada", "Capital": ""},
-	"New Mexico": {"Map": "GEO:State/New Mexico", "Capital": ""},
 	"Oregon": {"Map": "GEO:State/Oregon", "Capital": ""},
-	"Utah": {"Map": "GEO:State/Utah", "Capital": ""},
-	"Wyoming": {"Map": "GEO:State/Wyoming", "Capital": ""},
 	"Alaska": {"Map": "GEO:State/Alaska", "Capital": ""},
 	"District of Columbia": {"Map": "GEO:Federal District/District of Columbia", "Capital": ""},
 	"Guantanamo Bay USNB": {"Map": "GEO:Unknown shape 439 (admin1)/Guantanamo Bay USNB", "Country": "US Naval Base Guantanamo Bay"},

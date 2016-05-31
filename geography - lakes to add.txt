@@ -1260,7 +1260,6 @@
 	"Unknown shape 609": "GEO:Lake/Unknown shape 609",
 	"Lake Cowan": "GEO:Lake/Lake Cowan",
 	"Unknown shape 610": "GEO:Lake/Unknown shape 610",
-	"Great Salt Lake": "GEO:Lake/Great Salt Lake",
 	"Laguna Madre": "GEO:Lake/Laguna Madre",
 	"Salton Sea": "GEO:Lake/Salton Sea",
 	"Lago Enriquillo": "GEO:Lake/Lago Enriquillo",

@@ -1159,39 +1159,46 @@ namespace AlotGUI
         #region Map
         void processMapMsg(string msg)
         {
-            if (msg.Length > 6)
+            try
             {
-                mapQType = int.Parse(msg.Substring(4, 1));
-                msg = msg.Substring(6);
-
-                if (msg.Contains(".."))
+                if (msg.Length > 6)
                 {
-                    //expand shortened expression, for example: "Nile..3" -> "Nile+Nile 2+Nile 3"
-                    int lb = msg.IndexOf("..");
-                    int ub = msg.IndexOf('+', lb);
-                    if (ub == -1)
-                        ub = msg.Length;
+                    mapQType = int.Parse(msg.Substring(4, 1));
+                    msg = msg.Substring(6);
 
-                    int n = int.Parse(msg.Substring(lb + 2, ub - (lb + 2)));
-                    
-                    string msgRemainder = msg.Substring(ub);
-                    msg = msg.Substring(0, lb);
-                    string baseName = msg;
+                    if (msg.Contains(".."))
+                    {
+                        //expand shortened expression, for example: "Nile..3" -> "Nile+Nile 2+Nile 3"
+                        int lb = msg.IndexOf("..");
+                        int ub = msg.IndexOf('+', lb);
+                        if (ub == -1)
+                            ub = msg.Length;
 
-                    for (int i = 2; i <= n; i++)
-                        msg += "+" + baseName + " " + i.ToString();
+                        int n = int.Parse(msg.Substring(lb + 2, ub - (lb + 2)));
 
-                    msg += msgRemainder;
+                        string msgRemainder = msg.Substring(ub);
+                        msg = msg.Substring(0, lb);
+                        string baseName = msg;
+
+                        for (int i = 2; i <= n; i++)
+                            msg += "+" + baseName + " " + i.ToString();
+
+                        msg += msgRemainder;
+                    }
+
+                    questionEntities = msg.Split('+');
+                    viz.Highlight(questionEntities, mapQType, true);
                 }
 
-                questionEntities = msg.Split('+');
-                viz.Highlight(questionEntities, mapQType, true);
+                mode = DisplayMode.Map;
+                mapFrozen = false;
+                this.BackgroundImage = null;
+                this.Refresh();
             }
-
-            mode = DisplayMode.Map;
-            mapFrozen = false;
-            this.BackgroundImage = null;
-            this.Refresh();
+            catch (Exception e)
+            {
+                MessageBox.Show("Exception in processMapMsg(): " + e.Message);
+            }
         }
 
         public void ForceDraw()
@@ -1246,7 +1253,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Budapest");
+            //processMsg("map 3 Lincoln 2");
         }
 
         protected override void OnPaint(PaintEventArgs e)

@@ -108,13 +108,6 @@ namespace AlotGUI
             while (!fileRegions.EndOfStream)
             {
                 string line = fileRegions.ReadLine();
-
-                //Console.WriteLine(line);
-                if (line == "Baikonur Cosmodrome: ")
-                {
-                    int x = 9;
-                }
-
                 string[] parts = line.Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (parts.Length == 1)
@@ -125,12 +118,7 @@ namespace AlotGUI
 
             fileRegions.Close();
 
-
             colorRegions(false);
-            //paint each country's region with a brighter version of that country's color (brighter so that it is noticaable when the user mouse-overs it)
-            
-            //foreach (string country in )
-
             preDrawMap();
         }
 
@@ -345,7 +333,6 @@ namespace AlotGUI
                     {
                         drawEntityCollection(gfx, GeoType.Country, preDrawing);
                         if (qGeoType == GeoType.Region)
-                            //drawEntityCollection(gfx, GeoType.Region, preDrawing);
                             drawSelectedCountryRegions(gfx, preDrawing);
 
                         if (!preDrawing)
@@ -385,8 +372,8 @@ namespace AlotGUI
                         if (qGeoType != GeoType.City || Math.Abs(qType) != 3)
                             drawEntityCollection(gfx, GeoType.City, preDrawing);
                     }
-
-                    if (!preDrawing && qGeoType != GeoType.MarineArea)
+                    
+                    if (!preDrawing && qGeoType != GeoType.MarineArea) //if (!preDrawing && (qGeoType == GeoType.Lake || qGeoType == GeoType.PhysicalRegion))
                         drawHighlightedRegions(gfx);
                 }
             }

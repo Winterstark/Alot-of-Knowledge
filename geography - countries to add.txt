@@ -1,5 +1,4 @@
 {
-	'Botswana': {'Official name': '', 'Date': '', 'Capital': 'Gaborone', 'Map': 'GEO:Sovereign country/Botswana', 'Flag': 'history\\flags\\Botswana.png', 'Population': 2070984, 'Currency': '', 'Official languages': {''}},
 	'Somaliland': {'Official name': '', 'Date': '', 'Capital': 'Hargeisa', 'Map': 'GEO:Self-declared state/Somaliland', 'Flag': 'history\\flags\\Somaliland.png', 'Population': 3500000, 'Currency': '', 'Official languages': {''}},
 	'Ethiopia': {'Official name': '', 'Date': '', 'Capital': 'Addis Ababa', 'Map': 'GEO:Sovereign country/Ethiopia', 'Flag': 'history\\flags\\Ethiopia.png', 'Population': 90076012, 'Currency': '', 'Official languages': {''}},
 	'Venezuela': {'Official name': '', 'Date': '', 'Capital': 'Caracas', 'Map': 'GEO:Sovereign country/Venezuela', 'Flag': 'history\\flags\\Venezuela.png', 'Population': 30620404, 'Currency': '', 'Official languages': {''}},

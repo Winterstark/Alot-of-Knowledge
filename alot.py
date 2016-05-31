@@ -760,7 +760,7 @@ def getType(entry, attribute=""):
 	elif entryType is str:
 		if entry[:4] == "GEO:":
 			return Type.Geo
-		if os.path.isfile(fullPath(entry)):
+		if os.path.exists(fullPath(entry)):
 			return Type.Image
 		else:
 			return Type.String
@@ -1314,7 +1314,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, otherNames={}, geoType=""):
 	if type(q) is not str:
 		q = str(q)
-
+	
 	#if q is in the format of "<int>.", then it represents the index of a list item
 	if q[-1] == '.':
 		try:
@@ -1484,11 +1484,10 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		#if wrong -> check other names
 		if answer != correctAnswer and len(otherNames) > 0:	
 			for alt in otherNames:
-				cleanAlt = removeParentheses(alt.lower())
+				cleanAlt = ''.join(e for e in removeParentheses(alt.lower()) if e.isalnum())
 				answer = removeTypos(answer, cleanAlt, originalCorrectAnswer=alt, indentLevel=indentLevel)
 
 				if cleanAlt == answer:
-					print("Expected answer: " + aStr)
 					answer = correctAnswer
 					break
 	
@@ -1498,7 +1497,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 def qType_FillString(q, s, difficulty, corewords, color):
 	#split string into parts
 	parts = s.replace("\n", " __NEWLINE__ ").split()
-
+	
 	for i in range(len(parts)):
 		if parts[i] == "__NEWLINE__":
 			parts[i] = "\n"

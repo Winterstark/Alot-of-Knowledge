@@ -13,6 +13,7 @@ namespace AlotGUI
         public const int SHAPE_TYPE_POLYGON = 5;
 
         public enum GeoType {Landmass, PhysicalRegion, MarineArea, Lake, River, Country, Region, City};
+        enum ColorRegionsMode {Initialize, Highlight, Reset};
 
         Shape worldLandmass;
         Dictionary<string, Shape> mapEntities;
@@ -77,6 +78,9 @@ namespace AlotGUI
                 {
                     string name = file.ReadLine();
 
+                    //if (mapEntities.ContainsKey(name))
+                    //    MessageBox.Show("Map entity already exists: " + name + "(" + mapEntities[name].GeoType + ")");
+
                     string shapeType = file.ReadLine();
                     switch (shapeType)
                     {
@@ -118,7 +122,7 @@ namespace AlotGUI
 
             fileRegions.Close();
 
-            colorRegions(false);
+            colorRegions(ColorRegionsMode.Initialize);
             preDrawMap();
         }
 
@@ -319,9 +323,6 @@ namespace AlotGUI
 
                 if (qType == 1)
                 {
-                    if (qGeoType == GeoType.PhysicalRegion)
-                        drawEntityCollection(gfx, GeoType.PhysicalRegion, preDrawing);
-
                     if (qGeoType == GeoType.MarineArea)
                     {
                         //marine areas need to be drawn before countries, so the islands don't get erased from the map
@@ -347,6 +348,9 @@ namespace AlotGUI
                         drawEntityCollection(gfx, GeoType.River, preDrawing);
                         drawEntityCollection(gfx, GeoType.Lake, preDrawing);
                     }
+
+                    if (qGeoType == GeoType.PhysicalRegion)
+                        drawPhysicalRegionsOfTheSameType(gfx, preDrawing);
 
                     drawEntityCollection(gfx, GeoType.City, preDrawing);
                 }
@@ -408,6 +412,14 @@ namespace AlotGUI
                             entity.Value.Draw(gfx);
         }
 
+        void drawPhysicalRegionsOfTheSameType(Graphics gfx, bool preDrawing)
+        {
+            if (highlightedEntities != null && highlightedEntities.Count > 0 && highlightedEntities[0].GeoType == GeoType.PhysicalRegion)
+                foreach (var entity in mapEntities)
+                    if (entity.Value.GeoType == GeoType.PhysicalRegion && ((SolidBrush)((Polygon)entity.Value).MainBrush).Color == ((SolidBrush)((Polygon)highlightedEntities[0]).MainBrush).Color)
+                        entity.Value.Draw(gfx);
+        }
+
         void drawHighlightedRegions(Graphics gfx)
         {
             foreach (var entity in highlightedEntities)
@@ -418,10 +430,18 @@ namespace AlotGUI
         public void Highlight(string[] entities, int qType, bool initQuestion = false)
         {
             if (initQuestion)
+            {
+                if (selectedCountries != null)
+                    colorRegions(ColorRegionsMode.Reset);
                 selectedCountries = new List<string>();
+            }
 
             foreach (var ent in mapEntities)
+            {
                 ent.Value.Highlighted = false;
+                if (initQuestion && (ent.Value.GeoType == GeoType.MarineArea || ent.Value.GeoType == GeoType.Country || ent.Value.GeoType == GeoType.City || ent.Value.GeoType == GeoType.Region || ent.Value.GeoType == GeoType.River || ent.Value.GeoType == GeoType.Lake))
+                    ent.Value.Enabled = false;
+            }
 
             if (entities == null)
                 return;
@@ -554,7 +574,7 @@ namespace AlotGUI
                                 selectedCountries.Add(country);
                         }
 
-                        colorRegions(true);
+                        colorRegions(ColorRegionsMode.Highlight);
                     }
                     else if (qGeoType == GeoType.Region)
                     {
@@ -567,19 +587,19 @@ namespace AlotGUI
                                     break;
                                 }
 
-                        colorRegions(true, highlightedEntitiesNames);
+                        colorRegions(ColorRegionsMode.Highlight, highlightedEntitiesNames);
                     }
                 }
             }
         }
 
-        void colorRegions(bool colorOnlySelectedCountries, List<String> highlightedEntitiesNames = null)
+        void colorRegions(ColorRegionsMode mode, List<String> highlightedEntitiesNames = null)
         {
             List<string> countries;
-            if (colorOnlySelectedCountries)
-                countries = selectedCountries;
-            else
+            if (mode == ColorRegionsMode.Initialize)
                 countries = countryRegions.Keys.ToList();
+            else
+                countries = selectedCountries;
 
             //apply the countries' colors to its respective regions
             Dictionary<string, SolidBrush> mainBrushes = new Dictionary<string, SolidBrush>();
@@ -608,7 +628,7 @@ namespace AlotGUI
                     foreach (string country in countries)
                         if (ArrayContainsString(countryRegions[country], entity.Key))
                         {
-                            if (!colorOnlySelectedCountries || //when coloring all countries use the brighter brush
+                            if (mode != ColorRegionsMode.Highlight ||
                                 (highlightedEntitiesNames != null && highlightedEntitiesNames.Contains(entity.Key)))
                                 ((Polygon)entity.Value).MainBrush = brighterMainBrushes[country];
                             else
@@ -892,7 +912,7 @@ namespace AlotGUI
             Color.LightGreen, //landmass color
             Color.FromArgb(232, 185, 81), Color.FromArgb(166, 156, 84), Color.FromArgb(131, 165, 91), Color.FromArgb(245, 241, 150), Color.FromArgb(79, 132, 126), Color.FromArgb(191, 203, 95), Color.FromArgb(231, 162, 129), //country colors
             Color.GhostWhite, //Greenland and Antarctica
-            Color.ForestGreen, Color.OliveDrab, Color.DarkOrange, Color.OrangeRed, Color.Snow, Color.SaddleBrown, Color.DeepSkyBlue }; //physical regions colors (peninsula, island, desert, canyon, mountain, plateau, archipelago)
+            Color.ForestGreen, Color.OliveDrab, Color.DarkOrange, Color.OrangeRed, Color.Snow, Color.SaddleBrown, Color.ForestGreen }; //physical regions colors (peninsula, island, desert, canyon, mountain, plateau, archipelago)
 
         public Brush MainBrush, HighlightedBrush;
         

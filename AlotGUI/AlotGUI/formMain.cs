@@ -1253,7 +1253,8 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Lincoln 2");
+
+            //processMsg("map 1 ALPS");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1447,6 +1448,8 @@ namespace AlotGUI
         {
             //double click period expired -> execute a single click
             timerDoubleClick.Enabled = false;
+
+            //this.Text = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
 
             if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
             {

@@ -1,18 +1,4 @@
 {
-	"Hawaii": {"Map": "GEO:State/Hawaii", "Capital": ""},
-	"Washington": {"Map": "GEO:State/Washington", "Capital": ""},
-	"California": {"Map": "GEO:State/California", "Capital": ""},
-	"Nevada": {"Map": "GEO:State/Nevada", "Capital": ""},
-	"Oregon": {"Map": "GEO:State/Oregon", "Capital": ""},
-	"Alaska": {"Map": "GEO:State/Alaska", "Capital": ""},
-	"District of Columbia": {"Map": "GEO:Federal District/District of Columbia", "Capital": ""},
-	"Guantanamo Bay USNB": {"Map": "GEO:Unknown shape 439 (admin1)/Guantanamo Bay USNB", "Country": "US Naval Base Guantanamo Bay"},
-
-
-
-
-
-
 	"Aruba": {"Map": "GEO:Unknown shape 1 (admin1)/Aruba (admin1)", "Country": "Aruba"},
 	"Badghis": {"Map": "GEO:Province/Badghis", "Country": "Afghanistan"},
 	"Hirat": {"Map": "GEO:Province/Hirat", "Country": "Afghanistan"},

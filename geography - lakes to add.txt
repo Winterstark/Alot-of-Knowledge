@@ -540,7 +540,6 @@
 	"Mapam Yumco": "GEO:Lake/Mapam Yumco",
 	"Lake Beloye": "GEO:Lake/Lake Beloye",
 	"Lake Manyara": "GEO:Lake/Lake Manyara",
-	"Lake Balaton": "GEO:Lake/Lake Balaton",
 	"Lago Ranco": "GEO:Lake/Lago Ranco",
 	"Lago Viedma": "GEO:Lake/Lago Viedma",
 	"Lac Tumba": "GEO:Lake/Lac Tumba",

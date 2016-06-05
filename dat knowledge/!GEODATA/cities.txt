@@ -29370,3 +29370,27 @@ Turangi
 POINT
 175,8142, -38,98889
 8
+Charlotte Amalie
+POINT
+-64,95, 18,35
+7
+Saint-Pierre (City)
+POINT
+-56,1778, 46,7778
+8
+Velika Gorica
+POINT
+16,066667, 45,7
+7
+Sisak
+POINT
+16,366667, 45,483333
+9
+Varazdin
+POINT
+16,333333, 46,3
+10
+Bijeljina (City)
+POINT
+19,216667, 44,75
+8

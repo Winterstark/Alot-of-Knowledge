@@ -1253,8 +1253,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-
-            //processMsg("map 1 ALPS");
+            //processMsg("map 2 Budapest");
         }
 
         protected override void OnPaint(PaintEventArgs e)

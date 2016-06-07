@@ -765,7 +765,7 @@ namespace AlotGUI
             float dy = y - point.Y;
             distance = Math.Sqrt(dx * dx + dy * dy);
 
-            return distance <= size / 2;
+            return distance <= size;
         }
     }
 

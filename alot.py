@@ -1472,7 +1472,14 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		if answer != correctAnswer:
 			tmpAnswer = answer
 			tmpCorrectAnswer = correctAnswer
-			for ignoredWord in ["the", "of", geoType]:
+
+			if geoType == "Archipelago":
+				extraIgnoredWord = "Islands"
+			elif geoType == "Mountain range":
+				extraIgnoredWord = "Mountains"
+			else:
+				extraIgnoredWord = "__dummy__"
+			for ignoredWord in ["the", "of", geoType, extraIgnoredWord]:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")
 				tmpCorrectAnswer = tmpCorrectAnswer.replace(ignoredWord, "")
 			tmpAnswer = removeTypos(tmpAnswer, tmpCorrectAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)

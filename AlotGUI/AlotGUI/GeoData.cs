@@ -242,10 +242,10 @@ namespace AlotGUI
                         minAvgDistance = area.Item2;
                     }
 
-                if (selectedArea != "" && geoType == GeoType.River)
+                if (selectedArea != "" && (geoType == GeoType.River || (geoType == GeoType.Region && selectedArea.Contains("(composite)"))))
                 {
-                    //rivers often have more than one segment; selectedArea needs to include them all
-                    string baseName = selectedArea = getRiverBaseName(selectedArea);
+                    //rivers (and some administrative regions) often have more than one segment; selectedArea needs to include them all
+                    string baseName = selectedArea = getBaseName(selectedArea);
 
                     int i = 2;
                     while (mapEntities.ContainsKey(baseName + " " + i.ToString()))
@@ -479,22 +479,22 @@ namespace AlotGUI
                             addRectangles(ref entitiesBox, mapEntities[entities[i]].Box);
 
                         foreach (var ent in mapEntities)
-                            if (!ArrayContainsString(entities, ent.Key) && !neighbors.ContainsValue(getRiverBaseName(ent.Key)) && ent.Value.GeoType == qGeoType)
+                            if (!ArrayContainsString(entities, ent.Key) && !neighbors.ContainsValue(getBaseName(ent.Key)) && ent.Value.GeoType == qGeoType)
                             {
-                                string entName = getRiverBaseName(ent.Key);
+                                string entName = getBaseName(ent.Key);
                                 
                                 float distance = 0;
-                                if (qGeoType != GeoType.River)
-                                    distance = distanceBetweenRegions(ent.Value.Box, entitiesBox);
-                                else
+                                if (qGeoType == GeoType.River || qGeoType == GeoType.Region)
                                 {
-                                    //create a Box that includes all segments of the river
+                                    //create a Box that includes all segments of the river/region
                                     RectangleF riverBox = new RectangleF(ent.Value.Box.X, ent.Value.Box.Y, ent.Value.Box.Width, ent.Value.Box.Height);
                                     for (int i = 2; mapEntities.ContainsKey(entName + " " + i.ToString()); i++)
                                         addRectangles(ref riverBox, mapEntities[entName + " " + i.ToString()].Box);
 
                                     distance = distanceBetweenRegions(riverBox, entitiesBox);
                                 }
+                                else
+                                    distance = distanceBetweenRegions(ent.Value.Box, entitiesBox);
 
                                 //remember closest 20 regions
                                 if (neighbors.Count < 20)
@@ -513,20 +513,20 @@ namespace AlotGUI
                         {
                             int index = rand.Next(neighbors.Count);
 
-                            if (qGeoType != GeoType.River)
+                            if (qGeoType == GeoType.River || qGeoType == GeoType.Region)
                             {
-                                string entName = neighbors.Values[index];
-                                highlightedEntitiesNames.Add(entName);
-                                highlightedEntities.Add(mapEntities[entName]);
-                            }
-                            else
-                            {
-                                //add all river segments
-                                string river = getRiverBaseName(neighbors.Values[index]);
+                                //add all river/region segments
+                                string river = getBaseName(neighbors.Values[index]);
 
                                 highlightedEntities.Add(mapEntities[river]);
                                 for (int j = 2; mapEntities.ContainsKey(river + " " + j.ToString()); j++)
                                     highlightedEntities.Add(mapEntities[river + " " + j.ToString()]);
+                            }
+                            else
+                            {
+                                string entName = neighbors.Values[index];
+                                highlightedEntitiesNames.Add(entName);
+                                highlightedEntities.Add(mapEntities[entName]);
                             }
 
                             neighbors.RemoveAt(index);
@@ -647,10 +647,10 @@ namespace AlotGUI
 
         public bool ArrayContainsString(string[] arr, string s)
         {
-            s = getRiverBaseName(s);
+            s = getBaseName(s);
 
             foreach (string item in arr)
-                if (getRiverBaseName(item) == s)
+                if (getBaseName(item) == s)
                     return true;
 
             return false;
@@ -684,9 +684,9 @@ namespace AlotGUI
             return (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
 
-        string getRiverBaseName(string entityName)
+        string getBaseName(string entityName)
         {
-            if (mapEntities.ContainsKey(entityName) && mapEntities[entityName].GeoType == GeoType.River)
+            if (mapEntities.ContainsKey(entityName) && (mapEntities[entityName].GeoType == GeoType.River || mapEntities[entityName].GeoType == GeoType.Region))
             {
                 int ind = entityName.LastIndexOf(' '), tmp;
                 if (ind != -1 && ind != entityName.Length - 1 && int.TryParse(entityName.Substring(ind + 1), out tmp))
@@ -765,7 +765,7 @@ namespace AlotGUI
             float dy = y - point.Y;
             distance = Math.Sqrt(dx * dx + dy * dy);
 
-            return distance <= size;
+            return distance <= 0.1;
         }
     }
 

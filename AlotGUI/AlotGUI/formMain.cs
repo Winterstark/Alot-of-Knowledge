@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlotGUI
 {
@@ -260,20 +261,25 @@ namespace AlotGUI
 
             while (i < 5 && folder.Contains(IMG_DIR)) //don't search beyond the top-most images directory
             {
-                string[] files = Directory.GetFiles(folder);
+                Random rand = new Random((int)DateTime.Now.Ticks);
+                List<string> files = Directory.GetFiles(folder).ToList();
 
-                for (int j = 0; j < files.Length && i < 5; j++)
-                    if (files[j] != imgs[0])
-                        multipleChoiceImages[i++] = files[j];
+                while (i < 5 && files.Count > 0)
+                {
+                    int nextItem = rand.Next(files.Count);
+                    if (files[nextItem] != imgs[0])
+                        multipleChoiceImages[i++] = files[nextItem];
+                    files.RemoveAt(nextItem);
+                }
 
                 if (i < 5) //check subfolders
                     foreach (string dir in Directory.GetDirectories(folder))
                         if (dir != prevFolder)
                         {
                             unvisitedFolders.Enqueue(dir);
-                            files = Directory.GetFiles(dir);
+                            files = Directory.GetFiles(dir).ToList();
 
-                            for (int j = 0; j < files.Length && i < 5; j++, i++)
+                            for (int j = 0; j < files.Count && i < 5; j++, i++)
                                 multipleChoiceImages[i] = files[j];
 
                             if (i == 5)
@@ -1253,9 +1259,9 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 1 Rhein..6");
+            //processMsg("C3 C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\history\\portraits\\Zachary Taylor.jpg");
         }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             switch (mode)

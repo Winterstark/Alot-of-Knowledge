@@ -1895,6 +1895,8 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				iType = getType(item)
 				if iType is Type.Date or iType is Type.Range:
 					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), item, color, alwaysShowHint=not finalStep, indentLevel=indentLevel) #pass Dates without converting them to string
+				elif iType is Type.Image:
+					itemCorrect, exit, immediately = qType_Image(items[step-1][0], fullPath(item), learned=learned)
 				else:
 					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(item), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
 

@@ -534,7 +534,14 @@ namespace AlotGUI
                         
                         break;
                     case 3:
-                        zoomOnPoint(0, 0, windowSize.Width / 360); //unzoom all the way
+                        //unzoom to a continental-wide view
+                        RectangleF box = new RectangleF(mapEntities[entities[0]].Box.X, mapEntities[entities[0]].Box.Y, mapEntities[entities[0]].Box.Width, mapEntities[entities[0]].Box.Height);
+                        for (int i = 1; i < entities.Length; i++)
+                            addRectangles(ref box, mapEntities[entities[i]].Box);
+
+                        rand = new Random((int)DateTime.Now.Ticks);
+                        zoomOnPoint(box.Left + box.Width / 2 + (float)rand.NextDouble() * 10.0f - 5.0f, box.Top + box.Height * 2 + (float)rand.NextDouble() * 10.0f - 5.0f, 10); //the center of the view is randomly displaced to prevent the user from zooming into the target location
+
                         return;
                 }
 

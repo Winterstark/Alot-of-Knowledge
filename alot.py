@@ -1473,10 +1473,10 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 			tmpAnswer = answer
 			tmpCorrectAnswer = correctAnswer
 
-			if geoType == "Archipelago":
-				extraIgnoredWord = "Islands"
-			elif geoType == "Mountain range":
-				extraIgnoredWord = "Mountains"
+			if geoType == "archipelago":
+				extraIgnoredWord = "islands"
+			elif geoType == "mountain range":
+				extraIgnoredWord = "mountains"
 			else:
 				extraIgnoredWord = "__dummy__"
 			for ignoredWord in ["the", "of", geoType, extraIgnoredWord]:

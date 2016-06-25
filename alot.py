@@ -1473,13 +1473,14 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 			tmpAnswer = answer
 			tmpCorrectAnswer = correctAnswer
 
+			ignoredWords = ["the", "of", geoType]
 			if geoType == "archipelago":
-				extraIgnoredWord = "islands"
+				ignoredWords.append("islands")
 			elif geoType == "mountain range":
-				extraIgnoredWord = "mountains"
-			else:
-				extraIgnoredWord = "__dummy__"
-			for ignoredWord in ["the", "of", geoType, extraIgnoredWord]:
+				ignoredWords.append("mountains")
+				ignoredWords.append("range")
+
+			for ignoredWord in ignoredWords:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")
 				tmpCorrectAnswer = tmpCorrectAnswer.replace(ignoredWord, "")
 			tmpAnswer = removeTypos(tmpAnswer, tmpCorrectAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)

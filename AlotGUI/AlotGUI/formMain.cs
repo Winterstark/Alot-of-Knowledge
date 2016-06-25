@@ -1259,9 +1259,9 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("C3 C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\history\\portraits\\Zachary Taylor.jpg");
+            //processMsg("map 1 HIMALAYAS");
         }
-        
+
         protected override void OnPaint(PaintEventArgs e)
         {
             switch (mode)

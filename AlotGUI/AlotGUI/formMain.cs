@@ -1259,9 +1259,9 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 1 HIMALAYAS");
+            processMsg("map 2 Zalew Wislany (composite)..2");
         }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             switch (mode)

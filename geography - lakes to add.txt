@@ -1243,7 +1243,6 @@
 	"Syvash": "GEO:Lake/Syvash",
 	"Ysyk K?l": "GEO:Lake/Ysyk K?l",
 	"Lake Turkana": "GEO:Lake/Lake Turkana",
-	"Kaliningradskiy Zaliv": "GEO:Lake/Kaliningradskiy Zaliv",
 	"Uvs Nuur": "GEO:Lake/Uvs Nuur",
 	"Qinghai Hu": "GEO:Lake/Qinghai Hu",
 	"Lake Razazah": "GEO:Lake/Lake Razazah",

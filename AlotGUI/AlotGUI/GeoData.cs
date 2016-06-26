@@ -502,6 +502,10 @@ namespace AlotGUI
                                 else if (distance < neighbors.Keys[19])
                                 {
                                     neighbors.RemoveAt(19);
+
+                                    while (neighbors.ContainsKey(distance)) //prevent two entries having the same distance
+                                        distance += 0.000001f;
+
                                     neighbors.Add(distance, entName);
                                 }
                             }

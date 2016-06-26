@@ -147509,7 +147509,7 @@ POLYGON
 36,69941, 2,850442
 36,69764, 2,769491
 1600
-Kaliningradskiy Zaliv
+Zalew Wislany (composite) 2
 POLYGON
 19,7932
 54,47072
@@ -147568,7 +147568,7 @@ POLYGON
 19,84, 54,47072
 19,7932, 54,54343
 1600
-Zalew Wislany
+Zalew Wislany (composite)
 POLYGON
 19,22919
 54,22817

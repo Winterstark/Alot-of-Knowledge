@@ -718,6 +718,7 @@
 
 
 	OTHER/PLAINS/REGIONS/PARKS
+	"Danube Delta": "GEO:UNKNOWN_TYPE/Danube Delta",
 	"King Christian IX Land": "GEO:UNKNOWN_TYPE/King Christian IX Land",
 	"King Christian X Land": "GEO:UNKNOWN_TYPE/King Christian X Land",
 	"King Wilhelm Land": "GEO:UNKNOWN_TYPE/King Wilhelm Land",
@@ -749,7 +750,6 @@
 	"Mississippi Delta": "GEO:UNKNOWN_TYPE/Mississippi Delta",
 	"Niger Delta": "GEO:UNKNOWN_TYPE/Niger Delta",
 	"Volga Delta": "GEO:UNKNOWN_TYPE/Volga Delta",
-	"Danube Delta": "GEO:UNKNOWN_TYPE/Danube Delta",
 	"Amazon Delta": "GEO:UNKNOWN_TYPE/Amazon Delta",
 	"Mekong Delta": "GEO:UNKNOWN_TYPE/Mekong Delta",
 	"GREAT RIFT VALLEY": "GEO:UNKNOWN_TYPE/GREAT RIFT VALLEY",

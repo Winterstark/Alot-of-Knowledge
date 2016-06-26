@@ -1259,7 +1259,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            processMsg("map 2 Zalew Wislany (composite)..2");
+            //processMsg("map 1 Lake Superior");
         }
         
         protected override void OnPaint(PaintEventArgs e)

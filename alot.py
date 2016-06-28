@@ -1,4 +1,4 @@
-import os, sys, subprocess, traceback, random, struct, calendar
+import os, sys, subprocess, traceback, random, struct, calendar, re
 from enum import Enum
 from datetime import datetime, timedelta
 from time import sleep
@@ -537,7 +537,14 @@ def convertToDateIfAny(data):
 
 def parseFile(path):
 	with open(path) as f:
-		data = eval(f.read()) #using eval instead of the safer ast.literal_eval because ast's version can't parse datetime objects
+		contents = f.read()
+		data = eval(contents) #using eval instead of the safer ast.literal_eval because ast's version can't parse datetime objects
+
+		#ensure there are no multiple entries with the same key (prevent the user from overwriting an existing entry)
+		for key in data:
+			if len(re.findall("\t['\"]{}['\"]: ".format(re.escape(key)), contents)) > 1:
+				print("Two entries with the same key ({}) detected while parsing {}!".format(key, os.path.basename(path)))
+				sys.exit(0)
 
 	convertToDateIfAny(data) #convert date representations to Date objects
 

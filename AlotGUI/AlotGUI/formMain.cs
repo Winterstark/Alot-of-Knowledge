@@ -114,7 +114,7 @@ namespace AlotGUI
         string[] questionEntities;
         string mapMouseOverRegion, selectedArea;
         int mapQType, nRemainingFeedbackTicks;
-        bool isAnswerHighlighted, mapFrozen;
+        bool isAnswerHighlighted, mapFrozen, mapExplorationMode;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -1167,6 +1167,12 @@ namespace AlotGUI
         {
             try
             {
+                if (msg.Contains("map explore"))
+                {
+                    mapExplorationMode = true;
+                    msg = msg.Replace("map explore", "map");
+                }
+
                 if (msg.Length > 6)
                 {
                     mapQType = int.Parse(msg.Substring(4, 1));
@@ -1259,7 +1265,7 @@ namespace AlotGUI
             loadTimelineData();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 1 Lake Superior");
+            //processMsg("map 1 ?land");
         }
         
         protected override void OnPaint(PaintEventArgs e)
@@ -1454,9 +1460,9 @@ namespace AlotGUI
             //double click period expired -> execute a single click
             timerDoubleClick.Enabled = false;
 
-            //this.Text = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
-
-            if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
+            if (mapExplorationMode)
+                updateStatus(viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y));
+            else if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
             {
                 selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
                 if (selectedArea.Contains("+"))

@@ -2586,7 +2586,7 @@ def mainLoop(alot, metalot):
 
 			WORD_CHOICES = ["all", "exit", "timeline"]
 			choice = ""
-			while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and choice not in WORD_CHOICES:
+			while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and ("map " not in choice or len(choice) <= 4) and choice not in WORD_CHOICES:
 				choice = input('Choose a category: ')
 			if choice.isdigit():
 				choice = cats[int(choice)]
@@ -2595,6 +2595,15 @@ def mainLoop(alot, metalot):
 				pass
 				#exportTimelineForGUI(alot)
 				#msgGUI("timeline")
+			elif "map " in choice:
+				if not choice[4].isdigit():
+					choice = choice[:4] + "1 " + choice[4:]
+				choice = choice[:4] + "explore " + choice[4:]
+				msgGUI(choice)
+
+				print("Press Enter to exit map exploration mode...")
+				input()
+				msgGUI("logo")
 			elif choice == "all": #test all categories one by one
 				for category in alot:
 					quiz(category, alot[category], metalot[category], corewords)

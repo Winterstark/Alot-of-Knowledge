@@ -15,7 +15,7 @@ COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
 
-Type = Enum("Type", "Number Date Range String Image Diagram Class List Set Tuple Geo")
+Type = Enum("Type", "Number NumberRange Date DateRange String Image Diagram Class List Set Tuple Geo")
 
 
 
@@ -428,7 +428,7 @@ def collectDatesForTimeline(entryKey, data, img, timeline):
 
 		for key in data:
 			entryType = getType(data[key])
-			if entryType is Type.Date or entryType is Type.Range:
+			if entryType is Type.Date or entryType is Type.DateRange:
 				if entryKey == "":
 					timeline[key] = [data[key], entryKey, img]
 				else:
@@ -441,7 +441,7 @@ def collectDatesForTimeline(entryKey, data, img, timeline):
 	elif dataType is Type.List or dataType is Type.Tuple:
 		for i in range(len(data)):
 			entryType = getType(data[i])
-			if entryType is Type.Date or entryType is Type.Range:
+			if entryType is Type.Date or entryType is Type.DateRange:
 				if i > 0:
 					timeline[data[i-1]] = [data[i], entryKey, img]
 				else:
@@ -472,7 +472,7 @@ def convertToDateIfAnyInTuple(tpl):
 		if Date.isValid(valuesList[i]):
 			valuesList[i] = Date(valuesList[i])
 			containsDate = True
-		elif getType(valuesList[i]) is Type.Range:
+		elif getType(valuesList[i]) is Type.DateRange:
 			valuesList[i] = (Date(valuesList[i][0]), Date(valuesList[i][1]))
 			containsDate = True
 		elif getType(valuesList[i]) is Type.Tuple:
@@ -494,7 +494,7 @@ def convertToDateIfAny(data):
 		for key in data:
 			if Date.isValid(data[key]):
 				data[key] = Date(data[key])
-			elif getType(data[key]) is Type.Range:
+			elif getType(data[key]) is Type.DateRange:
 				data[key] = (Date(data[key][0]), Date(data[key][1]))
 			elif getType(data[key]) is Type.Tuple:
 				data[key] = convertToDateIfAnyInTuple(data[key])
@@ -504,7 +504,7 @@ def convertToDateIfAny(data):
 		for i in range(len(data)):
 			if Date.isValid(data[i]):
 				data[i] = Date(data[i])
-			elif getType(data[i]) is Type.Range:
+			elif getType(data[i]) is Type.DateRange:
 				data[i] = (Date(data[i][0]), Date(data[i][1]))
 			elif getType(data[i]) is Type.Tuple:
 				data[i] = convertToDateIfAnyInTuple(data[i])
@@ -518,7 +518,7 @@ def convertToDateIfAny(data):
 			if Date.isValid(value):
 				toDel.append(value)
 				toAdd.append(Date(validDate))
-			elif getType(value) is Type.Range:
+			elif getType(value) is Type.DateRange:
 				toDel.append(value)
 				toAdd.append((Date(validDate[0]), Date(validDate[1])))
 			elif getType(value) is Type.Tuple:
@@ -734,7 +734,7 @@ def isLearned(step, answer):
 def maxSteps(answer):
 	answerType = getType(answer)
 
-	if answerType is Type.Number or answerType is Type.Date or answerType is Type.Range or answerType is Type.Geo:
+	if answerType is Type.Number or answerType is Type.NumberRange or answerType is Type.Date or answerType is Type.DateRange or answerType is Type.Geo:
 		return 4
 	elif answerType is Type.String:
 		return 5
@@ -760,8 +760,10 @@ def getType(entry, attribute=""):
 	elif entryType is tuple:
 		if type(entry[1]) is list:
 			return Type.Diagram
-		elif len(entry) == 2 and type(entry[0]) is type(entry[1]) is Date:
-			return Type.Range
+		elif len(entry) == 2 and (type(entry[0]) is type(entry[1]) is int):
+			return Type.NumberRange
+		elif len(entry) == 2 and (type(entry[0]) is type(entry[1]) is Date):
+			return Type.DateRange
 		else:
 			return Type.Tuple
 	elif entryType is str:
@@ -795,27 +797,15 @@ def toString(answer, makeMoreReadable=True):
 	answerType = getType(answer)
 
 	if answerType is Type.Number and makeMoreReadable:
-		#make the number more readable
-		s = str(answer)
-
-		if s[-12:] == "000000000000":
-			return s[:-12] + " trillion"
-		elif s[-9:] == "000000000":
-			return s[:-9] + " billion"
-		elif s[-6:] == "000000":
-			return s[:-6] + " million"
-		else:
-			#insert a space every 3 digits
-			for i in range(len(s)-3, 0, -3):
-				s = s[:i] + ' ' + s[i:]
-
-			return s
+		return makeNumberMoreReadable(answer)
+	elif answerType is Type.NumberRange:
+		return makeNumberMoreReadable(answer[0]) + " - " + makeNumberMoreReadable(answer[1])
 	elif answerType is Type.Date:
 		if makeMoreReadable:
 			return str(answer)
 		else:
 			return repr(answer)
-	elif answerType is Type.Range:
+	elif answerType is Type.DateRange:
 		if makeMoreReadable:
 			#return the Date range without any redundant data, e.g. "May - June 1940" when the year is the same
 			if answer[0].precision() == 'm':
@@ -841,6 +831,23 @@ def toString(answer, makeMoreReadable=True):
 		return str(answer).replace('[', '').replace(']', '').replace("'", "").replace('"', '')
 	else:
 		return str(answer)
+
+
+def makeNumberMoreReadable(num):
+	s = str(num)
+
+	if s[-12:] == "000000000000":
+		return s[:-12] + " trillion"
+	elif s[-9:] == "000000000":
+		return s[:-9] + " billion"
+	elif s[-6:] == "000000":
+		return s[:-6] + " million"
+	else:
+		#insert a space every 3 digits
+		for i in range(len(s)-3, 0, -3):
+			s = s[:i] + ' ' + s[i:]
+
+		return s
 
 
 def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
@@ -913,14 +920,14 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 		if isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 			answers[key] = catalot[key]
 
-	if getType(catalot[targetKey], attribute) is Type.Date or getType(catalot[targetKey], attribute) is Type.Range:
+	if getType(catalot[targetKey], attribute) is Type.Date or getType(catalot[targetKey], attribute) is Type.DateRange:
 		#find difference in days between dates/ranges; discard duplicate answers
 		diff = {}
 		toDel = []
 		targetTotalDays = getDateTotalDays(catalot[targetKey], attribute)
 		
 		for key in answers:
-			if getType(answers[key], attribute) is Type.Date or getType(answers[key], attribute) is Type.Range:
+			if getType(answers[key], attribute) is Type.Date or getType(answers[key], attribute) is Type.DateRange:
 				days = getDateDayDifference(answers[key], attribute, targetTotalDays)
 			else:
 				days = 0
@@ -1020,16 +1027,27 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 					if returnKeys:
 						finalAnswers[i] = nextA
 					del answers[nextA]
-	elif getType(catalot[targetKey], attribute) is Type.Number:
+	elif getType(catalot[targetKey], attribute) is Type.Number or getType(catalot[targetKey], attribute) is Type.NumberRange:
 		#discard numbers that are too close to the target number
+		if attribute == "":
+			if getType(catalot[targetKey]) is Type.Number:
+				targetNumber = catalot[targetKey]
+			else:
+				targetNumber = (catalot[targetKey][0] + catalot[targetKey][1]) / 2
+		else:
+			if getType(catalot[targetKey][attribute]) is Type.Number:
+				targetNumber = catalot[targetKey][attribute]
+			else:
+				targetNumber = (catalot[targetKey][attribute][0] + catalot[targetKey][attribute][1]) / 2
+
 		toDel = []
 		if attribute == "":
 			for key in answers:
-				if abs(catalot[key] - catalot[targetKey]) / catalot[targetKey] < 0.10:
+				if getType(catalot[targetKey]) == getType(answers[key]) and abs(answers[key] - targetNumber) / targetNumber < 0.10:
 					toDel.append(key)
 		else:
 			for key in answers:
-				if abs(catalot[key][attribute] - catalot[targetKey][attribute]) / catalot[targetKey][attribute] < 0.10:
+				if getType(catalot[targetKey][attribute]) == getType(answers[key][attribute]) and abs(answers[key][attribute] - targetNumber) / targetNumber < 0.10:
 					toDel.append(key)
 
 		for key in toDel:
@@ -1043,9 +1061,19 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 
 		for key in answers:
 			if attribute == "":
-				diff = abs(catalot[key] - catalot[targetKey])
+				if getType(answers[key]) is Type.Number:
+					diff = abs(answers[key] - targetNumber)
+				elif getType(answers[key]) is Type.NumberRange:
+					diff = abs((answers[key][0]+answers[key][1])/2 - targetNumber)
+				else:
+					diff = sys.maxsize
 			else:
-				diff = abs(catalot[key][attribute] - catalot[targetKey][attribute])
+				if getType(answers[key][attribute]) is Type.Number:
+					diff = abs(answers[key][attribute] - targetNumber)
+				elif getType(answers[key]) is Type.NumberRange:
+					diff = abs((answers[key][attribute][0]+answers[key][attribute][1])/2 - targetNumber)
+				else:
+					diff = sys.maxsize
 
 			i = 0
 			while i < 5 and diff >= minDiffs[i]:
@@ -1066,7 +1094,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 						finalAnswers[i] = catalot[key][attribute]
 
 		#remove blank entries
-		while finalAnswers[-1] == "":
+		while len(finalAnswers) > 0 and finalAnswers[-1] == "":
 			finalAnswers = finalAnswers[:-1]
 	elif getType(catalot[targetKey], attribute) is Type.Geo:
 		#discard entries of a different geo type
@@ -1117,12 +1145,18 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 						break
 
 			random.shuffle(finalAnswers)
-		elif getType(catalot[targetKey]) is Type.Number:
+		elif getType(catalot[targetKey], attribute) is Type.Number or getType(catalot[targetKey], attribute) is Type.NumberRange:
 			#generate some random numbers
-			finalAnswers.append(catalot[targetKey]) #temporarily add the correct answer
+			finalAnswers.append(targetNumber) #temporarily add the correct answer
 
-			baseJump = sum(finalAnswers) // len(finalAnswers) // 10
-			if baseJump < 0:
+			if getType(catalot[targetKey], attribute) is Type.Number:
+				baseJump = sum(finalAnswers) // len(finalAnswers) // 10
+			else:
+				baseJump = 0
+				for answer in finalAnswers:
+					baseJump += (answer[0] + answer[1]) / 2
+
+			if baseJump <= 0:
 				baseJump = 1
 
 			while len(finalAnswers) < 6:
@@ -1138,7 +1172,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 
 				finalAnswers.append(num)
 
-			finalAnswers.remove(catalot[targetKey])
+			finalAnswers.remove(targetNumber)
 
 	return finalAnswers
 
@@ -1237,7 +1271,7 @@ def printList(items, step, indentLevel, color, firstItem=1):
 def constructHint(a):
 	aType = getType(a)
 
-	if aType is Type.Range:
+	if aType is Type.DateRange:
 		key = str(a[0]) + " - " + str(a[1])
 		hint = '_' * len(str(a[0])) + " - " + '_' * len(str(a[1]))
 	else:
@@ -1344,7 +1378,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 		aIsDate = True
 		prompt = "{0}{1} {2}?\n{0}{1} ".format('\t'*indentLevel, promptPrefix, a.precisionPrompt())
 		a = repr(a)
-	elif getType(a) is Type.Range:
+	elif getType(a) is Type.DateRange:
 		aIsDate = True
 		prompt = "{0}{1} {2} - {3}?\n{0}{1} ".format('\t'*indentLevel, promptPrefix, a[0].precisionPrompt(), a[1].precisionPrompt())
 		a = repr(a[0]) + "-" + repr(a[1])
@@ -1415,17 +1449,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 								tryAgain = True
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
-					#check if the answer contains 'k' or 'm' (shorthand for thousand and million)
-					if answer[-1:].lower() == 'k':
-						try:
-							answer = str(int(float(answer[:-1]) * 1000))
-						except:
-							pass
-					elif answer[-1:].lower() == 'm':
-						try:
-							answer = str(int(float(answer[:-1]) * 1000000))
-						except:
-							pass
+					answer = convertToFullNumber(answer)
 
 					#check if the user's answer is relatively close to the correct Number
 					try:
@@ -1443,6 +1467,27 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 							firstAttempt = False
 					except:
 						pass
+				elif getType(originalA) is Type.NumberRange and '-' in answer:
+					answerRange = answer.split('-')
+					answerRange[0] = convertToFullNumber(answerRange[0])
+					answerRange[1] = convertToFullNumber(answerRange[1])
+
+					#check if the user's answer is relatively close to the correct NumberRange
+					try:
+						answerRange = [int(answerRange[0]), int(answerRange[1])]
+						maxRelativeError = max(abs(answerRange[0] - a) / a, abs(answerRange[1] - a) / a)
+
+						if maxRelativeError < 0.05:
+							#close enough; accept the answer
+							print("Exact number: " + str(a))
+							correct = True
+							break
+						elif firstAttempt and maxRelativeError < 0.10:
+							print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
+							tryAgain = True
+							firstAttempt = False
+					except:
+						pass
 			
 			if tryAgain:
 				continue
@@ -1450,6 +1495,22 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 				correct = aStrReadable
 
 	return correct, exit, immediately
+
+
+def convertToFullNumber(answer):
+	#check if the answer contains a 'k' or an 'm' (shorthand for thousand and million) and replace it with the actual number it represents
+	if answer[-1:].lower() == 'k':
+		try:
+			answer = str(int(float(answer[:-1]) * 1000))
+		except:
+			pass
+	elif answer[-1:].lower() == 'm':
+		try:
+			answer = str(int(float(answer[:-1]) * 1000000))
+		except:
+			pass
+
+	return answer
 
 
 def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}, geoType=""):
@@ -1901,7 +1962,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			correct = True
 			for item in items[step-1]:
 				iType = getType(item)
-				if iType is Type.Date or iType is Type.Range:
+				if iType is Type.Date or iType is Type.DateRange:
 					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), item, color, alwaysShowHint=not finalStep, indentLevel=indentLevel) #pass Dates without converting them to string
 				elif iType is Type.Image:
 					itemCorrect, exit, immediately = qType_Image(items[step-1][0], fullPath(item), learned=learned)
@@ -2111,7 +2172,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		if not meta["learned"]:
 			color = COLOR_UNLEARNED
 
-			if entryType is Type.Number or entryType is Type.Date or entryType is Type.Range:
+			if entryType is Type.Number or entryType is Type.NumberRange or entryType is Type.Date or entryType is Type.DateRange:
 				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
@@ -2149,7 +2210,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							keepGUIActive = True
 
 						#if the class has an date and it has been learned already, show it (if there are no leaned images in the class)
-						if (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.Range) and isLearned(step[attribute], entry[attribute]):
+						if (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.DateRange) and isLearned(step[attribute], entry[attribute]):
 							learnedDateAttribute = True
 					else:
 						unlearnedAttributes.append(attribute)
@@ -2169,7 +2230,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						print("\n")
 					
 					attributeType = getType(entry[attribute])
-					if attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range:
+					if attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
@@ -2211,7 +2272,7 @@ def quiz(category, catalot, metacatalot, corewords):
 		else:
 			color = COLOR_LEARNED
 
-			if entryType is Type.Number or entryType is Type.Range:
+			if entryType is Type.Number or entryType is Type.NumberRange or entryType is Type.DateRange:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			if entryType is Type.Date:
 				if random.randint(0, 1) == 0:
@@ -2258,14 +2319,14 @@ def quiz(category, catalot, metacatalot, corewords):
 								msgGUI("I {}".format(fullPath(entry[attr])))
 								usedGUI = True
 								break
-							elif getType(entry[attr]) is Type.Date or getType(entry[attr]) is Type.Range:
+							elif getType(entry[attr]) is Type.Date or getType(entry[attr]) is Type.DateRange:
 								hasDate = True
 
-						if not usedGUI and hasDate and attributeType is not Type.Date and attributeType is not Type.Range: #show date on the timeline
+						if not usedGUI and hasDate and attributeType is not Type.Date and attributeType is not Type.DateRange: #show date on the timeline
 							msgGUI("timeline " + key)
 							usedGUI = True
 
-					if attributeType is Type.Number or attributeType is Type.Range:
+					if attributeType is Type.Number or entryType is Type.NumberRange or attributeType is Type.DateRange:
 						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 					elif attributeType is Type.Date:
 						if random.randint(0, 1) == 0:
@@ -2340,7 +2401,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							attributeType = getType(entry[attribute])
 							if attributeType is Type.String and meta["step"][attribute] == 2:
 								meta["step"][attribute] += 1
-							if (attributeType is Type.Number or attributeType is Type.Date or attributeType is Type.Range) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
+							if (attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
 								meta["step"][attribute] += 1
 
 							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])

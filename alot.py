@@ -1028,7 +1028,6 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 						finalAnswers[i] = nextA
 					del answers[nextA]
 	elif getType(catalot[targetKey], attribute) is Type.Number or getType(catalot[targetKey], attribute) is Type.NumberRange:
-		#discard numbers that are too close to the target number
 		if attribute == "":
 			if getType(catalot[targetKey]) is Type.Number:
 				targetNumber = catalot[targetKey]
@@ -1040,62 +1039,46 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 			else:
 				targetNumber = (catalot[targetKey][attribute][0] + catalot[targetKey][attribute][1]) / 2
 
-		toDel = []
-		if attribute == "":
+		removeSimilarNumbers(targetNumber, answers, attribute)
+
+		#select the 5 closest numbers
+		finalAnswers = []
+
+		while len(finalAnswers) < 5 and len(answers) > 0:
+			minDiff = sys.maxsize
+
 			for key in answers:
-				if getType(catalot[targetKey]) == getType(answers[key]) and abs(answers[key] - targetNumber) / targetNumber < 0.10:
-					toDel.append(key)
-		else:
-			for key in answers:
-				if getType(catalot[targetKey][attribute]) == getType(answers[key][attribute]) and abs(answers[key][attribute] - targetNumber) / targetNumber < 0.10:
-					toDel.append(key)
-
-		for key in toDel:
-			if len(answers) <= 5:
-				break #keep at least 5 answers even if they are too close
-			del answers[key]
-
-		#select the 5 closest numbers (put them at the start of the array)
-		minDiffs = [sys.maxsize] * 5
-		finalAnswers = [""] * 5
-
-		for key in answers:
-			if attribute == "":
-				if getType(answers[key]) is Type.Number:
-					diff = abs(answers[key] - targetNumber)
-				elif getType(answers[key]) is Type.NumberRange:
-					diff = abs((answers[key][0]+answers[key][1])/2 - targetNumber)
-				else:
-					diff = sys.maxsize
-			else:
-				if getType(answers[key][attribute]) is Type.Number:
-					diff = abs(answers[key][attribute] - targetNumber)
-				elif getType(answers[key]) is Type.NumberRange:
-					diff = abs((answers[key][attribute][0]+answers[key][attribute][1])/2 - targetNumber)
-				else:
-					diff = sys.maxsize
-
-			i = 0
-			while i < 5 and diff >= minDiffs[i]:
-				i += 1
-
-			if i < 5:
-				for j in range(4, i, -1):
-					minDiffs[j] = minDiffs[j-1]
-					finalAnswers[j] = finalAnswers[j-1]
-
-				minDiffs[i] = diff
-				if returnKeys:
-					finalAnswers[i] = key
-				else:
-					if attribute == "":
-						finalAnswers[i] = catalot[key]
+				if attribute == "":
+					if getType(answers[key]) is Type.Number:
+						diff = abs(answers[key] - targetNumber)
+					elif getType(answers[key]) is Type.NumberRange:
+						diff = abs((answers[key][0]+answers[key][1])/2 - targetNumber)
 					else:
-						finalAnswers[i] = catalot[key][attribute]
+						diff = sys.maxsize
+				else:
+					if getType(answers[key][attribute]) is Type.Number:
+						diff = abs(answers[key][attribute] - targetNumber)
+					elif getType(answers[key]) is Type.NumberRange:
+						diff = abs((answers[key][attribute][0]+answers[key][attribute][1])/2 - targetNumber)
+					else:
+						diff = sys.maxsize
 
-		#remove blank entries
-		while len(finalAnswers) > 0 and finalAnswers[-1] == "":
-			finalAnswers = finalAnswers[:-1]
+				if diff <= minDiff:
+					minKey = key
+					diff = minDiff
+
+			if attribute == "":
+				num = answers[minKey]
+			else:
+				num = answers[minKey][attribute]
+
+			if returnKeys:
+				finalAnswers.append(minKey)
+			else:
+				finalAnswers.append(num)
+
+			del answers[minKey]
+			removeSimilarNumbers(num, answers, attribute)
 	elif getType(catalot[targetKey], attribute) is Type.Geo:
 		#discard entries of a different geo type
 		toDel = []
@@ -1177,6 +1160,35 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 	return finalAnswers
 
 
+#discard numbers that are too close to the target number
+def removeSimilarNumbers(num, answers, attribute):
+	toDel = []
+	
+	for key in answers:
+		if attribute == "":
+			if getType(answers[key]) is Type.Number:
+				a = answers[key]
+			elif getType(answers[key]) is Type.NumberRange:
+				a = (answers[key][0] + answers[key][1]) / 2
+			else:
+				continue
+		else:
+			if getType(answers[key][attribute]) is Type.Number:
+				a = answers[key][attribute]
+			elif getType(answers[key][attribute]) is Type.NumberRange:
+				a = (answers[key][attribute][0] + answers[key][attribute][1]) / 2
+			else:
+				continue
+
+		if abs(a - num) / num < 0.10:
+			toDel.append(key)
+
+	for key in toDel:
+		if len(answers) <= 5:
+			break #keep at least 5 answers even if they are too close
+		del answers[key]
+
+
 def removeParentheses(s, concealContents=False):
 	while True:
 		try:
@@ -1252,7 +1264,8 @@ def printList(items, step, indentLevel, color, firstItem=1):
 		elif type(items[i-1]) is tuple:
 			item = "{0}. ".format(i + stepOffset)
 			for el in items[i-1]:
-				item += toString(el) + ", "
+				if getType(el) is not Type.Image:
+					item += toString(el) + ", "
 			item = item[:-2]
 
 			if heading:
@@ -1547,6 +1560,10 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 			elif geoType == "mountain range":
 				ignoredWords.append("mountains")
 				ignoredWords.append("range")
+			elif geoType == "reservoir":
+				ignoredWords.append("lake")
+			elif geoType == "lake":
+				ignoredWords.append("reservoir")
 
 			for ignoredWord in ignoredWords:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")

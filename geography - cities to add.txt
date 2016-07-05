@@ -6241,7 +6241,6 @@
 	"El Obeid": {"GEO:City/El Obeid", "Country": "Sudan"},
 	"The Hague": {"GEO:City/The Hague", "Country": "Kingdom of the Netherlands"},
 	"Kristiansand": {"GEO:City/Kristiansand", "Country": "Kingdom of Norway"},
-	"Bratislava": {"GEO:City/Bratislava", "Country": "Slovakia"},
 	"Hammerfest": {"GEO:City/Hammerfest", "Country": "Kingdom of Norway"},
 	"Doha": {"GEO:City/Doha", "Country": "Qatar"},
 	"Quetta": {"GEO:City/Quetta", "Country": "Pakistan"},

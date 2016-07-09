@@ -2327,6 +2327,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					attribute = random.choice(list(entry.keys()))
 					attributeType = getType(entry[attribute])
 
+					showTimeline = False
 					if attributeType is not Type.Image and attributeType is not Type.Diagram:
 						hasDate = False
 
@@ -2339,13 +2340,21 @@ def quiz(category, catalot, metacatalot, corewords):
 							elif getType(entry[attr]) is Type.Date or getType(entry[attr]) is Type.DateRange:
 								hasDate = True
 
-						if not usedGUI and hasDate and attributeType is not Type.Date and attributeType is not Type.DateRange: #show date on the timeline
-							msgGUI("timeline " + key)
+						if not usedGUI and hasDate: #show date on the timeline
+							showTimeline = True #msgGUI is called later after the random question type has been determined (because the timeline mustn't show the entry key to the user if that is the answer to the question)
+
+					if attributeType is Type.Number or entryType is Type.NumberRange:
+						qType = random.randint(1, 4)
+
+						if showTimeline:
+							if qType == 2 or qType == 4:
+								msgGUI("timeline " + key + " ?")
+							else:
+								msgGUI("timeline " + key)
 							usedGUI = True
 
-					if attributeType is Type.Number or entryType is Type.NumberRange or attributeType is Type.DateRange:
-						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
-					elif attributeType is Type.Date:
+						correct, exit, immediately = quizNumber(catalot, key, qType, color, attribute, otherNames=otherNames)
+					elif attributeType is Type.Date or attributeType is Type.DateRange:
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 						else:
@@ -2362,12 +2371,28 @@ def quiz(category, catalot, metacatalot, corewords):
 						usedGUI = True
 						correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True, otherNames=otherNames)
 					elif attributeType is Type.String:
-						correct, exit, immediately = quizString(catalot, key, random.randint(1, 5), corewords, color, attribute)
+						qType = random.randint(1, 5)
+
+						if showTimeline:
+							if qType == 2:
+								msgGUI("timeline " + key + " ?")
+							else:
+								msgGUI("timeline " + key)
+							usedGUI = True
+
+						correct, exit, immediately = quizString(catalot, key, qType, corewords, color, attribute)
 					elif attributeType is Type.Geo:
 						correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 						usedGUI = True
 					elif attributeType is Type.List:
 						qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
+
+						if showTimeline:
+							if qType == qType_RecognizeList:
+								msgGUI("timeline " + key + " ?")
+							else:
+								msgGUI("timeline " + key)
+							usedGUI = True
 
 						if qType is quizList:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)

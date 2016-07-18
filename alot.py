@@ -1140,7 +1140,11 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 			finalAnswers.append(targetNumber) #temporarily add the correct answer
 
 			if getType(catalot[targetKey], attribute) is Type.Number:
-				baseJump = sum(finalAnswers) // len(finalAnswers) // 10
+				sum = 0
+				for a in finalAnswers:
+					sum += toInt(a)
+
+				baseJump = sum // len(finalAnswers) // 10
 			else:
 				baseJump = 0
 				for answer in finalAnswers:
@@ -1150,7 +1154,7 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 				baseJump = 1
 
 			while len(finalAnswers) < 6:
-				num = random.choice(finalAnswers)
+				num = toInt(random.choice(finalAnswers))
 
 				if random.randint(0, 1) == 0:
 					jump = baseJump
@@ -1187,13 +1191,27 @@ def removeSimilarNumbers(num, answers, attribute):
 			else:
 				continue
 
-		if abs(a - num) / num < 0.10:
+		if abs(toInt(a) - toInt(num)) / toInt(num) < 0.10:
 			toDel.append(key)
 
 	for key in toDel:
 		if len(answers) <= 5:
 			break #keep at least 5 answers even if they are too close
 		del answers[key]
+
+
+def toInt(x):
+	if type(x) is tuple:
+		return sum(x) // len(x)
+	elif type(x) is str:
+		#remove any parentheses and try converting to int
+		x = removeParentheses(x)
+		try:
+			return int(x)
+		except:
+			return -1
+	else:
+		return x
 
 
 def removeParentheses(s, concealContents=False):

@@ -7,6 +7,8 @@ using System.IO.Pipes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NAudio.Wave;
+using NVorbis.NAudioSupport;
 
 namespace AlotGUI
 {
@@ -68,12 +70,13 @@ namespace AlotGUI
 
 
         const string IMG_DIR = @"C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES"; //top-level directory for images
+        const string SOUNDS_DIR = @"C:\dev\scripts\Alot of Knowledge\dat knowledge\!SOUNDS"; //top-level directory for sounds
         const string GEO_DIR = @"C:\dev\scripts\Alot of Knowledge\dat knowledge\!GEODATA";
         const string LOGO_PATH = @"C:\dev\scripts\Alot of Knowledge\alot.png";
         const string TIMELINE_PATH = @"C:\dev\scripts\Alot of Knowledge\timeline.txt";
         readonly string[] MONTHS = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
-        enum DisplayMode { Logo, Image, Mosaic, Timeline, FamilyTree, Map };
+        enum DisplayMode { Logo, Image, Mosaic, Timeline, FamilyTree, Map, Audio };
         DisplayMode mode;
 
         BackgroundWorker pipeWorker;
@@ -82,7 +85,7 @@ namespace AlotGUI
         //image globals
         Image logo;
         string[] imgs, multipleChoiceImages;
-        int imgIndex, correctAnswer;
+        int imgIndex, correctAnswer; //correctAnswer is also used for audio questions
 
         //timeline globals
         Font labelFont, labelMonthFont;
@@ -115,6 +118,12 @@ namespace AlotGUI
         string mapMouseOverRegion, selectedArea;
         int mapQType, nRemainingFeedbackTicks;
         bool isAnswerHighlighted, mapFrozen, mapExplorationMode;
+
+        //audio globals
+        AudioPlayer audio;
+        Image iconPlay, iconPause;
+        List<string> audioPaths;
+        Button buttonClicked;
 
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -153,6 +162,9 @@ namespace AlotGUI
             {
                 this.BackgroundImage = logo;
                 mode = DisplayMode.Logo;
+
+                buttPlay1.Left = buttPlay2.Left = buttPlay3.Left = buttPlay4.Left = buttPlay5.Left = buttPlay6.Left = this.Width; //hide audio buttons
+                audio.Stop();
             }
             else if (msg.Contains("map"))
                 processMapMsg(msg);
@@ -160,6 +172,8 @@ namespace AlotGUI
                 processFamilyTreeMsg(msg);
             else if (msg.Contains("timeline"))
                 processTimelineMsg(msg);
+            else if (msg.Contains("audio"))
+                processAudioMsg(msg);
             else
             {
                 string path = msg.Substring(msg.IndexOf(' ') + 1);
@@ -258,10 +272,10 @@ namespace AlotGUI
             }
 
             Queue<string> unvisitedFolders = new Queue<string>();
+            Random rand = new Random((int)DateTime.Now.Ticks);
 
             while (i < 5 && folder.Contains(IMG_DIR)) //don't search beyond the top-most images directory
             {
-                Random rand = new Random((int)DateTime.Now.Ticks);
                 List<string> files = Directory.GetFiles(folder).ToList();
 
                 while (i < 5 && files.Count > 0)
@@ -1219,6 +1233,186 @@ namespace AlotGUI
         }
         #endregion
 
+        #region Audio
+        public class AudioPlayer
+        {
+            IWavePlayer waveOutDevice;
+
+
+            public void Play(string filePath)
+            {
+                if (Path.GetExtension(filePath) == ".ogg")
+                {
+                    VorbisWaveReader reader = new VorbisWaveReader(filePath);
+
+                    waveOutDevice = new WaveOut();
+                    waveOutDevice.Init(reader);
+                    waveOutDevice.Play();
+                }
+                else
+                {
+                    if (waveOutDevice != null)
+                    {
+                        waveOutDevice.Stop();
+                        waveOutDevice.Dispose();
+                    }
+
+                    waveOutDevice = new WaveOut();
+                    waveOutDevice.Init(new AudioFileReader(filePath));
+                    waveOutDevice.Play();
+                }
+            }
+
+            public void Stop()
+            {
+                if (waveOutDevice != null)
+                    waveOutDevice.Stop();
+            }
+        }
+
+        void initAudio()
+        {
+            audio = new AudioPlayer();
+
+            iconPlay = loadImage(Application.StartupPath + "\\icons\\play.png");
+            iconPause = loadImage(Application.StartupPath + "\\icons\\pause.png");
+
+            //setup UI
+            buttPlay1.Width = buttPlay2.Width = buttPlay3.Width = buttPlay4.Width = buttPlay5.Width = buttPlay6.Width = this.ClientSize.Width / 2;
+            buttPlay1.Height = buttPlay2.Height = buttPlay3.Height = buttPlay4.Height = buttPlay5.Height = buttPlay6.Height = this.ClientSize.Height / 3;
+            
+            buttPlay1.Left = buttPlay2.Left = buttPlay3.Left = buttPlay4.Left = buttPlay5.Left = buttPlay6.Left = this.Width; //hide buttons
+        }
+
+        Image loadImage(string imgPath)
+        {
+            if (File.Exists(imgPath))
+                return Bitmap.FromFile(imgPath);
+            else
+                return new Bitmap(1, 1);
+        }
+
+        void processAudioMsg(string msg)
+        {
+            try
+            {
+                if (msg.Length > 8)
+                {
+                    char audioQType = msg[6];
+                    msg = msg.Substring(7);
+                    if (msg[0] == ' ')
+                        msg = msg.Substring(1);
+
+                    if (audioQType == 'C')
+                    {
+                        //find 5 more sounds (select the ones closest to the correct one)
+                        audioPaths = new List<string>();
+
+                        string folder = Path.GetDirectoryName(msg), prevFolder = folder;
+                        Queue<string> unvisitedFolders = new Queue<string>();
+                        Random rand = new Random((int)DateTime.Now.Ticks);
+
+                        while (audioPaths.Count < 6 && folder.Contains(SOUNDS_DIR)) //don't search beyond the top-most sounds directory
+                        {
+                            List<string> files = Directory.GetFiles(folder).ToList();
+
+                            while (audioPaths.Count < 6 && files.Count > 0)
+                            {
+                                int nextItem = rand.Next(files.Count);
+                                if (files[nextItem] != msg)
+                                    audioPaths.Add(files[nextItem]);
+                                files.RemoveAt(nextItem);
+                            }
+
+                            if (audioPaths.Count < 6) //check subfolders
+                                foreach (string dir in Directory.GetDirectories(folder))
+                                    if (dir != prevFolder)
+                                    {
+                                        unvisitedFolders.Enqueue(dir);
+                                        files = Directory.GetFiles(dir).ToList();
+
+                                        for (int j = 0; j < files.Count && audioPaths.Count < 6; j++)
+                                            audioPaths.Add(files[j]);
+
+                                        if (audioPaths.Count == 6)
+                                            break;
+                                    }
+
+                            prevFolder = folder;
+                            folder = Directory.GetParent(folder).FullName;
+                        }
+                        
+                        //need more sounds?
+                        while (audioPaths.Count < 6 && unvisitedFolders.Count > 0)
+                        {
+                            string dir = unvisitedFolders.Dequeue();
+
+                            foreach (string file in Directory.GetFiles(dir))
+                                if (!arrayContainsString(multipleChoiceImages, file))
+                                    audioPaths.Add(file);
+
+                            foreach (string subDir in Directory.GetDirectories(dir))
+                                unvisitedFolders.Enqueue(subDir);
+                        }
+
+                        //insert correct sound
+                        correctAnswer = rand.Next(audioPaths.Count);
+                        audioPaths.Insert(correctAnswer, msg);
+
+                        //setup UI
+                        buttPlay1.Left = 0;
+                        buttPlay1.Top = 0;
+                        if (audioPaths.Count > 1)
+                        {
+                            buttPlay2.Left = buttPlay1.Width;
+                            buttPlay2.Top = 0;
+                            if (audioPaths.Count > 2)
+                            {
+                                buttPlay3.Left = 0;
+                                buttPlay3.Top = buttPlay1.Height;
+                                if (audioPaths.Count > 3)
+                                {
+                                    buttPlay4.Left = buttPlay1.Width;
+                                    buttPlay4.Top = buttPlay1.Height;
+                                    if (audioPaths.Count > 4)
+                                    {
+                                        buttPlay5.Left = 0;
+                                        buttPlay5.Top = buttPlay1.Height * 2;
+                                        if (audioPaths.Count > 5)
+                                        {
+                                            buttPlay6.Left = buttPlay1.Width;
+                                            buttPlay6.Top = buttPlay1.Height * 2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        buttPlay1.Image = buttPlay2.Image = buttPlay3.Image = buttPlay4.Image = buttPlay5.Image = buttPlay6.Image = iconPlay;
+                    }
+                    else
+                    {
+                        audioPaths = new List<string>();
+                        audioPaths.Add(msg);
+                        
+                        //setup UI
+                        buttPlay1.Left = this.ClientSize.Width / 4;
+                        buttPlay1.Top = this.ClientSize.Height / 3;
+
+                        buttPlay1.Image = iconPlay;
+                    }
+                }
+
+                mode = DisplayMode.Audio;
+                this.BackgroundImage = null;
+                this.Refresh();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Exception in processAudioMsg(): " + e.Message);
+            }
+        }
+        #endregion
 
         public formMain()
         {
@@ -1253,6 +1447,7 @@ namespace AlotGUI
             mapMouseOverRegion = "";
 
             timerDoubleClick.Interval = SystemInformation.DoubleClickTime;
+            timerAudioDoubleClick.Interval = SystemInformation.DoubleClickTime;
 
             //init worker
             pipeWorker = new BackgroundWorker();
@@ -1263,6 +1458,7 @@ namespace AlotGUI
 
             //load data
             loadTimelineData();
+            initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
             //processMsg("map 1 ?land");
@@ -1437,6 +1633,25 @@ namespace AlotGUI
             file.Close();
         }
 
+        private void buttPlayPause_Click(object sender, EventArgs e)
+        {
+            buttonClicked = ((Button)sender);
+            int buttonIndex = int.Parse(buttonClicked.Tag.ToString());
+
+            if (!timerAudioDoubleClick.Enabled)
+                timerAudioDoubleClick.Enabled = true;
+            else
+            {
+                //user performed a doubleclick
+                timerAudioDoubleClick.Enabled = false;
+
+                if (buttonIndex == correctAnswer)
+                    sendFeedbackToAlot("True");
+                else
+                    sendFeedbackToAlot(Path.GetFileNameWithoutExtension(audioPaths[buttonIndex]));
+            }
+        }
+
         private void timerFeedback_Tick(object sender, EventArgs e)
         {
             if (!isAnswerHighlighted)
@@ -1480,6 +1695,45 @@ namespace AlotGUI
                     timerFeedback.Enabled = true;
                 }
             }
+        }
+
+        private void timerAudioDoubleClick_Tick(object sender, EventArgs e)
+        {
+            //double click period expired -> execute a single click
+            timerAudioDoubleClick.Enabled = false;
+            int buttonIndex = int.Parse(buttonClicked.Tag.ToString());
+
+            audio.Stop();
+
+            if (buttonClicked.Image == iconPlay)
+            {
+                audio.Play(audioPaths[buttonIndex]);
+
+                buttPlay1.Image = buttPlay2.Image = buttPlay3.Image = buttPlay4.Image = buttPlay5.Image = buttPlay6.Image = iconPlay;
+                switch (buttonIndex)
+                {
+                    case 0:
+                        buttPlay1.Image = iconPause;
+                        break;
+                    case 1:
+                        buttPlay2.Image = iconPause;
+                        break;
+                    case 2:
+                        buttPlay3.Image = iconPause;
+                        break;
+                    case 3:
+                        buttPlay4.Image = iconPause;
+                        break;
+                    case 4:
+                        buttPlay5.Image = iconPause;
+                        break;
+                    case 5:
+                        buttPlay6.Image = iconPause;
+                        break;
+                }
+            }
+            else
+                buttPlay1.Image = buttPlay2.Image = buttPlay3.Image = buttPlay4.Image = buttPlay5.Image = buttPlay6.Image = iconPlay;
         }
     }
 }

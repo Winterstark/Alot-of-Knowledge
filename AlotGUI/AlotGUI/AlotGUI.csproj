@@ -33,6 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio">
+      <HintPath>naudio\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis">
+      <HintPath>nvorbis\NVorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis.NAudioSupport">
+      <HintPath>nvorbis\NVorbis.NAudioSupport.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceProcess" />

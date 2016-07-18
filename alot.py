@@ -15,7 +15,7 @@ COLOR_UNLEARNED = Fore.YELLOW #colors used to print questions
 COLOR_LEARNED = Fore.GREEN
 
 
-Type = Enum("Type", "Number NumberRange Date DateRange String Image Diagram Class List Set Tuple Geo")
+Type = Enum("Type", "Number NumberRange Date DateRange String Image Sound Diagram Class List Set Tuple Geo")
 
 
 
@@ -738,7 +738,7 @@ def maxSteps(answer):
 		return 4
 	elif answerType is Type.String:
 		return 5
-	elif answerType is Type.Image:
+	elif answerType is Type.Image or answerType is Type.Sound:
 		return 1
 	elif answerType is Type.Set:
 		return 2
@@ -769,8 +769,11 @@ def getType(entry, attribute=""):
 	elif entryType is str:
 		if entry[:4] == "GEO:":
 			return Type.Geo
-		if os.path.exists(fullPath(entry)):
-			return Type.Image
+		elif os.path.exists(fullPath(entry)):
+			if pathHasAudioExtension(entry):
+				return Type.Sound
+			else:
+				return Type.Image
 		else:
 			return Type.String
 	elif entryType is list:
@@ -781,6 +784,10 @@ def getType(entry, attribute=""):
 		return Type.Set
 	else:
 		print("UNRECOGNIZED ENTRY TYPE:", entryType)
+
+
+def pathHasAudioExtension(filePath):
+	return os.path.splitext(filePath)[1].lower() in [".ogg", ".mp3"]
 
 
 def getMaxKeyLen(dictionary):
@@ -1216,8 +1223,12 @@ def hideDates(s):
 
 
 def fullPath(relativePath):
-	path = DIR + os.sep + "!IMAGES" + os.sep + relativePath
+	if pathHasAudioExtension(relativePath):
+		subDir = "!SOUNDS"
+	else:
+		subDir = "!IMAGES"
 
+	path = DIR + os.sep + subDir + os.sep + relativePath
 	if os.path.isabs(path):
 		return path
 	else:
@@ -1851,6 +1862,32 @@ def qType_Image(imageKey, path, learned=False, otherNames={}):
 			return correctAnswer, quit, immediately
 
 
+def qType_Sound(soundKey, path, learned=False, otherNames={}):
+	if learned:
+		color = COLOR_LEARNED
+	else:
+		color = COLOR_UNLEARNED
+
+	if not learned or random.randint(0, 1) == 0:
+		#choose correct sound
+		correctAnswer = str(random.randint(1, 6))
+		msgGUI("audio C {}".format(path))
+
+		colorPrint("What sound represents {}?\n(Click to hear the sound, double click to select it)".format(soundKey), color)
+		correct, exit, immediately = getFeedbackFromGUI()
+		return correct, exit, immediately
+	else:
+		#identify sound
+		correctAnswer = soundKey
+		msgGUI("audio I {}".format(path))
+		answer, quit, immediately = checkForExit(input("What is this sound associated with?\n> "))
+
+		if isAnswerCorrect(answer, correctAnswer, otherNames=otherNames):
+			return True, quit, immediately
+		else:
+			return correctAnswer, quit, immediately
+
+
 def qType_Timeline(key, otherNames={}):
 	msgGUI("timeline " + key + " ?")
 	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
@@ -2198,6 +2235,9 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Image:
 				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
+			elif entryType is Type.Sound:
+				usedGUI = True
+				correct, exit, immediately = qType_Sound(key, fullPath(entry), False)
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
 			elif entryType is Type.Geo:
@@ -2256,6 +2296,9 @@ def quiz(category, catalot, metacatalot, corewords):
 					elif attributeType is Type.Image:
 						usedGUI = True
 						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False, otherNames=otherNames)
+					elif attributeType is Type.Sound:
+						usedGUI = True
+						correct[attribute], exit, immediately = qType_Sound(key, fullPath(entry[attribute]), False, otherNames=otherNames)
 					elif attributeType is Type.String:
 						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
 					elif attributeType is Type.Geo:
@@ -2304,6 +2347,9 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Image:
 				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), True)
+			elif entryType is Type.Sound:
+				usedGUI = True
+				correct, exit, immediately = qType_Sound(key, fullPath(entry), True)
 			elif entryType is Type.Geo:
 				correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
 				usedGUI = True
@@ -2370,6 +2416,9 @@ def quiz(category, catalot, metacatalot, corewords):
 					elif attributeType is Type.Image:
 						usedGUI = True
 						correct, exit, immediately = qType_Image(key, fullPath(entry[attribute]), True, otherNames=otherNames)
+					elif attributeType is Type.Sound:
+						usedGUI = True
+						correct, exit, immediately = qType_Sound(key, fullPath(entry[attribute]), True, otherNames=otherNames)
 					elif attributeType is Type.String:
 						qType = random.randint(1, 5)
 

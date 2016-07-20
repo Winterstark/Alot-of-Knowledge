@@ -1126,15 +1126,23 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 			del answers[nextA]
 
 	if len(finalAnswers) < 5:
-		if returnKeys and len(catalot) > 5:
-			#grab some random keys whatever their type
-			for key in catalot:
-				if isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
-					finalAnswers.append(key)
-					if len(finalAnswers) == 5:
-						break
-
-			random.shuffle(finalAnswers)
+		if len(catalot) > 5:
+			if returnKeys:
+				#grab some random keys whatever their type
+				for key in catalot:
+					if isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
+						finalAnswers.append(key)
+						if len(finalAnswers) == 5:
+							break
+				random.shuffle(finalAnswers)
+			elif attribute != "":
+				#grab some random non-class entries
+				for key in catalot:
+					if getType(catalot[key]) is not Type.Class and key != targetKey and catalot[key] != catalot[targetKey][attribute] and catalot[key] not in answers:
+						finalAnswers.append(catalot[key])
+						if len(finalAnswers) == 5:
+							break
+				random.shuffle(finalAnswers)
 		elif getType(catalot[targetKey], attribute) is Type.Number or getType(catalot[targetKey], attribute) is Type.NumberRange:
 			#generate some random numbers
 			finalAnswers.append(targetNumber) #temporarily add the correct answer
@@ -1556,6 +1564,7 @@ def convertToFullNumber(answer):
 
 
 def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}, geoType=""):
+	originalAnswer = answer
 	aStr = toString(a, False)
 
 	#ignore segments in parentheses
@@ -1578,6 +1587,15 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	if getType(a) is Type.String and not aIsDate:
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 
+		#if wrong -> check against original correct answer with parentheses
+		if answer != correctAnswer:
+			originalAnswer = ''.join(e for e in originalAnswer.lower() if e.isalnum()) #ignore punctuation
+			tmpCorrectAnswer = ''.join(e for e in aStr.replace('(', '').replace(')', '').lower() if e.isalnum())
+			originalAnswer = removeTypos(originalAnswer, tmpCorrectAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
+
+			if originalAnswer == tmpCorrectAnswer:
+				answer = correctAnswer
+
 		#if wrong -> ignore "the" and "of"; also ignore geoType errors ("Victoria" == "Lake Victoria")
 		if answer != correctAnswer:
 			tmpAnswer = answer
@@ -1593,6 +1611,9 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 				ignoredWords.append("lake")
 			elif geoType == "lake":
 				ignoredWords.append("reservoir")
+			elif geoType == "strait":
+				ignoredWords.append("passage")
+				ignoredWords.append("entrance")
 
 			for ignoredWord in ignoredWords:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")
@@ -1862,7 +1883,9 @@ def qType_Image(imageKey, path, learned=False, otherNames={}):
 		#choose correct image
 		correctAnswer = str(random.randint(1, 6))
 		msgGUI("C{0} {1}".format(correctAnswer, path))
-		answer, quit, immediately = checkForExit(input("Which image represents {}?\n> ".format(imageKey)))
+
+		colorPrint("Which image represents {}?".format(imageKey), color)
+		answer, quit, immediately = checkForExit(input("> "))
 
 		if answer.strip() == correctAnswer:
 			return True, quit, immediately
@@ -1872,7 +1895,9 @@ def qType_Image(imageKey, path, learned=False, otherNames={}):
 		#identify image
 		correctAnswer = imageKey
 		msgGUI("I {}".format(path))
-		answer, quit, immediately = checkForExit(input("What is this image associated with?\n> "))
+
+		colorPrint("What is this image associated with?", color)
+		answer, quit, immediately = checkForExit(input("> "))
 
 		if isAnswerCorrect(answer, correctAnswer, otherNames=otherNames):
 			return True, quit, immediately
@@ -1891,14 +1916,17 @@ def qType_Sound(soundKey, path, learned=False, otherNames={}):
 		correctAnswer = str(random.randint(1, 6))
 		msgGUI("audio C {}".format(path))
 
-		colorPrint("What sound represents {}?\n(Click to hear the sound, double click to select it)".format(soundKey), color)
+		colorPrint("What sound represents {}?".format(soundKey), color)
+		print("(Click to hear the sound, double click to select it)")
 		correct, exit, immediately = getFeedbackFromGUI()
 		return correct, exit, immediately
 	else:
 		#identify sound
 		correctAnswer = soundKey
 		msgGUI("audio I {}".format(path))
-		answer, quit, immediately = checkForExit(input("What is this sound associated with?\n> "))
+
+		colorPrint("What is this sound associated with?", color)
+		answer, quit, immediately = checkForExit(input("> "))
 
 		if isAnswerCorrect(answer, correctAnswer, otherNames=otherNames):
 			return True, quit, immediately
@@ -2076,7 +2104,16 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		return "False", exit, immediately #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
 
 
-def quizSet(setKey, items, step, color):
+def quizSet(setKey, items, step, corewords, color, geoType=""):
+	if len(items) == 1:
+		#for sets with only 1 item switch to qType_FillString()
+		if step == 1:
+			fillStringStep = 1
+		else:
+			fillStringStep = 3
+		correct, exit, immediately = qType_FillString(setKey, list(items)[0], fillStringStep, corewords, color)
+		return correct, exit, immediately
+
 	itemsCopy = list(items)
 	hasSubSets, itemsSets = unwrapSets(itemsCopy)
 
@@ -2116,10 +2153,10 @@ def quizSet(setKey, items, step, color):
 			#check for typos
 			typos = False
 
-			for item in itemsLCaseWithoutParentheses:
-				if isAnswerCorrect(answer, item, showFullAnswer=showFullAnswer):
+			for i in range(len(itemsCopy)):
+				if isAnswerCorrect(answer, itemsCopy[i], showFullAnswer=showFullAnswer, geoType=geoType):
 					typos = True
-					answer = item
+					answer = itemsLCaseWithoutParentheses[i]
 					break
 
 			if not typos:
@@ -2268,6 +2305,11 @@ def quiz(category, catalot, metacatalot, corewords):
 				else:
 					otherNames = {}
 
+				if "Map" in entry:
+					geoType, geoName = splitGeoName(entry, "Map")
+				else:
+					geoType = ""
+
 				#select attributes not yet learned
 				correct = {}
 				unlearnedAttributes = []
@@ -2325,7 +2367,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					elif attributeType is Type.List:
 						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
 					elif attributeType is Type.Set:
-						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color)
+						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], corewords, color, geoType=geoType)
 
 					if not immediately:
 						if type(correct[attribute]) is int or type(correct[attribute]) is list:
@@ -2346,7 +2388,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.List:
 				correct, exit, immediately = quizList(key, entry, step)
 			elif entryType is Type.Set:
-				correct, exit, immediately = quizSet(key, entry, step, color)
+				correct, exit, immediately = quizSet(key, entry, step, corewords, color)
 		else:
 			color = COLOR_LEARNED
 
@@ -2378,6 +2420,11 @@ def quiz(category, catalot, metacatalot, corewords):
 					otherNames = entry["Other names"]
 				else:
 					otherNames = {}
+
+				if "Map" in entry:
+					geoType, geoName = splitGeoName(entry, "Map")
+				else:
+					geoType = ""
 
 				nFTreeAttributes = 0
 				if "Parents" in entry:
@@ -2469,7 +2516,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 					elif attributeType is Type.Set:
 						if random.randint(0, 1) == 0:
-							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color)
+							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, corewords, color, geoType=geoType)
 						else:
 							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames)
 			elif entryType is Type.List:
@@ -2481,7 +2528,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately = qType(key, entry, color)
 			elif entryType is Type.Set:
 				if random.randint(0, 1) == 0:
-					correct, exit, immediately = quizSet(key, entry, 1, color)
+					correct, exit, immediately = quizSet(key, entry, 1, corewords, color)
 				else:
 					correct, exit, immediately = qType_RecognizeList(key, entry, color, catalot=catalot)
 

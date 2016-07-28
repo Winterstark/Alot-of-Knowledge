@@ -1571,9 +1571,6 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	answer = removeParentheses(answer)
 	correctAnswer = removeParentheses(aStr)
 
-	if showFullAnswer and len(aStr) != len(correctAnswer):
-		print('\t'*indentLevel + "Full answer: " + aStr)
-
 	if aIsDate:
 		#ensure the same format
 		answer = answer.replace("-0", "-")
@@ -1595,6 +1592,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 
 			if originalAnswer == tmpCorrectAnswer:
 				answer = correctAnswer
+				showFullAnswer = False
 
 		#if wrong -> ignore "the" and "of"; also ignore geoType errors ("Victoria" == "Lake Victoria")
 		if answer != correctAnswer:
@@ -1627,14 +1625,17 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		#if wrong -> check other names
 		if answer != correctAnswer and len(otherNames) > 0:	
 			for alt in otherNames:
-				cleanAlt = ''.join(e for e in removeParentheses(alt.lower()) if e.isalnum())
-				answer = removeTypos(answer, cleanAlt, originalCorrectAnswer=alt, indentLevel=indentLevel)
-
-				if cleanAlt == answer:
+				if isAnswerCorrect(answer, alt, aIsDate=aIsDate, showFullAnswer=True, indentLevel=indentLevel, otherNames={}, geoType=geoType):
 					answer = correctAnswer
+					showFullAnswer = False
 					break
+
+	correct = answer == correctAnswer
 	
-	return answer == correctAnswer
+	if correct and showFullAnswer and correctAnswer != aStr:
+		print('\t'*indentLevel + "Full answer: " + aStr)
+
+	return correct
 
 
 def qType_FillString(q, s, difficulty, corewords, color):

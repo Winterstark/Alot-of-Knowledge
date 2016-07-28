@@ -1,4 +1,4 @@
-{
+{	
 	"Velike La????e": {"Map": "GEO:Commune|Municipality/Velike La????e", "Country": "Slovenia"},
 	"Velenje": {"Map": "GEO:Commune|Municipality/Velenje", "Country": "Slovenia"},
 	"Vitanje": {"Map": "GEO:Commune|Municipality/Vitanje", "Country": "Slovenia"},
@@ -359,17 +359,6 @@
 	"Saint Paul": {"Map": "GEO:Parish/Saint Paul", "Country": "Antigua and Barbuda"},
 	"Saint Mary": {"Map": "GEO:Parish/Saint Mary", "Country": "Antigua and Barbuda"},
 	"Saint John": {"Map": "GEO:Parish/Saint John (admin1)", "Country": "Antigua and Barbuda"},
-	"Macquarie Island": {"Map": "GEO:Unknown shape 39 (admin1)/Macquarie Island", "Country": "Australia"},
-	"Jervis Bay Territory": {"Map": "GEO:Territory/Jervis Bay Territory", "Country": "Australia"},
-	"Northern Territory": {"Map": "GEO:Territory/Northern Territory", "Country": "Australia"},
-	"Western Australia": {"Map": "GEO:State/Western Australia", "Country": "Australia"},
-	"Australian Capital Territory": {"Map": "GEO:Territory/Australian Capital Territory", "Country": "Australia"},
-	"New South Wales": {"Map": "GEO:State/New South Wales", "Country": "Australia"},
-	"South Australia": {"Map": "GEO:State/South Australia", "Country": "Australia"},
-	"Victoria": {"Map": "GEO:State/Victoria (admin1)", "Country": "Australia"},
-	"Queensland": {"Map": "GEO:State/Queensland", "Country": "Australia"},
-	"Norfolk Island": {"Map": "GEO:Territory/Norfolk Island (admin1)", "Country": "Australia"},
-	"Tasmania": {"Map": "GEO:State/Tasmania", "Country": "Australia"},
 	"A??stafa": {"Map": "GEO:District/A??stafa", "Country": "Azerbaijan"},
 	"Da??k??s??n": {"Map": "GEO:District/Da??k??s??n", "Country": "Azerbaijan"},
 	"G??d??b??y": {"Map": "GEO:District/G??d??b??y", "Country": "Azerbaijan"},

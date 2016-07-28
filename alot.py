@@ -560,6 +560,7 @@ def parseFile(path):
 	#new entries?
 	nNew = 0
 	nExp = 0
+	nRed = 0
 
 	for key in data:
 		if key not in metadata:
@@ -583,6 +584,16 @@ def parseFile(path):
 			if type(metadata[key]["step"]) is not dict:
 				metadata[key]["step"] = {}
 				hasExpanded = True
+			else:
+				#check if attributes have been removed
+				toDel = []
+				for attribute in metadata[key]["step"]:
+					if attribute not in data[key]:
+						toDel.append(attribute)
+						nRed += 1
+
+				for attribute in toDel:
+					del metadata[key]["step"][attribute]
 
 			for attribute in data[key]:
 				if attribute not in metadata[key]["step"]:
@@ -597,7 +608,6 @@ def parseFile(path):
 			if hasExpanded:
 				nExp += 1
 
-
 	#deleted entries?
 	toDel = []
 	nDel = 0
@@ -610,7 +620,7 @@ def parseFile(path):
 	for key in toDel:
 		del metadata[key]
 
-	return data, metadata, nNew, nExp, nDel
+	return data, metadata, nNew, nExp, nRed, nDel
 
 
 def saveToFile(data, metadata, path):
@@ -833,7 +843,11 @@ def toString(answer, makeMoreReadable=True):
 	elif answerType is Type.Set:
 		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
 	elif answerType is Type.Tuple:
-		return str(answer).replace('(', '').replace(')', '').replace("'", "").replace('"', '')
+		s = ""
+		for el in answer:
+			if getType(el) is not Type.Image and getType(el) is not Type.Sound:
+				s += toString(el) + ", "
+		return s[:-2]
 	elif answerType is Type.List:
 		return str(answer).replace('[', '').replace(']', '').replace("'", "").replace('"', '')
 	else:
@@ -1126,23 +1140,14 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 			del answers[nextA]
 
 	if len(finalAnswers) < 5:
-		if len(catalot) > 5:
-			if returnKeys:
-				#grab some random keys whatever their type
-				for key in catalot:
-					if isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
-						finalAnswers.append(key)
-						if len(finalAnswers) == 5:
-							break
-				random.shuffle(finalAnswers)
-			elif attribute != "":
-				#grab some random non-class entries
-				for key in catalot:
-					if getType(catalot[key]) is not Type.Class and key != targetKey and catalot[key] != catalot[targetKey][attribute] and catalot[key] not in answers:
-						finalAnswers.append(catalot[key])
-						if len(finalAnswers) == 5:
-							break
-				random.shuffle(finalAnswers)
+		if returnKeys:
+			#grab some random keys whatever their type
+			for key in catalot:
+				if isAcceptableAltAnswerKey(catalot, finalAnswers, targetKey, key, attribute):
+					finalAnswers.append(key)
+					if len(finalAnswers) == 5:
+						break
+			random.shuffle(finalAnswers)
 		elif getType(catalot[targetKey], attribute) is Type.Number or getType(catalot[targetKey], attribute) is Type.NumberRange:
 			#generate some random numbers
 			finalAnswers.append(targetNumber) #temporarily add the correct answer
@@ -1299,12 +1304,7 @@ def printList(items, step, indentLevel, color, firstItem=1):
 			printList(items[i-1], len(items[i-1])+1, indentLevel+1, color)
 			stepOffset -= 1
 		elif type(items[i-1]) is tuple:
-			item = "{0}. ".format(i + stepOffset)
-			for el in items[i-1]:
-				if getType(el) is not Type.Image:
-					item += toString(el) + ", "
-			item = item[:-2]
-
+			item = "{0}. {1}".format(i + stepOffset, toString(items[i-1]))
 			if heading:
 				colorPrint('\t'*indentLevel + item, color)
 			else:	
@@ -2798,19 +2798,25 @@ metalot = {}
 for filename in os.listdir(DIR):
 	if ".txt" in filename:
 		category = os.path.splitext(filename)[0]
-		alot[category], metalot[category], nNew, nExp, nDel = parseFile(DIR + os.sep + filename)
+		alot[category], metalot[category], nNew, nExp, nRed, nDel = parseFile(DIR + os.sep + filename)
 
-		if nNew > 0 or nExp > 0 or nDel > 0:
+		if nNew > 0 or nExp > 0 or nRed > 0 or nDel > 0:
 			print(filename + " changed: ", end="")
 			if nNew > 0:
 				print(pluralizeIfNecessary(nNew, "new entry"), end="")
 				
-				if nExp + nDel > 0:
+				if nExp + nRed + nDel > 0:
 					print(", ", end="")
 				else:
 					print("")
 			if nExp > 0:
 				print(pluralizeIfNecessary(nExp, "expanded entry"), end="")
+				if nDel + nRed > 0:
+					print(", ", end="")
+				else:
+					print("")
+			if nRed > 0:
+				print(pluralizeIfNecessary(nRed, "reduced entry"), end="")
 				if nDel > 0:
 					print(", ", end="")
 				else:

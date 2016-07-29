@@ -797,7 +797,7 @@ def getType(entry, attribute=""):
 
 
 def pathHasAudioExtension(filePath):
-	return os.path.splitext(filePath)[1].lower() in [".ogg", ".mp3"]
+	return os.path.splitext(filePath)[1].lower() in [".ogg", ".mp3", ".wav"]
 
 
 def getMaxKeyLen(dictionary):

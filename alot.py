@@ -1582,7 +1582,11 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 
 	#check answer
 	if getType(a) is Type.String and not aIsDate:
+		originalAnswer = answer
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
+		
+		if answer != originalAnswer:
+			showFullAnswer = False #don't show full answer if it has already been shown in the typo message
 
 		#if wrong -> check against original correct answer with parentheses
 		if answer != correctAnswer:
@@ -1621,6 +1625,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 			if tmpAnswer == tmpCorrectAnswer:
 				answer = correctAnswer
 				print('\t'*indentLevel + "Exact answer: " + aStr)
+				showFullAnswer = False
 
 		#if wrong -> check other names
 		if answer != correctAnswer and len(otherNames) > 0:	
@@ -1632,7 +1637,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 
 	correct = answer == correctAnswer
 	
-	if correct and showFullAnswer and correctAnswer != aStr:
+	if correct and showFullAnswer and removeParentheses(aStr) != aStr:
 		print('\t'*indentLevel + "Full answer: " + aStr)
 
 	return correct
@@ -2170,7 +2175,7 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 		#process correct answer
 		index = itemsLCaseWithoutParentheses.index(answer)
 
-		if len(itemsCopy[index]) != len(itemsLCaseWithoutParentheses[index]):
+		if removeParentheses(itemsLCaseWithoutParentheses[index]) != itemsLCaseWithoutParentheses[index]:
 			fullAnswer = "Full answer: " + itemsCopy[index] + ". "
 		else:
 			fullAnswer = ""

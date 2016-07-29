@@ -1461,7 +1461,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 1 ?land");
+            //processMsg("map 3 Alboran Sea");
         }
         
         protected override void OnPaint(PaintEventArgs e)
@@ -1550,7 +1550,7 @@ namespace AlotGUI
                 else if (mode == DisplayMode.Map && (mapQType == 2 || mapQType == 3) && !timerFeedback.Enabled && !mapFrozen)
                 {
                     string mouseOverRegion = viz.GetSelectedArea(e.X, e.Y);
-                    if (mouseOverRegion != mapMouseOverRegion)
+                    if (mouseOverRegion != "" && mouseOverRegion != mapMouseOverRegion)
                     {
                         viz.Highlight(mouseOverRegion.Split('+'), -mapQType);
                         this.Invalidate();
@@ -1680,6 +1680,9 @@ namespace AlotGUI
             else if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
             {
                 selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
+                if (selectedArea == "")
+                    selectedArea = mapMouseOverRegion; //if the current selected area is blank, use the last valid area
+
                 if (selectedArea.Contains("+"))
                     selectedArea = selectedArea.Substring(0, selectedArea.IndexOf('+')); //keep only the river's base name
 

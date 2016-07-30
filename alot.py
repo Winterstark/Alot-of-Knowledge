@@ -646,7 +646,7 @@ def checkForExit(answer):
 	return answer, exit, immediately
 
 
-def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel=0):
+def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel=0, returnTruncatedAnswer=True):
 	if originalCorrectAnswer == "":
 		originalCorrectAnswer = correctAnswer
 
@@ -665,13 +665,21 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 		for i in range(len(correctAnswer)-1):
 			if userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:len(correctAnswer)] == correctAnswer:
 				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
-				return userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:]
+				correctedAnswer = userAnswer[:i] + userAnswer[i+1] + userAnswer[i] + userAnswer[i+2:]
+				if returnTruncatedAnswer:
+					return correctedAnswer[:len(correctAnswer)]
+				else:
+					return correctedAnswer
 	
 	#check for extra letters
 	for i in range(len(correctAnswer)+1):
 		if userAnswer[:i] + userAnswer[i+1:len(correctAnswer)+1] == correctAnswer:
 			print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
-			return userAnswer[:i] + userAnswer[i+1:]
+			correctedAnswer = userAnswer[:i] + userAnswer[i+1:]
+			if returnTruncatedAnswer:
+				return correctedAnswer[:len(correctAnswer)]
+			else:
+				return correctedAnswer
 	
 	#check for a mistyped letter
 	if len(userAnswer) >= len(correctAnswer):
@@ -679,7 +687,11 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 			#don't accept mistyped numbers as typos
 			if not correctAnswer[i].isdigit() and userAnswer[:i] == correctAnswer[:i] and userAnswer[i+1:len(correctAnswer)] == correctAnswer[i+1:]:
 				print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
-				return userAnswer[:i] + correctAnswer[i] + userAnswer[i+1:]
+				correctedAnswer = userAnswer[:i] + correctAnswer[i] + userAnswer[i+1:]
+				if returnTruncatedAnswer:
+					return correctedAnswer[:len(correctAnswer)]
+				else:
+					return correctedAnswer
 	
 	#check for missing letters
 	if len(userAnswer) + 1 >= len(correctAnswer):
@@ -687,7 +699,11 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 			if userAnswer[:i] + correctAnswer[i] + userAnswer[i:len(correctAnswer)-1] == correctAnswer:
 				if correctAnswer[i].isalnum(): #if the typo is a missing period or comma, ignore it completely
 					print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)
-				return userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
+				correctedAnswer = userAnswer[:i] + correctAnswer[i] + userAnswer[i:]
+				if returnTruncatedAnswer:
+					return correctedAnswer[:len(correctAnswer)]
+				else:
+					return correctedAnswer
 	
 	return userAnswer
 
@@ -1584,7 +1600,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	if getType(a) is Type.String and not aIsDate:
 		originalAnswer = answer
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
-		
+
 		if answer != originalAnswer:
 			showFullAnswer = False #don't show full answer if it has already been shown in the typo message
 
@@ -1750,7 +1766,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 			#the user previously entered more than one blank, so check if the rest of his answer is correct
 			nextPartIsCorrect = extraAnswerChars[:nChars].lower() == parts[i].lower()
 			if not nextPartIsCorrect:
-				extraAnswerChars = removeTypos(extraAnswerChars, parts[i])
+				extraAnswerChars = removeTypos(extraAnswerChars, parts[i], returnTruncatedAnswer=False)
 				nextPartIsCorrect = extraAnswerChars[:nChars].lower() == parts[i].lower()
 
 			if nextPartIsCorrect:
@@ -1774,7 +1790,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 			answer, exit, immediately = checkForExit(input(""))
 
 			if answer[:nChars].lower() != parts[i].lower():
-				answer = removeTypos(answer, parts[i])
+				answer = removeTypos(answer, parts[i], returnTruncatedAnswer=False)
 				if answer[:nChars].lower() != parts[i].lower():
 					allCorrect = False
 					break

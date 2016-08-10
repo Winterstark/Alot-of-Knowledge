@@ -2196,7 +2196,7 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 		#process correct answer
 		index = itemsLCaseWithoutParentheses.index(answer)
 
-		if removeParentheses(itemsLCaseWithoutParentheses[index]) != itemsLCaseWithoutParentheses[index]:
+		if itemsCopy[index] != itemsLCaseWithoutParentheses[index]:
 			fullAnswer = "Full answer: " + itemsCopy[index] + ". "
 		else:
 			fullAnswer = ""

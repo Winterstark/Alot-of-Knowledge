@@ -1237,16 +1237,22 @@ namespace AlotGUI
         public class AudioPlayer
         {
             IWavePlayer waveOutDevice;
+            VorbisWaveReader vorbisReader;
+            AudioFileReader audioReader;
+            DateTime stopTime;
 
 
             public void Play(string filePath)
             {
                 if (Path.GetExtension(filePath) == ".ogg")
                 {
-                    VorbisWaveReader reader = new VorbisWaveReader(filePath);
-
                     waveOutDevice = new WaveOut();
-                    waveOutDevice.Init(reader);
+                    waveOutDevice.PlaybackStopped += new EventHandler<StoppedEventArgs>(waveOutDevice_PlaybackStopped);
+
+                    vorbisReader = new VorbisWaveReader(filePath);
+                    audioReader = null;
+                    waveOutDevice.Init(vorbisReader);
+
                     waveOutDevice.Play();
                 }
                 else
@@ -1258,7 +1264,12 @@ namespace AlotGUI
                     }
 
                     waveOutDevice = new WaveOut();
-                    waveOutDevice.Init(new AudioFileReader(filePath));
+                    waveOutDevice.PlaybackStopped += new EventHandler<StoppedEventArgs>(waveOutDevice_PlaybackStopped);
+
+                    vorbisReader = null;
+                    audioReader = new AudioFileReader(filePath);
+                    waveOutDevice.Init(audioReader);
+
                     waveOutDevice.Play();
                 }
             }
@@ -1266,7 +1277,22 @@ namespace AlotGUI
             public void Stop()
             {
                 if (waveOutDevice != null)
+                {
+                    stopTime = DateTime.Now;
                     waveOutDevice.Stop();
+                }
+            }
+
+            void waveOutDevice_PlaybackStopped(object sender, StoppedEventArgs e)
+            {
+                if (DateTime.Now.Subtract(stopTime).TotalSeconds < 3)
+                    return; //don't loop playback if the user pressed the pause button
+
+                if (vorbisReader != null)
+                    vorbisReader.Position = 0;
+                else
+                    audioReader.Position = 0;
+                waveOutDevice.Play(); //loop playback
             }
         }
 
@@ -1467,8 +1493,8 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("audio B C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Columba livia.mp3");
-            //processMsg("audio B C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Cyanistes caeruleus.ogg");
+            //processMsg("audio I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Columba livia.mp3");
+            //processMsg("audio B C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Passer domesticus.ogg");
         }
         
         protected override void OnPaint(PaintEventArgs e)

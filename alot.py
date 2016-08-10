@@ -1636,12 +1636,17 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 			for ignoredWord in ignoredWords:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")
 				tmpCorrectAnswer = tmpCorrectAnswer.replace(ignoredWord, "")
+
+			tmpAnswerBeforeRemovingTypos = tmpAnswer
 			tmpAnswer = removeTypos(tmpAnswer, tmpCorrectAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
+			if tmpAnswer != tmpAnswerBeforeRemovingTypos:
+				showFullAnswer = False
 
 			if tmpAnswer == tmpCorrectAnswer:
 				answer = correctAnswer
-				print('\t'*indentLevel + "Exact answer: " + aStr)
-				showFullAnswer = False
+				if showFullAnswer:
+					print('\t'*indentLevel + "Exact answer: " + aStr)
+					showFullAnswer = False
 
 		#if wrong -> check other names
 		if answer != correctAnswer and len(otherNames) > 0:	
@@ -2433,7 +2438,8 @@ def quiz(category, catalot, metacatalot, corewords):
 				usedGUI = True
 				correct, exit, immediately = qType_Sound(key, fullPath(entry), True)
 			elif entryType is Type.Geo:
-				correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
+				#correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
+				correct, exit, immediately = quizGeo(catalot, key, 4, color)
 				usedGUI = True
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty

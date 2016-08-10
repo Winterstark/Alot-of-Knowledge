@@ -2438,8 +2438,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				usedGUI = True
 				correct, exit, immediately = qType_Sound(key, fullPath(entry), True)
 			elif entryType is Type.Geo:
-				#correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
-				correct, exit, immediately = quizGeo(catalot, key, 4, color)
+				correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
 				usedGUI = True
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty

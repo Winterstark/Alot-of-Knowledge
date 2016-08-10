@@ -1461,7 +1461,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Alboran Sea");
+            //processMsg("map 2 Danube..15");
         }
         
         protected override void OnPaint(PaintEventArgs e)

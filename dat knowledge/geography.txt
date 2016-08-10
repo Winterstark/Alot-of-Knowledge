@@ -222,7 +222,7 @@
 	'Mindanao': 'GEO:Island/MINDANAO',
 	'South Sandwich Islands': 'GEO:Archipelago/South Sandwich Islands',
 	'Baltic Sea': 'GEO:Sea/Baltic Sea',
-	'Great Morava': 'GEO:River/Morava 3+Morava 4+Morava 5+Morava 6',
+	'Great Morava': 'GEO:River/Great Morava..4',
 	'Lviv': {'Other names': {'Lemberg'}, 'Map': 'GEO:City/Lvov'},
 	'Karlovac': 'GEO:City/Karlovac',
 	'Pindus': 'GEO:Mountain range/Pindus Mts.',

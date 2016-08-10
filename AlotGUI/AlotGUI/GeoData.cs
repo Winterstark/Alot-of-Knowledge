@@ -452,7 +452,7 @@ namespace AlotGUI
                 {
                     if (qType != 2)
                     {
-                        if (mapEntities[mapEnt].GeoType == GeoType.River || mapEntities[mapEnt].GeoType == GeoType.City && qType == -3)
+                        if (mapEntities[mapEnt].GeoType == GeoType.City && qType == -3)
                             mapEntities[mapEnt].Enabled = true;
                         else
                             mapEntities[mapEnt].Highlighted = true;

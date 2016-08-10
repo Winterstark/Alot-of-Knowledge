@@ -1963,7 +1963,8 @@ def qType_Sound(soundKey, path, learned=False, otherNames={}):
 
 def qType_Timeline(key, otherNames={}):
 	msgGUI("timeline " + key + " ?")
-	answer, quit, immediately = checkForExit(input("What event (???) is highlighted on the timeline?\n> "))
+	colorPrint("What event (???) is highlighted on the timeline?", COLOR_LEARNED)
+	answer, quit, immediately = checkForExit(input("> "))
 
 	if isAnswerCorrect(answer, key, otherNames=otherNames):
 		return True, quit, immediately
@@ -1973,7 +1974,8 @@ def qType_Timeline(key, otherNames={}):
 
 def qType_FamilyTree(catalot, key, otherNames={}):
 	msgGUI("ftree " + exportFamilyTree(catalot, key, True))
-	answer, quit, immediately = checkForExit(input("Who (???) is highlighted in the family tree?\n> "))
+	colorPrint("Who (???) is highlighted in the family tree?", COLOR_LEARNED)
+	answer, quit, immediately = checkForExit(input("> "))
 
 	if isAnswerCorrect(answer, key, otherNames=otherNames):
 		return True, quit, immediately

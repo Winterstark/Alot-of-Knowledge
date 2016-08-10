@@ -1303,103 +1303,109 @@ namespace AlotGUI
                     if (msg[0] == ' ')
                         msg = msg.Substring(1);
 
-                    if (audioQType == 'C')
+                    switch (audioQType)
                     {
-                        //find 5 more sounds (select the ones closest to the correct one)
-                        audioPaths = new List<string>();
+                        case 'C': //choose the correct sound
+                            //find 5 more sounds (select the ones closest to the correct one)
+                            audioPaths = new List<string>();
 
-                        string folder = Path.GetDirectoryName(msg), prevFolder = folder;
-                        Queue<string> unvisitedFolders = new Queue<string>();
-                        Random rand = new Random((int)DateTime.Now.Ticks);
+                            string folder = Path.GetDirectoryName(msg), prevFolder = folder;
+                            Queue<string> unvisitedFolders = new Queue<string>();
+                            Random rand = new Random((int)DateTime.Now.Ticks);
 
-                        while (audioPaths.Count < 6 && folder.Contains(SOUNDS_DIR)) //don't search beyond the top-most sounds directory
-                        {
-                            List<string> files = Directory.GetFiles(folder).ToList();
-
-                            while (audioPaths.Count < 6 && files.Count > 0)
+                            while (audioPaths.Count < 6 && folder.Contains(SOUNDS_DIR)) //don't search beyond the top-most sounds directory
                             {
-                                int nextItem = rand.Next(files.Count);
-                                if (files[nextItem] != msg)
-                                    audioPaths.Add(files[nextItem]);
-                                files.RemoveAt(nextItem);
+                                List<string> files = Directory.GetFiles(folder).ToList();
+
+                                while (audioPaths.Count < 6 && files.Count > 0)
+                                {
+                                    int nextItem = rand.Next(files.Count);
+                                    if (files[nextItem] != msg)
+                                        audioPaths.Add(files[nextItem]);
+                                    files.RemoveAt(nextItem);
+                                }
+
+                                if (audioPaths.Count < 6) //check subfolders
+                                    foreach (string dir in Directory.GetDirectories(folder))
+                                        if (dir != prevFolder)
+                                        {
+                                            unvisitedFolders.Enqueue(dir);
+                                            files = Directory.GetFiles(dir).ToList();
+
+                                            for (int j = 0; j < files.Count && audioPaths.Count < 6; j++)
+                                                audioPaths.Add(files[j]);
+
+                                            if (audioPaths.Count == 6)
+                                                break;
+                                        }
+
+                                prevFolder = folder;
+                                folder = Directory.GetParent(folder).FullName;
                             }
 
-                            if (audioPaths.Count < 6) //check subfolders
-                                foreach (string dir in Directory.GetDirectories(folder))
-                                    if (dir != prevFolder)
-                                    {
-                                        unvisitedFolders.Enqueue(dir);
-                                        files = Directory.GetFiles(dir).ToList();
-
-                                        for (int j = 0; j < files.Count && audioPaths.Count < 6; j++)
-                                            audioPaths.Add(files[j]);
-
-                                        if (audioPaths.Count == 6)
-                                            break;
-                                    }
-
-                            prevFolder = folder;
-                            folder = Directory.GetParent(folder).FullName;
-                        }
-                        
-                        //need more sounds?
-                        while (audioPaths.Count < 6 && unvisitedFolders.Count > 0)
-                        {
-                            string dir = unvisitedFolders.Dequeue();
-
-                            foreach (string file in Directory.GetFiles(dir))
-                                if (!arrayContainsString(multipleChoiceImages, file))
-                                    audioPaths.Add(file);
-
-                            foreach (string subDir in Directory.GetDirectories(dir))
-                                unvisitedFolders.Enqueue(subDir);
-                        }
-
-                        //insert correct sound
-                        correctAnswer = rand.Next(audioPaths.Count);
-                        audioPaths.Insert(correctAnswer, msg);
-
-                        //setup UI
-                        buttPlay1.Left = 0;
-                        buttPlay1.Top = 0;
-                        if (audioPaths.Count > 1)
-                        {
-                            buttPlay2.Left = buttPlay1.Width;
-                            buttPlay2.Top = 0;
-                            if (audioPaths.Count > 2)
+                            //need more sounds?
+                            while (audioPaths.Count < 6 && unvisitedFolders.Count > 0)
                             {
-                                buttPlay3.Left = 0;
-                                buttPlay3.Top = buttPlay1.Height;
-                                if (audioPaths.Count > 3)
+                                string dir = unvisitedFolders.Dequeue();
+
+                                foreach (string file in Directory.GetFiles(dir))
+                                    if (!arrayContainsString(multipleChoiceImages, file))
+                                        audioPaths.Add(file);
+
+                                foreach (string subDir in Directory.GetDirectories(dir))
+                                    unvisitedFolders.Enqueue(subDir);
+                            }
+
+                            //insert correct sound
+                            correctAnswer = rand.Next(audioPaths.Count);
+                            audioPaths.Insert(correctAnswer, msg);
+
+                            //setup UI
+                            buttPlay1.Left = 0;
+                            buttPlay1.Top = 0;
+                            if (audioPaths.Count > 1)
+                            {
+                                buttPlay2.Left = buttPlay1.Width;
+                                buttPlay2.Top = 0;
+                                if (audioPaths.Count > 2)
                                 {
-                                    buttPlay4.Left = buttPlay1.Width;
-                                    buttPlay4.Top = buttPlay1.Height;
-                                    if (audioPaths.Count > 4)
+                                    buttPlay3.Left = 0;
+                                    buttPlay3.Top = buttPlay1.Height;
+                                    if (audioPaths.Count > 3)
                                     {
-                                        buttPlay5.Left = 0;
-                                        buttPlay5.Top = buttPlay1.Height * 2;
-                                        if (audioPaths.Count > 5)
+                                        buttPlay4.Left = buttPlay1.Width;
+                                        buttPlay4.Top = buttPlay1.Height;
+                                        if (audioPaths.Count > 4)
                                         {
-                                            buttPlay6.Left = buttPlay1.Width;
-                                            buttPlay6.Top = buttPlay1.Height * 2;
+                                            buttPlay5.Left = 0;
+                                            buttPlay5.Top = buttPlay1.Height * 2;
+                                            if (audioPaths.Count > 5)
+                                            {
+                                                buttPlay6.Left = buttPlay1.Width;
+                                                buttPlay6.Top = buttPlay1.Height * 2;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        buttPlay1.Image = buttPlay2.Image = buttPlay3.Image = buttPlay4.Image = buttPlay5.Image = buttPlay6.Image = iconPlay;
-                    }
-                    else
-                    {
-                        audioPaths = new List<string>();
-                        audioPaths.Add(msg);
-                        
-                        //setup UI
-                        buttPlay1.Left = this.ClientSize.Width / 4;
-                        buttPlay1.Top = this.ClientSize.Height / 3;
+                            buttPlay1.Image = buttPlay2.Image = buttPlay3.Image = buttPlay4.Image = buttPlay5.Image = buttPlay6.Image = iconPlay;
+                            break;
+                        case 'I': //identify sound
+                            audioPaths = new List<string>();
+                            audioPaths.Add(msg);
 
-                        buttPlay1.Image = iconPlay;
+                            //setup UI
+                            buttPlay1.Left = this.ClientSize.Width / 4;
+                            buttPlay1.Top = this.ClientSize.Height / 3;
+
+                            buttPlay1.Image = iconPlay;
+                            break;
+                        case 'B': //play sound in the background
+                            audioPaths = new List<string>();
+                            audioPaths.Add(msg);
+                            audio.Play(audioPaths[0]);
+                            return;
                     }
                 }
 
@@ -1461,7 +1467,8 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 2 Danube..15");
+            //processMsg("audio B C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Columba livia.mp3");
+            //processMsg("audio B C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Cyanistes caeruleus.ogg");
         }
         
         protected override void OnPaint(PaintEventArgs e)

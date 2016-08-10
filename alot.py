@@ -2454,7 +2454,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				if "Consort" in entry:
 					nFTreeAttributes += 1
 
-				if random.randint(0, len(entry)-1) < nFTreeAttributes:
+				if random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
 					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
 				else:
 					attribute = random.choice(list(entry.keys()))

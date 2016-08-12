@@ -2378,7 +2378,6 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						print("\n")
 					
-					attribute = "Previous states"
 					attributeType = getType(entry[attribute])
 					if attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)

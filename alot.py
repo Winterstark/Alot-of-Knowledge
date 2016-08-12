@@ -857,7 +857,7 @@ def toString(answer, makeMoreReadable=True):
 	elif answerType is Type.Class:
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "").replace('"', '')
 	elif answerType is Type.Set:
-		return str(answer).replace('frozenset', '').replace('(', '').replace(')', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
+		return str(answer).replace('frozenset', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
 	elif answerType is Type.Tuple:
 		s = ""
 		for el in answer:

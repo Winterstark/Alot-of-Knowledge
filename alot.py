@@ -1863,6 +1863,22 @@ def qType_RecognizeItem(listKey, items, color):
 		return str(index+1), exit, immediately
 
 
+def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
+	entry = catalot[key]
+	for attribute in entry:
+		if getType(entry[attribute]) is Type.Image:
+			msgGUI("I {}".format(fullPath(entry[attribute])))
+			usedGUI = True
+		elif getType(entry[attribute]) is Type.Sound:
+			msgGUI("audio B {}".format(fullPath(entry[attribute])))
+			usedGUI = True
+		else:
+			print(attribute + ": " + toString(entry[attribute]))
+
+	correct, exit, immediately = qType_EnterAnswer("What is the name of this entry? ", key, color, catalot=catalot, otherNames=otherNames, geoType=geoType)
+	return usedGUI, correct, exit, immediately
+
+
 def qType_OrderItems(listKey, items, color):
 	colorPrint(listKey, color)
 
@@ -2349,81 +2365,87 @@ def quiz(category, catalot, metacatalot, corewords):
 				#select attributes not yet learned
 				correct = {}
 				unlearnedAttributes = []
-				keepGUIActive = learnedDateAttribute = False
 
 				for attribute in entry:
-					if isLearned(step[attribute], entry[attribute]):
-						correct[attribute] = "already learned"
-						colorPrint("{}: already learned".format(attribute), COLOR_LEARNED)
-
-						#if the class has an image and it has been learned already, show it
-						if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
-							msgGUI("I {}".format(fullPath(entry[attribute])))
-							usedGUI = keepGUIActive = True
-
-						#if the class has a sound and it has been learned already, play it
-						if getType(entry[attribute]) is Type.Sound and isLearned(step[attribute], entry[attribute]):
-							msgGUI("audio B {}".format(fullPath(entry[attribute])))
-							usedGUI = keepGUIActive = True
-
-						#if the class has an date and it has been learned already, show it (if there are no leaned images in the class)
-						if (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.DateRange) and isLearned(step[attribute], entry[attribute]):
-							learnedDateAttribute = True
-					else:
+					if not isLearned(step[attribute], entry[attribute]):
 						unlearnedAttributes.append(attribute)
 
-				if not usedGUI and learnedDateAttribute:
-					msgGUI("timeline " + key)
-					usedGUI = keepGUIActive = True
+				if unlearnedAttributes == []:
+					usedGUI, correct["__finalStep__"], exit, immediately = qType_RecognizeClass(catalot, key, color, otherNames, geoType) #final step
+				else:
+					keepGUIActive = learnedDateAttribute = False
 
-				#ask a question for each unlearned attribute
-				firstQuestion = True
+					for attribute in entry:
+						if attribute not in unlearnedAttributes:
+							correct[attribute] = "already learned"
+							colorPrint("{}: already learned".format(attribute), COLOR_LEARNED)
 
-				for attribute in unlearnedAttributes:
-					if firstQuestion:
-						firstQuestion = False
-					else:
-						print("\n")
+							#if the class has an image and it has been learned already, show it
+							if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
+								msgGUI("I {}".format(fullPath(entry[attribute])))
+								usedGUI = keepGUIActive = True
+
+							#if the class has a sound and it has been learned already, play it
+							if getType(entry[attribute]) is Type.Sound and isLearned(step[attribute], entry[attribute]):
+								msgGUI("audio B {}".format(fullPath(entry[attribute])))
+								usedGUI = keepGUIActive = True
+
+							#if the class has an date and it has been learned already, show it (if there are no leaned images in the class)
+							if (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.DateRange) and isLearned(step[attribute], entry[attribute]):
+								learnedDateAttribute = True
+
+					if not usedGUI and learnedDateAttribute:
+						msgGUI("timeline " + key)
+						usedGUI = keepGUIActive = True
 					
-					attributeType = getType(entry[attribute])
-					if attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange:
-						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)
-					elif attributeType is Type.Diagram:
-						msgGUI("I {}".format(fullPath(entry[attribute][0])))
-						usedGUI = True
-						correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
-					elif attributeType is Type.Image:
-						usedGUI = True
-						correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False, otherNames=otherNames)
-					elif attributeType is Type.Sound:
-						usedGUI = True
-						correct[attribute], exit, immediately = qType_Sound(key, fullPath(entry[attribute]), False, otherNames=otherNames)
-					elif attributeType is Type.String:
-						correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
-					elif attributeType is Type.Geo:
-						correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute, otherNames=otherNames)
-						usedGUI = True
-					elif attributeType is Type.List:
-						correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
-					elif attributeType is Type.Set:
-						correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], corewords, color, geoType=geoType)
+					#ask a question for each unlearned attribute
+					firstQuestion = True
 
-					if not immediately:
-						if type(correct[attribute]) is int or type(correct[attribute]) is list:
-							print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
-						elif type(correct[attribute]) is not str:
-							feedback("Correct!")
-						elif "FalseGEO" in correct[attribute]:
-							feedback("Wrong!" + correct[attribute].replace("FalseGEO", ""))
-						elif correct[attribute] != "False": #if it is "False" then quizList has already printed the correct answer
-							feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
+					for attribute in unlearnedAttributes:
+						if firstQuestion:
+							firstQuestion = False
+						else:
+							print("\n")
+						
+						attributeType = getType(entry[attribute])
+						if attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange:
+							correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)
+						elif attributeType is Type.Diagram:
+							msgGUI("I {}".format(fullPath(entry[attribute][0])))
+							usedGUI = True
+							correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
+						elif attributeType is Type.Image:
+							usedGUI = True
+							correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False, otherNames=otherNames)
+						elif attributeType is Type.Sound:
+							usedGUI = True
+							correct[attribute], exit, immediately = qType_Sound(key, fullPath(entry[attribute]), False, otherNames=otherNames)
+						elif attributeType is Type.String:
+							correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
+						elif attributeType is Type.Geo:
+							correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute, otherNames=otherNames)
+							usedGUI = True
+						elif attributeType is Type.List:
+							correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
+						elif attributeType is Type.Set:
+							correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], corewords, color, geoType=geoType)
 
-						if usedGUI and not keepGUIActive:
-							msgGUI("logo")
-							usedGUI = False
+						if not immediately:
+							if type(correct[attribute]) is int or type(correct[attribute]) is list:
+								print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
+							elif type(correct[attribute]) is not str:
+								feedback("Correct!")
+							elif "FalseGEO" in correct[attribute]:
+								feedback("Wrong!" + correct[attribute].replace("FalseGEO", ""))
+							elif correct[attribute] != "False": #if it is "False" then quizList has already printed the correct answer
+								feedback(("Wrong! Correct answer: {}").format(correct[attribute]))
 
-					if exit:
-						break
+							if usedGUI and not keepGUIActive:
+								msgGUI("logo")
+								usedGUI = False
+
+						if exit:
+							break
 			elif entryType is Type.List:
 				correct, exit, immediately = quizList(key, entry, step)
 			elif entryType is Type.Set:
@@ -2471,7 +2493,9 @@ def quiz(category, catalot, metacatalot, corewords):
 				if "Consort" in entry:
 					nFTreeAttributes += 1
 
-				if random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
+				if random.randint(0, len(entry)) == 0:
+					usedGUI, correct, exit, immediately = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
+				elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
 					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
 				else:
 					attribute = random.choice(list(entry.keys()))
@@ -2589,46 +2613,47 @@ def quiz(category, catalot, metacatalot, corewords):
 			if type(correct) is dict:
 				#class entry
 				if not meta["learned"]:
-					#advance any attributes that have been correctly answered
-					allLearned = True
-					anyMistakes = False
-					entryProgress = 0
-					entryProgressMax = 0
+					if "__finalStep__" not in correct:
+						#advance any attributes that have been correctly answered
+						anyMistakes = False
+						entryProgress = 0
+						entryProgressMax = 0
 
-					for attribute in correct:
-						if correct[attribute] == "already learned":
-							pass
-						elif type(correct[attribute]) is bool:
-							meta["step"][attribute] += 1
-							#skip some useless steps for certain types of attributes (the steps that ask the user to type in the name of the entry)
-							attributeType = getType(entry[attribute])
-							if attributeType is Type.String and meta["step"][attribute] == 2:
+						for attribute in correct:
+							if correct[attribute] == "already learned":
+								pass
+							elif type(correct[attribute]) is bool:
 								meta["step"][attribute] += 1
-							if (attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
-								meta["step"][attribute] += 1
+								#skip some useless steps for certain types of attributes (the steps that ask the user to type in the name of the entry)
+								attributeType = getType(entry[attribute])
+								if attributeType is Type.String and meta["step"][attribute] == 2:
+									meta["step"][attribute] += 1
+								if (attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):
+									meta["step"][attribute] += 1
+							elif type(correct[attribute]) is int or type(correct[attribute]) is list:
+								meta["step"][attribute] = correct[attribute]
+							else:
+								anyMistakes = True
 
-							allLearned = allLearned and isLearned(meta["step"][attribute], entry[attribute])
-						elif type(correct[attribute]) is int or type(correct[attribute]) is list:
-							meta["step"][attribute] = correct[attribute]
-							allLearned = False
-						else:
-							allLearned = False
-							anyMistakes = True
+							entryProgress += meta["step"][attribute]
+							entryProgressMax += maxSteps(entry[attribute]) + 1
 
-						entryProgress += meta["step"][attribute]
-						entryProgressMax += maxSteps(entry[attribute]) + 1
+						if not anyMistakes:
+							nCorrect += 1
 
-					if not anyMistakes:
-						nCorrect += 1
-
-					#check if this was the final step to learn the entry
-					if allLearned:
-						feedback("Entry learned!")
-						meta["learned"] = True
-						meta["nextTest"] = datetime.now() + timedelta(days=6, hours=22)
-					else:
 						print("Entry progress @ {}%.".format(100 * entryProgress // entryProgressMax))
 						meta["nextTest"] = datetime.now() + timedelta(hours=22)
+					else:
+						if correct["__finalStep__"] == True:
+							feedback("Correct!")
+							feedback("Entry learned!")
+							meta["learned"] = True
+							meta["nextTest"] = datetime.now() + timedelta(days=6, hours=22)
+							nCorrect += 1
+						else:
+							feedback("Wrong! Correct answer: " + key)
+							print("Entry progress @ 100%.")
+							meta["nextTest"] = datetime.now() + timedelta(hours=22)
 				else:
 					if type(correct) is bool:
 						feedback("Correct!")

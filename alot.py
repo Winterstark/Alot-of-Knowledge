@@ -1247,7 +1247,14 @@ def removeParentheses(s, concealContents=False):
 	while True:
 		try:
 			lb = s.index('(')
-			ub = s.index(')', lb) + 1
+			ub = lb + 1
+			parenthesesDepth = 1
+			while ub < len(s) and parenthesesDepth > 0:
+				if s[ub] == '(':
+					parenthesesDepth += 1
+				elif s[ub] == ')':
+					parenthesesDepth -= 1
+				ub += 1
 
 			if concealContents:
 				s = s[:lb] + "[[[???]]]" + s[ub:]
@@ -1344,14 +1351,14 @@ def constructHint(a):
 		key = str(a)
 		hint = ""
 
-		insideParentheses = False
+		parenthesesDepth = 0
 		showFirstLetters = aType is Type.String
 		firstLetter = True
 
 		for i in range(len(key)):
 			if key[i].isalnum():
-				if (showFirstLetters and firstLetter) or insideParentheses:
-					if key[i].isdigit() and not insideParentheses:
+				if (showFirstLetters and firstLetter) or parenthesesDepth > 0:
+					if key[i].isdigit() and parenthesesDepth == 0:
 						hint += '_'
 					else:
 						hint += key[i]
@@ -1365,9 +1372,9 @@ def constructHint(a):
 				hint += key[i]
 				firstLetter = True
 				if key[i] == '(':
-					insideParentheses = True
+					parenthesesDepth += 1
 				elif key[i] == ')':
-					insideParentheses = False
+					parenthesesDepth -= 1
 
 	return hint
 

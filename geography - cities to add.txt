@@ -5378,7 +5378,6 @@
 	"Skagway": {"GEO:City/Skagway", "Country": "United States"},
 	"Cordova": {"GEO:City/Cordova", "Country": "United States"},
 	"Kenai": {"GEO:City/Kenai", "Country": "United States"},
-	"Fort Yukon": {"GEO:City/Fort Yukon", "Country": "United States"},
 	"Yalta": {"GEO:City/Yalta", "Country": "Ukraine"},
 	"Chernobyl": {"GEO:City/Chernobyl", "Country": "Ukraine"},
 	"Sumy": {"GEO:City/Sumy", "Country": "Ukraine"},

@@ -2198,7 +2198,7 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 		#process correct answer
 		index = itemsLCaseWithoutParentheses.index(answer)
 
-		if itemsCopy[index] != itemsLCaseWithoutParentheses[index]:
+		if itemsCopy[index] != itemsLCaseWithoutParentheses[index] and showFullAnswer:
 			fullAnswer = "Full answer: " + itemsCopy[index] + ". "
 		else:
 			fullAnswer = ""
@@ -2378,6 +2378,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					else:
 						print("\n")
 					
+					attribute = "Previous states"
 					attributeType = getType(entry[attribute])
 					if attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange:
 						correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)

@@ -2761,12 +2761,13 @@ def mainLoop(alot, metalot):
 					print(0)
 			else:
 				print(("\t{0:<" + maxLen + "}Available in {1}").format(category, timeUntilAvailable(metalot[category])))
-
+	
+		wordChoices = ["help", "exit", "timeline"]
 		if totalNew + totalLearned > 0:
 			i += 1
 			cats[i] = "all"
-			cats[i+1] = "exit"
-
+			wordChoices.append("all")
+		
 			print(("{0:<8}{1:<" + maxLen + "}").format(str(i)+'.', "all"), end="")
 			if totalNew > 0:
 				colorPrint(totalNew, COLOR_UNLEARNED, endline="")
@@ -2778,41 +2779,43 @@ def mainLoop(alot, metalot):
 			else:
 				print(0)
 
-			print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+1)+'.', "exit"))
+		cats[i+1] = "help"
+		print(("{0:<8}{1:<" + maxLen + "}").format(str(i+1)+'.', "help"))
 
-			WORD_CHOICES = ["all", "exit", "timeline"]
-			choice = ""
-			while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and ("map " not in choice or len(choice) <= 4) and choice not in WORD_CHOICES:
-				choice = input('Choose a category: ')
-			if choice.isdigit():
-				choice = cats[int(choice)]
+		cats[i+2] = "exit"
+		print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+2)+'.', "exit"))
 
-			if choice == "timeline":
-				pass
-				#exportTimelineForGUI(alot)
-				#msgGUI("timeline")
-			elif "map " in choice:
-				if not choice[4].isdigit():
-					choice = choice[:4] + "1 " + choice[4:]
-				choice = choice[:4] + "explore " + choice[4:]
-				msgGUI(choice)
+		choice = ""
+		while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and ("map " not in choice or len(choice) <= 4) and choice not in wordChoices:
+			choice = input('Choose a category: ')
+		if choice.isdigit():
+			choice = cats[int(choice)]
 
-				print("Press Enter to exit map exploration mode...")
-				input()
-				msgGUI("logo")
-			elif choice == "all": #test all categories one by one
-				for category in alot:
-					quiz(category, alot[category], metalot[category], corewords)
-					keys, nNew, nLearned = getReadyKeys(metalot[category])
-					if nNew + nLearned > 0:
-						break
-			elif choice != "exit":
-				quiz(choice, alot[choice], metalot[choice], corewords)
-		else:
-			print("\nNo entries ready for testing.")
-			return False
+		if choice == "help":
+			print("List of other commands:\n\tmap [geo object]\tShows the specified object on the map.\n\ttimeline\t\tNOT YET IMPLEMENTED")
+			input("Press Enter to return to the menu...")
+		elif choice == "timeline":
+			pass
+			#exportTimelineForGUI(alot)
+			#msgGUI("timeline")
+		elif "map " in choice:
+			if not choice[4].isdigit():
+				choice = choice[:4] + "1 " + choice[4:]
+			choice = choice[:4] + "explore " + choice[4:]
+			msgGUI(choice)
 
-	return True
+			input("Press Enter to exit map exploration mode...")
+			msgGUI("logo")
+		elif choice == "all": #test all categories one by one
+			for category in alot:
+				quiz(category, alot[category], metalot[category], corewords)
+				keys, nNew, nLearned = getReadyKeys(metalot[category])
+				if nNew + nLearned > 0:
+					break
+		elif choice != "exit":
+			quiz(choice, alot[choice], metalot[choice], corewords)
+
+	return False
 
 
 #MAIN
@@ -2888,12 +2891,12 @@ print("\rEstablished connection to AlotGUI.")
 
 #show "main menu"
 try:
-	immediately = mainLoop(alot, metalot)
+	crashed = mainLoop(alot, metalot)
 except:
     print("Uh-oh: " + str(traceback.format_exception(*sys.exc_info())))
-    immediately = False
+    crashed = True
 
-if not immediately:
+if crashed:
 	print("Press Enter to exit...")
 	input()
 

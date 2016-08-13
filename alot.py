@@ -2894,36 +2894,43 @@ DIR = os.path.normpath(DIR)
 alot = {}
 metalot = {}
 
-for filename in os.listdir(DIR):
-	if ".txt" in filename:
-		category = os.path.splitext(filename)[0]
-		alot[category], metalot[category], nNew, nExp, nRed, nDel = parseFile(DIR + os.sep + filename)
+try:
+	for filename in os.listdir(DIR):
+		if ".txt" in filename:
+			category = os.path.splitext(filename)[0]
+			alot[category], metalot[category], nNew, nExp, nRed, nDel = parseFile(DIR + os.sep + filename)
 
-		if nNew > 0 or nExp > 0 or nRed > 0 or nDel > 0:
-			print(filename + " changed: ", end="")
-			if nNew > 0:
-				print(pluralizeIfNecessary(nNew, "new entry"), end="")
-				
-				if nExp + nRed + nDel > 0:
-					print(", ", end="")
-				else:
-					print("")
-			if nExp > 0:
-				print(pluralizeIfNecessary(nExp, "expanded entry"), end="")
-				if nDel + nRed > 0:
-					print(", ", end="")
-				else:
-					print("")
-			if nRed > 0:
-				print(pluralizeIfNecessary(nRed, "reduced entry"), end="")
+			if nNew > 0 or nExp > 0 or nRed > 0 or nDel > 0:
+				print(filename + " changed: ", end="")
+				if nNew > 0:
+					print(pluralizeIfNecessary(nNew, "new entry"), end="")
+					
+					if nExp + nRed + nDel > 0:
+						print(", ", end="")
+					else:
+						print("")
+				if nExp > 0:
+					print(pluralizeIfNecessary(nExp, "expanded entry"), end="")
+					if nDel + nRed > 0:
+						print(", ", end="")
+					else:
+						print("")
+				if nRed > 0:
+					print(pluralizeIfNecessary(nRed, "reduced entry"), end="")
+					if nDel > 0:
+						print(", ", end="")
+					else:
+						print("")
 				if nDel > 0:
-					print(", ", end="")
-				else:
-					print("")
-			if nDel > 0:
-				print(pluralizeIfNecessary(nDel, "deletion"))
+					print(pluralizeIfNecessary(nDel, "deletion"))
 
-			saveToFile(alot[category], metalot[category], DIR + os.sep + category + ".txt") #save changes
+				saveToFile(alot[category], metalot[category], DIR + os.sep + category + ".txt") #save changes
+except:
+	exceptionMsg = str(traceback.format_exception(*sys.exc_info()))
+	if "'SystemExit: 0\\n'" not in exceptionMsg: #if this line is in the msg it means alot detected two entries with the same key and has already printed an error message
+		print("\nError while loading knowledge files:\n" + exceptionMsg)
+	input("\nPress Enter to exit...")
+	sys.exit(0)
 
 #init GUI
 exportTimelineForGUI(alot)
@@ -2949,11 +2956,10 @@ print("\rEstablished connection to AlotGUI.")
 try:
 	crashed = mainLoop(alot, metalot)
 except:
-    print("Uh-oh: " + str(traceback.format_exception(*sys.exc_info())))
+    print("\nUh-oh: " + str(traceback.format_exception(*sys.exc_info())))
     crashed = True
 
 if crashed:
-	print("Press Enter to exit...")
-	input()
+	input("\nPress Enter to exit...")
 
 gui.terminate()

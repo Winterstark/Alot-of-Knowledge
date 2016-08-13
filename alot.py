@@ -2756,6 +2756,35 @@ def quiz(category, catalot, metacatalot, corewords):
 	print("\n")
 
 
+def exploreMap(key, alot):
+	#if no step was specified, set step to 1
+	if len(key) > 2 and key[0].isdigit() and key[1] == ' ':
+		step = key[0]
+		key = key[2:]
+	else:
+		step = '1'
+
+	#find the actual geographical name for the key
+	geoName = key #if the search fails, try with the given key
+	for category in alot:
+		if key in alot[category]:
+			if getType(alot[category][key]) is Type.Geo:
+				geoName = alot[category][key]
+				break
+			elif getType(alot[category][key]) is Type.Class:
+				for attribute in alot[category][key]:
+					if getType(alot[category][key][attribute]) is Type.Geo:
+						geoName = alot[category][key]
+						break
+
+	if '/' in geoName:
+		geoName = geoName[geoName.rfind('/')+1:] #strip "GEO:type/" from the name
+
+	msgGUI("map explore {0} {1}".format(step, geoName))
+	input("Press Enter to exit map exploration mode...")
+	msgGUI("logo")
+
+
 def mainLoop(alot, metalot):
 	#load corewords
 	if os.path.isfile("corewords.txt"):
@@ -2830,14 +2859,9 @@ def mainLoop(alot, metalot):
 			pass
 			#exportTimelineForGUI(alot)
 			#msgGUI("timeline")
-		elif "map " in choice:
-			if not choice[4].isdigit():
-				choice = choice[:4] + "1 " + choice[4:]
-			choice = choice[:4] + "explore " + choice[4:]
-			msgGUI(choice)
-
-			input("Press Enter to exit map exploration mode...")
-			msgGUI("logo")
+		elif choice[:4] == "map ":
+			choice = choice[4:]
+			exploreMap(choice, alot)
 		elif choice == "all": #test all categories one by one
 			for category in alot:
 				quiz(category, alot[category], metalot[category], corewords)

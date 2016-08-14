@@ -1425,7 +1425,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, otherNames={}, geoType=""):
+def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, otherNames={}, acceptOtherNames=True, geoType=""):
 	if type(q) is not str:
 		q = str(q)
 	
@@ -1469,14 +1469,18 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 		answer, exit, immediately = checkForExit(input(prompt))
 		tryAgain = False
 
-		if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, geoType=geoType):
+		result = isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType)
+		if result == "try again":
+			print("Your answer is another name for this entry. Please try again.")
+			tryAgain = True
+		elif result == True:
 			correct = True
 		else:
 			if catalot != None and a in catalot:
 				#check if the user's answer is correct for another entry
 				if attribute == "":
 					for key in catalot:
-						if key != a and toString(catalot[key]) == q and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
+						if key != a and toString(catalot[key]) == q and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
 							if color == COLOR_UNLEARNED:
 								print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
 								tryAgain = True
@@ -1495,7 +1499,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 									break
 
 							#is this the user's answer?
-							if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames):
+							if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
 								if color == COLOR_UNLEARNED:
 									print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
 									tryAgain = True
@@ -1586,7 +1590,7 @@ def convertToFullNumber(answer):
 	return answer
 
 
-def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}, geoType=""):
+def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}, acceptOtherNames=True, geoType=""):
 	originalAnswer = answer
 	aStr = toString(a, False)
 
@@ -1659,9 +1663,12 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		if answer != correctAnswer and len(otherNames) > 0:	
 			for alt in otherNames:
 				if isAnswerCorrect(answer, alt, aIsDate=aIsDate, showFullAnswer=True, indentLevel=indentLevel, otherNames={}, geoType=geoType):
-					answer = correctAnswer
-					showFullAnswer = False
-					break
+					if acceptOtherNames:
+						answer = correctAnswer
+						showFullAnswer = False
+						break
+					else:
+						return "try again"
 
 	correct = answer == correctAnswer
 	
@@ -1881,7 +1888,7 @@ def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 		else:
 			print(attribute + ": " + toString(entry[attribute]))
 
-	correct, exit, immediately = qType_EnterAnswer("What is the name of this entry? ", key, color, catalot=catalot, otherNames=otherNames, geoType=geoType)
+	correct, exit, immediately = qType_EnterAnswer("What is the name of this entry? ", key, color, catalot=catalot, otherNames=otherNames, acceptOtherNames=False, geoType=geoType)
 	return usedGUI, correct, exit, immediately
 
 

@@ -163,6 +163,9 @@ namespace AlotGUI
                 this.BackgroundImage = logo;
                 mode = DisplayMode.Logo;
 
+                updateStatus("");
+                mapExplorationMode = false;
+
                 buttPlay1.Left = buttPlay2.Left = buttPlay3.Left = buttPlay4.Left = buttPlay5.Left = buttPlay6.Left = this.Width; //hide audio buttons
                 audio.Stop();
             }

@@ -2798,7 +2798,7 @@ def exploreMap(key, alot):
 			elif getType(alot[category][key]) is Type.Class:
 				for attribute in alot[category][key]:
 					if getType(alot[category][key][attribute]) is Type.Geo:
-						geoName = alot[category][key]
+						geoName = alot[category][key][attribute]
 						break
 
 	if '/' in geoName:

@@ -614,14 +614,7 @@
 
 
 
-	DESERTS/SALT FLATS
-	"Makgadikgadi Pan": "GEO:Desert/Makgadikgadi Pan",
-	"Etosha Pan": "GEO:Desert/Etosha Pan",
-	"White Sands": "GEO:Desert/White Sands",
-	"Black Rock Desert": "GEO:Desert/Black Rock Desert",
-	"Al Har?j al Aswad": "GEO:Desert/Al Har?j al Aswad",
-	"Hadhramaut": "GEO:Desert/Hadhramaut",
-	"Idh?n Murzuq": "GEO:Desert/Idh?n Murzuq",
+	DESERTS/SALT FLATS	
 	"Hamada du Dr?a": "GEO:Desert/Hamada du Dr?a",
 	"T?n?r?": "GEO:Desert/T?n?r?",
 	"Tassili oua-n-Ahaggar": "GEO:Desert/Tassili oua-n-Ahaggar",
@@ -668,7 +661,6 @@
 	"Valle Longitudinal": "GEO:UNKNOWN_TYPE/Valle Longitudinal",
 	"Central Valley": "GEO:UNKNOWN_TYPE/Central Valley",
 	"Entre Rios": "GEO:UNKNOWN_TYPE/Entre Rios",
-	"Mississippi Delta": "GEO:UNKNOWN_TYPE/Mississippi Delta",
 	"Niger Delta": "GEO:UNKNOWN_TYPE/Niger Delta",
 	"Amazon Delta": "GEO:UNKNOWN_TYPE/Amazon Delta",
 	"Mekong Delta": "GEO:UNKNOWN_TYPE/Mekong Delta",

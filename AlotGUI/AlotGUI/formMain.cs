@@ -1493,8 +1493,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("audio I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Columba livia.mp3");
-            //processMsg("audio B C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\animals\\birdsongs\\Passer domesticus.ogg");
+            //processMsg("map 3 Scarborough Reef");
         }
         
         protected override void OnPaint(PaintEventArgs e)

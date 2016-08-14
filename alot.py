@@ -1865,13 +1865,19 @@ def qType_RecognizeItem(listKey, items, color):
 
 def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 	entry = catalot[key]
+	usedGUIVisually = False
+
 	for attribute in entry:
-		if getType(entry[attribute]) is Type.Image:
+		if getType(entry[attribute]) is Type.Image and not usedGUIVisually:
 			msgGUI("I {}".format(fullPath(entry[attribute])))
-			usedGUI = True
+			usedGUI = usedGUIVisually = True
+		if getType(entry[attribute]) is Type.Geo and not usedGUIVisually:
+			geoType, geoName = splitGeoName(entry, attribute)
+			msgGUI("map 1 {}".format(geoName))
+			usedGUI = usedGUIVisually = True
 		elif getType(entry[attribute]) is Type.Sound:
 			msgGUI("audio B {}".format(fullPath(entry[attribute])))
-			usedGUI = True
+			usedGUI = usedGUIVisually = True
 		else:
 			print(attribute + ": " + toString(entry[attribute]))
 
@@ -2374,29 +2380,33 @@ def quiz(category, catalot, metacatalot, corewords):
 					usedGUI, correct["__finalStep__"], exit, immediately = qType_RecognizeClass(catalot, key, color, otherNames, geoType) #final step
 				else:
 					keepGUIActive = learnedDateAttribute = False
+					usedGUIVisually = False
 
 					for attribute in entry:
 						if attribute not in unlearnedAttributes:
 							correct[attribute] = "already learned"
 							colorPrint("{}: already learned".format(attribute), COLOR_LEARNED)
 
-							#if the class has an image and it has been learned already, show it
-							if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]):
+							if getType(entry[attribute]) is Type.Image and isLearned(step[attribute], entry[attribute]) and not usedGUIVisually:
+								#if the class has an image and it has been learned already, show it
 								msgGUI("I {}".format(fullPath(entry[attribute])))
-								usedGUI = keepGUIActive = True
-
-							#if the class has a sound and it has been learned already, play it
-							if getType(entry[attribute]) is Type.Sound and isLearned(step[attribute], entry[attribute]):
+								usedGUI = usedGUIVisually = keepGUIActive = True
+							elif getType(entry[attribute]) is Type.Geo and isLearned(step[attribute], entry[attribute]) and not usedGUIVisually:
+								#if the class has an map element and it has been learned already, show it
+								geoType, geoName = splitGeoName(entry, attribute)
+								msgGUI("map 1 {}".format(geoName))
+								usedGUI = usedGUIVisually = keepGUIActive = True
+							elif getType(entry[attribute]) is Type.Sound and isLearned(step[attribute], entry[attribute]):
+								#if the class has a sound and it has been learned already, play it
 								msgGUI("audio B {}".format(fullPath(entry[attribute])))
 								usedGUI = keepGUIActive = True
-
-							#if the class has an date and it has been learned already, show it (if there are no leaned images in the class)
-							if (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.DateRange) and isLearned(step[attribute], entry[attribute]):
+							elif (getType(entry[attribute]) is Type.Date or getType(entry[attribute]) is Type.DateRange) and isLearned(step[attribute], entry[attribute]):
+								#if the class has an date and it has been learned already, show it (only if there are no other attributes that use the GUI visually)
 								learnedDateAttribute = True
 
 					if not usedGUI and learnedDateAttribute:
 						msgGUI("timeline " + key)
-						usedGUI = keepGUIActive = True
+						usedGUI = usedGUIVisually = keepGUIActive = True
 					
 					#ask a question for each unlearned attribute
 					firstQuestion = True
@@ -2516,6 +2526,13 @@ def quiz(category, catalot, metacatalot, corewords):
 
 						if not usedGUI and hasDate: #show date on the timeline
 							showTimeline = True #msgGUI is called later after the random question type has been determined (because the timeline mustn't show the entry key to the user if that is the answer to the question)
+
+					if attributeType is not Type.Geo and not usedGUI:
+						#show map element (if any)
+						for attr in entry:
+							if getType(entry[attr]) is Type.Geo:
+								geoType, geoName = splitGeoName(entry, attr)
+								msgGUI("map 1 {}".format(geoName))
 
 					if attributeType is not Type.Sound:
 						#play class sound (if any)

@@ -1901,7 +1901,7 @@ def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 	else:
 		identifier = "entry"
 	correct, exit, immediately = qType_EnterAnswer("What is the name of this {}? ".format(identifier), key, color, catalot=catalot, otherNames=otherNames, acceptOtherNames=False, geoType=geoType)
-	return usedGUI, correct, exit, immediately
+	return correct, exit, immediately, usedGUI
 
 
 def qType_OrderItems(listKey, items, color):
@@ -2112,12 +2112,14 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		stepOffset = 0
 
 	correct = playSound = True
+	usedGUI = False
 	while type(correct) is bool and step <= len(items):
 		if type(items[step-1]) is list:
 			if finalStep:
 				subStep = len(items[step-1]) + 1
 
-			correct, exit, immediately = quizList("", items[step-1], subStep, indentLevel=indentLevel+1, learned=learned)
+			correct, exit, immediately, usedGUIInSublist = quizList("", items[step-1], subStep, indentLevel=indentLevel+1, learned=learned)
+			usedGUI = usedGUI or usedGUIInSublist
 			stepOffset -= 1
 
 			if immediately:
@@ -2143,6 +2145,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), item, color, alwaysShowHint=not finalStep, indentLevel=indentLevel) #pass Dates without converting them to string
 				elif iType is Type.Image:
 					itemCorrect, exit, immediately = qType_Image(items[step-1][0], fullPath(item), learned=learned)
+					usedGUI = True
 				else:
 					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(item), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
 
@@ -2165,7 +2168,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			break
 		elif learned: #if testing learned entry, only one list item is needed
 			printList(items, len(items) + 1, indentLevel, color, step + 1) #print the rest of the list
-			return correct, exit, immediately
+			return correct, exit, immediately, usedGUI
 		elif type(correct) is bool:
 			step += 1
 			if playSound:
@@ -2174,11 +2177,11 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			feedback("Wrong! Correct answer: " + correct)
 
 	if not finalStep:
-		return step, exit, immediately
+		return step, exit, immediately, usedGUI
 	elif step == len(items) + 1:
-		return True, exit, immediately
+		return True, exit, immediately, usedGUI
 	else:
-		return "False", exit, immediately #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
+		return "False", exit, immediately, usedGUI #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
 
 
 def quizSet(setKey, items, step, corewords, color, geoType=""):
@@ -2363,7 +2366,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
 				usedGUI = True
-				correct, exit, immediately = quizList(key, entry[1], step)
+				correct, exit, immediately, usedGUI = quizList(key, entry[1], step)
 			elif entryType is Type.Image:
 				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)
@@ -2396,7 +2399,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						unlearnedAttributes.append(attribute)
 
 				if unlearnedAttributes == []:
-					usedGUI, correct["__finalStep__"], exit, immediately = qType_RecognizeClass(catalot, key, color, otherNames, geoType) #final step
+					correct["__finalStep__"], exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType) #final step
 				else:
 					keepGUIActive = learnedDateAttribute = False
 					usedGUIVisually = False
@@ -2442,7 +2445,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						elif attributeType is Type.Diagram:
 							msgGUI("I {}".format(fullPath(entry[attribute][0])))
 							usedGUI = True
-							correct[attribute], exit, immediately = quizList(key, entry[attribute][1], step[attribute])
+							correct[attribute], exit, immediately, usedGUI = quizList(key, entry[attribute][1], step[attribute])
 						elif attributeType is Type.Image:
 							usedGUI = True
 							correct[attribute], exit, immediately = qType_Image(key, fullPath(entry[attribute]), False, otherNames=otherNames)
@@ -2455,7 +2458,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute, otherNames=otherNames)
 							usedGUI = True
 						elif attributeType is Type.List:
-							correct[attribute], exit, immediately = quizList(key + ", " + attribute, entry[attribute], step[attribute])
+							correct[attribute], exit, immediately, usedGUI = quizList(key + ", " + attribute, entry[attribute], step[attribute])
 						elif attributeType is Type.Set:
 							correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], corewords, color, geoType=geoType)
 
@@ -2476,7 +2479,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						if exit:
 							break
 			elif entryType is Type.List:
-				correct, exit, immediately = quizList(key, entry, step)
+				correct, exit, immediately, usedGUI = quizList(key, entry, step)
 			elif entryType is Type.Set:
 				correct, exit, immediately = quizSet(key, entry, step, corewords, color)
 		else:
@@ -2522,9 +2525,8 @@ def quiz(category, catalot, metacatalot, corewords):
 				if "Consort" in entry:
 					nFTreeAttributes += 1
 
-				#if random.randint(0, len(entry)) == 0:
-				if True:
-					usedGUI, correct, exit, immediately = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
+				if random.randint(0, len(entry)) == 0:
+					correct, exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
 				elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
 					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
 				else:
@@ -2583,7 +2585,7 @@ def quiz(category, catalot, metacatalot, corewords):
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
 						usedGUI = True
 						if random.randint(0, 1) == 0:
-							correct, exit, immediately = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), learned=True)
+							correct, exit, immediately, usedGUI = quizList(key, entry[attribute][1], random.randint(1, len(entry[attribute][1])), learned=True)
 						else:
 							correct, exit, immediately = qType_RecognizeItem(key, entry[attribute][1], color)
 					elif attributeType is Type.Image:
@@ -2617,7 +2619,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							usedGUI = True
 
 						if qType is quizList:
-							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)
+							correct, exit, immediately, usedGUI = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)
 						elif qType is qType_RecognizeList:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color, otherNames=otherNames)
 						else:
@@ -2631,7 +2633,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 
 				if qType == quizList:	
-					correct, exit, immediately = qType(key, entry, random.randint(1, len(entry)), learned=True)
+					correct, exit, immediately, usedGUI = qType(key, entry, random.randint(1, len(entry)), learned=True)
 				else:
 					correct, exit, immediately = qType(key, entry, color)
 			elif entryType is Type.Set:

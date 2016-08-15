@@ -1761,21 +1761,20 @@ def qType_FillString(q, s, difficulty, corewords, color):
 	colorPrint(q + ":", color)
 	print("> ", end="")
 
-	if difficulty < 3:
-		#print hint
-		for i in range(len(parts)):
-			if i not in blanks:
-				print(parts[i], end="")
+	#print hint
+	for i in range(len(parts)):
+		if i not in blanks:
+			print(parts[i], end="")
+		else:
+			if difficulty == 1:
+				print(parts[i][0] + "_" * (len(parts[i])-1), end="") #reveal the first letter
 			else:
-				if difficulty == 1:
-					print(parts[i][0] + "_" * (len(parts[i])-1), end="") #reveal the first letter
-				else:
-					print("_" * len(parts[i]), end="") #show only underscores
+				print("_" * len(parts[i]), end="") #show only underscores
 
-			if i not in noSpaceAfterThisPart:
-				print(" ", end="")
+		if i not in noSpaceAfterThisPart:
+			print(" ", end="")
 
-		print("\n> ", end="")
+	print("\n> ", end="")
 
 	#keep asking the user to fill the blank
 	allCorrect = True
@@ -2191,8 +2190,7 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 			fillStringStep = 1
 		else:
 			fillStringStep = 3
-		correct, exit, immediately = qType_FillString(setKey, list(items)[0], fillStringStep, corewords, color)
-		return correct, exit, immediately
+		return qType_FillString(setKey, list(items)[0], fillStringStep, corewords, color)
 
 	itemsCopy = list(items)
 	hasSubSets, itemsSets = unwrapSets(itemsCopy)
@@ -2207,19 +2205,15 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 	setOfPreviousAnswer = -1
 	itemsSetJumps = 0
 
-	if step != 1:
-		if nSubSets == 1:
-			colorPrint("{0} ({1}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item")), color)
-		else:
-			colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(nSubSets, "set")), color)
-		showFullAnswer = True
-	else:
+	#print heading and hints
+	if nSubSets == 1:
 		colorPrint(setKey, color)
+	else:
+		colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(nSubSets, "set")), color)
 
-		#print hints
-		showFullAnswer = False
-		for item in itemsCopy:
-			print("> " + constructHint(item))
+	showFullAnswer = False
+	for item in itemsCopy:
+		print("> " + constructHint(item))
 
 	while len(itemsLCaseWithoutParentheses) > 0:
 		answer, exit, immediately = checkForExit(input("> "))

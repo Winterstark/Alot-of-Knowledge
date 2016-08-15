@@ -858,11 +858,19 @@ def toString(answer, makeMoreReadable=True):
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "").replace('"', '')
 	elif answerType is Type.Set:
 		s = str(answer).replace('frozenset', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
-		#remove parentheses only if they are the first or last character
-		if s[0] == '(':
-			s = s[1:]
-		if s[-1] == ')':
-			s = s[:-1]
+		if s != "" and s[0] == '(' and s[-1] == ')': #remove brackets only if they enclose the whole string
+			#check that the two brackets correspond to each other
+			ind = 0
+			parenthesesDepth = 1
+			while parenthesesDepth > 0 and ind < len(s):
+				ind += 1
+				if s[ind] == '(':
+					parenthesesDepth += 1
+				elif s[ind] == ')':
+					parenthesesDepth -= 1
+
+			if ind == len(s)-1:
+				s = s[1:-1].strip()
 		return s
 	elif answerType is Type.Tuple:
 		s = ""
@@ -1834,7 +1842,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 	return allCorrect, exit, immediately
 
 
-def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames={}):
+def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames={}, geoType=""):
 	#pick 3 random items
 	randomItems = list(items)
 	random.shuffle(randomItems)
@@ -1855,7 +1863,7 @@ def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", other
 	else:
 		attributeName = ""
 
-	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems, otherNames=otherNames)
+	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems, otherNames=otherNames, geoType=geoType)
 
 
 def qType_RecognizeItem(listKey, items, color):
@@ -2617,14 +2625,15 @@ def quiz(category, catalot, metacatalot, corewords):
 						if qType is quizList:
 							correct, exit, immediately, usedGUI = qType(key + ", " + attribute, entry[attribute], random.randint(1, len(entry[attribute])), learned=True)
 						elif qType is qType_RecognizeList:
-							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color, otherNames=otherNames)
+							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color, otherNames=otherNames, geoType=geoType)
 						else:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 					elif attributeType is Type.Set:
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, corewords, color, geoType=geoType)
 						else:
-							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames)
+							print("geoType:", geoType)
+							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames, geoType=geoType)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

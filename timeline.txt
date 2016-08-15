@@ -1,398 +1,398 @@
-Denmark :: 1945 // Denmark // 
-Hesiod :: -800 - -700 // Hesiod // 
-First Battle of the Masurian Lakes :: 1914.668493150685 // Eastern Front of WWI // 
-James Monroe :: 1817 - 1825 // Presidents of the U.S. // 
-Franjo Greguric :: 1991 - 1992 // Prime ministers of Croatia // 
-Step Pyramid of Djoser :: -2700 - -2600 // Step Pyramid of Djoser // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ancient Egypt\Saqqara.jpg
-Somalia :: 1960 // Somalia // 
-Democratic Republic of the Congo :: 1960 // Democratic Republic of the Congo // 
-Jordan :: 1946 // Jordan // 
-John F. Kennedy :: 1961 - 1963 // Presidents of the U.S. // 
-King Louis XVI executed :: 1793.0027397260274 // French Revolution // 
-Croatian Peoples Party - Liberal Democrats :: 1990 // Croatian Peoples Party - Liberal Democrats // 
-Slovenia :: 1991 // Slovenia // 
-Liechtenstein :: 1806 // Liechtenstein // 
-James Buchanan :: 1857 - 1861 // Presidents of the U.S. // 
-Millard Fillmore :: 1850 - 1853 // Presidents of the U.S. // 
-Yemen :: 1990 // Yemen // 
-German Spring Offensives (Kaiserschlacht) :: 1918.164383561644 - 1918.4986301369863 // Western Front of WWI // 
-Macau :: 1999 // Macau // 
-Great Retreat :: 1915.4986301369863 - 1915.668493150685 // Eastern Front of WWI // 
-Sao Tome and Principe :: 1975 // Sao Tome and Principe // 
-Joseph Stalin :: 1924 - 1953 // Leaders of the Soviet Union // 
-Republic of Venice :: 697 - 1797 // Republic of Venice // 
-Vietnam War (Second Indochina War) :: 1955 - 1975 //  // 
-Netherlands :: 1945 // Netherlands // 
-Ivo Sanader :: 2003 - 2009 // Prime ministers of Croatia // 
-Micronesia :: 1986 // Micronesia // 
-Australia :: 1942 // Australia // 
-Benjamin Harrison :: 1889 - 1893 // Presidents of the U.S. // 
-Iran :: 1979 // Iran // 
-William McKinley :: 1897 - 1901 // Presidents of the U.S. // 
-Akrotiri and Dhekelia :: 1960 // Akrotiri and Dhekelia // 
-Basilica di San Marco :: 1001 - 1101 // Basilica di San Marco // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Basilica di San Marco
-United Arab Emirates :: 1971 // United Arab Emirates // 
-Second Battle of Ypres :: 1915.2493150684932 - 1915.331506849315 // Western Front of WWI // 
-Corinthian order :: -434 - -401 // Corinthian order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Corinthian order
-Ptolemaic Kingdom :: -334 - -1 // Ancient Egyptian periods // 
-Airplane :: 1903 // Airplane // 
-Azerbaijan :: 1991 // Azerbaijan // 
+First Battle of Champagne :: 1914.9178082191781 - 1915.164383561644 // Western Front of WWI // 
+Eritrea :: 1991 // Eritrea // 
+Vladimir Lenin :: 1922 - 1924 // Leaders of the Soviet Union // 
+Napoleon crowned as Emperor Napoleon I :: 1804 // Rise of Napoleon // 
+Kerensky Offensive :: 1917.4986301369863 // Eastern Front of WWI // 
 Botswana :: 1966 // Botswana // 
-Liberia :: 1847 // Liberia // 
+Cyprus :: 1960 // Cyprus // 
+Declaration of Pillnitz (by Frederick II of Prussia and the Habsburg Holy Roman Emperor Leopold II, who was Marie Antoinettes brother) :: 1791.5835616438355 // French Revolution // 
+Iran :: 1979 // Iran // 
+Djibouti :: 1977 // Djibouti // 
+American Civil War :: 1861 - 1865 //  // 
+Georgy Malenkov :: 1953 - 1955 // Leaders of the Soviet Union // 
+Harry S. Truman :: 1945 - 1953 // Presidents of the U.S. // 
+Japan :: 1952 // Japan // 
+Napoleon returns to Spain and retakes Madrid :: 1808.9180327868853 // Peninsular War // 
+Iraq War :: 2003 - 2016 // Iraq War // 
+Battle of Loos :: 1915.668493150685 - 1915.7506849315068 // Western Front of WWI // 
+Battle of Waterloo :: 1815.4164383561645 //  // 
+Ivo Josipovic :: 2010 - 2015 // Presidents of Croatia // 
+Kolinda Grabar-Kitarovic :: 2015 - 2016 // Presidents of Croatia // 
+War of the Sixth Coalition :: 1812 - 1814 // War of the Sixth Coalition // 
+Franjo Greguric :: 1991 - 1992 // Prime ministers of Croatia // 
+Nikica Valentic :: 1993 - 1995 // Prime ministers of Croatia // 
+Belgium :: 1945 // Belgium // 
+Zimbabwe :: 1980 // Zimbabwe // 
+Romania :: 1989 // Romania // 
+Ionic order :: -567 - -534 // Ionic order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ionic order
+Denmark :: 1945 // Denmark // 
+Battle of Trafalgar :: 1805.7506849315068 // War of the Third Coalition // 
+Napoleon embarks for Egypt :: 1798.331506849315 // Rise of Napoleon // 
+Paraguay :: 1811 // Paraguay // 
+Moldova :: 1991 // Moldova // 
+French invasion of Russia :: 1812.4180327868853 - 1812.9180327868853 // French invasion of Russia // 
+Bhutan :: 1907 // Bhutan // 
+Chester A. Arthur :: 1881 - 1885 // Presidents of the U.S. // 
+Declaration of the Rights of Man and of the Citizen :: 1789.5835616438355 // French Revolution // 
+President Hindenburg appoints Hitler as chancellor after two parliamentary elections without a majority government :: 1933.0027397260274 // Hitlers rise to power // 
+Hatshepsut :: -1667 - -1334 //  // 
+Malta :: 1974 // Malta // 
+Jan Hus :: 1383 - 1417 // Jan Hus // 
+Poland :: 1989 // Poland // 
+Honduras :: 1838 // Honduras // 
+Taiwan :: 1949 // Taiwan // 
+Lyndon B. Johnson :: 1963 - 1969 // Presidents of the U.S. // 
+Spain :: 1978 // Spain // 
+France occupies Madrid :: 1808.1666666666667 // Peninsular War // 
+Claudius :: 41 - 54 // Julio-Claudian dynasty // 
+King Louis XVI executed :: 1793.0027397260274 // French Revolution // 
+Luxembourg :: 1945 // Luxembourg // 
+American Revolutionary War :: 1775 - 1783 //  // 
+New Kingdom :: -1500 - -1000 // Ancient Egyptian periods // 
+Akhenaten :: -1334 - -1001 //  // 
+Weimar Republic :: 1919 - 1933 //  // 
+Franklin D. Roosevelt :: 1933 - 1945 // Presidents of the U.S. // 
+Benjamin Harrison :: 1889 - 1893 // Presidents of the U.S. // 
+Step Pyramid of Djoser :: -2700 - -2600 // Step Pyramid of Djoser // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ancient Egypt\Saqqara.jpg
+Comoros :: 1975 // Comoros // 
+Battle of Cambrai :: 1917.835616438356 - 1917.9178082191781 // Western Front of WWI // 
+Aruba :: 1986 // Aruba // 
+Battle of Aspern-Essling :: 1809.331506849315 // War of the Fifth Coalition // 
+Finland :: 1917 // Finland // 
+Battle of the Nile :: 1798.5835616438355 // Rise of Napoleon // 
+The Berlin Wall :: 1961 - 1989 //  // 
+Cape Verde :: 1975 // Cape Verde // 
+Jadranka Kosor :: 2009 - 2011 // Prime ministers of Croatia // 
+Dominican Republic :: 1924 // Dominican Republic // 
+Portugal :: 1976 // Portugal // 
+Ptolemaic Kingdom :: -334 - -1 // Ancient Egyptian periods // 
+Ottoman Empire joins the Central Powers :: 1914.7506849315068 // WWI timeline // 
+Nivelle Offensive :: 1917.2493150684932 - 1917.331506849315 // Western Front of WWI // 
+Augustus :: -27 - 14 // Julio-Claudian dynasty // 
+Vanuatu :: 1980 // Vanuatu // 
+Battle of Bautzen :: 1813.331506849315 // War of the Sixth Coalition // 
 Hitler joins the German Workers Party :: 1919 // Hitlers rise to power // 
-Greece :: 1821 // Greece // 
+Italy joins the Allied Powers :: 1915.331506849315 // WWI timeline // 
+Crimean War :: 1853 - 1856 // Crimean War // 
+James A. Garfield :: 1881 // Presidents of the U.S. // 
+James Madison :: 1809 - 1817 // Presidents of the U.S. // 
+Battle of Tannenberg :: 1914.6438356164383 - 1914.66301369863 // Eastern Front of WWI // 
+Battle of Bailen: The French retreat :: 1808.5 // Peninsular War // 
+Mikhail Gorbachev :: 1985 - 1991 // Leaders of the Soviet Union // 
+Portugal joins the Allied Powers :: 1916.1666666666667 // WWI timeline // 
+Fall of Constantinople :: 1453 //  // 
+Nauru :: 1968 // Nauru // 
+Iraq :: 2004 // Iraq // 
+Thermidorian Reaction - Robespierre executed :: 1794.4986301369863 // French Revolution // 
+Germany invades Belgium :: 1914.5917808219178 // WWI timeline // 
+George Washington :: 1789 - 1797 // Presidents of the U.S. // 
+Hesiod :: -800 - -700 // Hesiod // 
+Latvia :: 1991 // Latvia // 
+United States Virgin Islands :: 1917 // United States Virgin Islands // 
+William H. Harrison :: 1841 // Presidents of the U.S. // 
+William H. Taft :: 1909 - 1913 // Presidents of the U.S. // 
+Peru :: 1824 // Peru // 
+Brusilov offensive :: 1916.4180327868853 - 1916.6693989071039 // Eastern Front of WWI // 
+Siege of Toulon :: 1793 // Rise of Napoleon // 
+War of the Third Coalition :: 1803 - 1806 // War of the Third Coalition // 
+Serbia :: 2006 // Serbia // 
+Cuban revolutionists win :: 1959 //  // 
+New Zealand :: 1947 // New Zealand // 
+Coup of 18 Brumaire - Napoleon becomes First Consul (Usually viewed as the end of the French Revolution) :: 1799.835616438356 // French Revolution // 
+Siege of Przemysl :: 1914.668493150685 - 1915.164383561644 // Eastern Front of WWI // 
+Woodrow Wilson :: 1913 - 1921 // Presidents of the U.S. // 
+Barack Obama :: 2009 - 2016 // Presidents of the U.S. // 
+Azerbaijan :: 1991 // Azerbaijan // 
+Vatican City :: 1929 // Vatican City // 
+Andrew Johnson :: 1865 - 1869 // Presidents of the U.S. // 
+Battle of Jena-Auerstedt :: 1806.7506849315068 // War of the Fourth Coalition // 
+Sao Tome and Principe :: 1975 // Sao Tome and Principe // 
+Sweden :: 1905 // Sweden // 
+Croatian Peoples Party - Liberal Democrats :: 1990 // Croatian Peoples Party - Liberal Democrats // 
+February Revolution :: 1917.1835616438357 //  // 
+Battle of Liege :: 1914.5945205479452 - 1914.6246575342466 // Western Front of WWI // 
+Unification of Italy :: 1861 //  // 
+Herbert Hoover :: 1929 - 1933 // Presidents of the U.S. // 
+Giotto (di Bondone) :: 1283 - 1350 // Giotto (di Bondone) // 
+Yemeni Civil War :: 2015 - 2016 // Yemeni Civil War // 
+Old Kingdom :: -3000 - -2000 // Ancient Egyptian periods // 
+Ivo Sanader :: 2003 - 2009 // Prime ministers of Croatia // 
+Syria :: 1961 // Syria // 
+Capture of Malta :: 1798.4164383561645 // Rise of Napoleon // 
+Mozambique :: 1990 // Mozambique // 
+Monarchy abolished; Republic declared (Year One of the French Republican Calendar) :: 1792.6693989071039 // French Revolution // 
+Bulgaria :: 1990 // Bulgaria // 
+Romania joins the Allied Powers :: 1916.5846994535518 // WWI timeline // 
+Oman :: 1970 // Oman // 
+Czech Republic :: 1993 // Czech Republic // 
+Friedrich Nietzsche :: 1851 - 1901 // Friedrich Nietzsche // 
+Yuri Andropov :: 1982 - 1984 // Leaders of the Soviet Union // 
+Womens March on Versailles :: 1789.7506849315068 // French Revolution // 
+James Monroe :: 1817 - 1825 // Presidents of the U.S. // 
+Korean War :: 1950 - 1953 //  // 
+Namibia :: 1990 // Namibia // 
+United States :: 1776 // United States // 
+Josip Manolic :: 1990 - 1991 // Prime ministers of Croatia // 
+Aristotle :: -384 - -322 // Aristotle // 
+Storming of the Tuileries Palace :: 1792.5846994535518 // French Revolution // 
 France occupies the Ruhr (in response to the Weimar Republics failure to continue its reparation payments) :: 1923 - 1925 // Hitlers rise to power // 
 Plato :: -418 - -351 // Plato // 
-Portugal joins the Allied Powers :: 1916.1666666666667 // WWI timeline // 
-Battle of the Nile :: 1798.5835616438355 // Rise of Napoleon // 
-Monarchy abolished; Republic declared (Year One of the French Republican Calendar) :: 1792.6693989071039 // French Revolution // 
-Sinking of the Lusitania :: 1915.331506849315 //  // 
-French invasion of Russia :: 1812.4180327868853 - 1812.9180327868853 // French invasion of Russia // 
-Siege of Przemysl :: 1914.668493150685 - 1915.164383561644 // Eastern Front of WWI // 
-First Indochina War :: 1946 - 1954 //  // 
-Ronald Reagan :: 1981 - 1989 // Presidents of the U.S. // 
-Middle Kingdom :: -2000 - -1667 // Ancient Egyptian periods // 
-Battle of Verdun :: 1916.0874316939892 - 1916.9180327868853 // Western Front of WWI // 
-Invasion :: 2003 // Iraq War // 
-February Revolution :: 1917.1835616438357 //  // 
-Popular uprisings begin :: 1808.3360655737704 // Peninsular War // 
-War of the First Coalition :: 1792 - 1797 // War of the First Coalition // 
-Civil war :: 2013 - 2016 // Iraq War // 
-Republic of Genoa :: 1051 - 1797 // Republic of Genoa // 
-Ivo Josipovic :: 2010 - 2015 // Presidents of Croatia // 
-Hitler in prison; writes Mein Kampf :: 1924 // Hitlers rise to power // 
-Doric order :: -700 - -600 // Doric order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Doric order
-Francis Bacon :: 1550 - 1617 // Francis Bacon // 
-Storming of the Bastille :: 1789.5342465753424 // French Revolution // 
-John Wycliffe :: 1301 - 1401 // John Wycliffe // 
-Battle of Berezina :: 1812.8360655737704 // French invasion of Russia // 
-War of the Fourth Coalition :: 1806 - 1807 // War of the Fourth Coalition // 
-Battle of Aspern-Essling :: 1809.331506849315 // War of the Fifth Coalition // 
-Yemeni Civil War :: 2015 - 2016 // Yemeni Civil War // 
-Storming of the Tuileries Palace :: 1792.5846994535518 // French Revolution // 
-Franjo Tudman (after his death in 1999 the acting presidents were Vlatko Pavletic and then Zlatko Tomcic) :: 1990 - 1999 // Presidents of Croatia // 
-Malta :: 1974 // Malta // 
-Maximilien Robespierre heads the Committee of Public Safety - Reign of Terror :: 1793 - 1794 // French Revolution // 
-Latvia :: 1991 // Latvia // 
-Old Kingdom :: -3000 - -2000 // Ancient Egyptian periods // 
-Battle of Austerlitz :: 1805.9178082191781 // War of the Third Coalition // 
-Battle of Cambrai :: 1917.835616438356 - 1917.9178082191781 // Western Front of WWI // 
-Switzerland :: 1848 // Switzerland // 
-Andorra :: 1814 // Andorra // 
-Battle of Marengo :: 1800 // War of the Second Coalition // 
-Battle of Eylau :: 1807.0876712328768 // War of the Fourth Coalition // 
-Martin Luther :: 1483 - 1550 // Martin Luther // 
-Germany invades Belgium :: 1914.5917808219178 // WWI timeline // 
-Slovakia :: 1993 // Slovakia // 
-Hatshepsut :: -1667 - -1334 //  // 
-Gibraltar :: 1713 // Gibraltar // 
-Battle of Loos :: 1915.668493150685 - 1915.7506849315068 // Western Front of WWI // 
-Battle of Neuve Chapelle :: 1915.164383561644 // Western Front of WWI // 
-Hot air balloon :: 1767 - 1800 // Hot air balloon // 
-Battle of Galicia :: 1914.5835616438355 - 1914.668493150685 // Eastern Front of WWI // 
-Pindar :: -500 - -400 //  // 
-Zimbabwe :: 1980 // Zimbabwe // 
-Democratic Party :: 1801 - 1834 // Democratic Party // 
-Abraham Lincoln :: 1861 - 1865 // Presidents of the U.S. // 
-Republic of the Congo :: 1960 // Republic of the Congo // 
-Coup of 18 Brumaire - Napoleon becomes First Consul (Usually viewed as the end of the French Revolution) :: 1799.835616438356 // French Revolution // 
-Unification of Italy :: 1861 //  // 
-Social Democratic Party of Croatia :: 1990 // Social Democratic Party of Croatia // 
-Beer hall putsch :: 1923 // Hitlers rise to power // 
-Martin Luther starts the Reformation by posting his 95 Theses on the church door in Wittenberg. :: 1517 //  // 
-Lake Naroch Offensive :: 1916.1666666666667 // Eastern Front of WWI // 
-Bulgaria :: 1990 // Bulgaria // 
-Constitution completed :: 1791.668493150685 // French Revolution // 
-France :: 1958 // France // 
-Second Battle of the Masurian Lakes :: 1915.0876712328768 // Eastern Front of WWI // 
-Austria :: 1955 // Austria // 
-Italy joins the Allied Powers :: 1915.331506849315 // WWI timeline // 
-Taiwan :: 1949 // Taiwan // 
-Georgia :: 1991 // Georgia // 
-First Battle of the Marne :: 1914.6794520547944 - 1914.6986301369864 // Western Front of WWI // 
-Unification of Germany :: 1871 //  // 
-Ottoman Empire joins the Central Powers :: 1914.7506849315068 // WWI timeline // 
-Austria-Hungary declares war on Serbia :: 1914.572602739726 // WWI timeline // 
-Palestine :: 1988 // Palestine // 
-Haiti :: 1934 // Haiti // 
-Kolinda Grabar-Kitarovic :: 2015 - 2016 // Presidents of Croatia // 
-Nikica Valentic :: 1993 - 1995 // Prime ministers of Croatia // 
-Syrian Civil War :: 2011 // Syrian Civil War // 
-Luxembourg :: 1945 // Luxembourg // 
-Declaration of Pillnitz (by Frederick II of Prussia and the Habsburg Holy Roman Emperor Leopold II, who was Marie Antoinettes brother) :: 1791.5835616438355 // French Revolution // 
-Konstantin Chernenko :: 1984 - 1985 // Leaders of the Soviet Union // 
-March on Rome; Mussolini becomes Prime Minister :: 1922 //  // 
-Martin Van Buren :: 1837 - 1841 // Presidents of the U.S. // 
-Theodore Roosevelt :: 1901 - 1909 // Presidents of the U.S. // 
-October Revolution :: 1917.854794520548 //  // 
-Georgy Malenkov :: 1953 - 1955 // Leaders of the Soviet Union // 
-Akhenaten :: -1334 - -1001 //  // 
-U.S. withdrawal :: 2011 // Iraq War // 
-San Marino :: 301 // San Marino // 
-Herbert Hoover :: 1929 - 1933 // Presidents of the U.S. // 
-Benito Mussolini :: 1883 - 1945.323287671233 // Benito Mussolini // 
-The Berlin Wall :: 1961 - 1989 //  // 
-South Georgia and the South Sandwich Islands :: 1985 // South Georgia and the South Sandwich Islands // 
-Constitution of the Year III - Establishment of the Directory :: 1795 // French Revolution // 
-Mikhail Gorbachev :: 1985 - 1991 // Leaders of the Soviet Union // 
-James K. Polk :: 1845 - 1849 // Presidents of the U.S. // 
-Bay of Pigs Invasion :: 1961 //  // 
-Andrew Johnson :: 1865 - 1869 // Presidents of the U.S. // 
-Battle of Wagram :: 1809.4986301369863 // War of the Fifth Coalition // 
-Korean War :: 1950 - 1953 //  // 
-(Royal) Flight to Varennes :: 1791.4164383561645 // French Revolution // 
-Gas lighting :: 1767 - 1800 // Gas lighting // 
-Vladimir Lenin :: 1922 - 1924 // Leaders of the Soviet Union // 
-Battle of Vitoria: Wellesley decisively defeats the French army :: 1813 // Peninsular War // 
-Arsenale di Venezia :: 1100 // Arsenale di Venezia // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Arsenale di Venezia.jpg
-Curacao :: 2010 // Curacao // 
-Declaration of the Rights of Man and of the Citizen :: 1789.5835616438355 // French Revolution // 
-Pinochets military dictatorship of Chile :: 1973 - 1990 //  // 
-Cyprus :: 1960 // Cyprus // 
-Napoleon returns to Spain and retakes Madrid :: 1808.9180327868853 // Peninsular War // 
-Herbert Spencer :: 1801 - 1901 // Herbert Spencer // 
-Spain :: 1978 // Spain // 
-Albania :: 1992 // Albania // 
-Nauru :: 1968 // Nauru // 
-Napoleon crowned as Emperor Napoleon I :: 1804 // Rise of Napoleon // 
-Weimar Republic :: 1919 - 1933 //  // 
-Battle of Liege :: 1914.5945205479452 - 1914.6246575342466 // Western Front of WWI // 
-Syria :: 1961 // Syria // 
-Croatia :: 1991 // Croatia // 
-The French retreat :: 1812.7513661202186 // French invasion of Russia // 
-Thermidorian Reaction - Robespierre executed :: 1794.4986301369863 // French Revolution // 
-Battle of Borodino :: 1812.6693989071039 // French invasion of Russia // 
-Battle of Passchendaele :: 1917.4986301369863 - 1917.835616438356 // Western Front of WWI // 
-Georg Wilhelm Friedrich Hegel :: 1783 - 1817 // Georg Wilhelm Friedrich Hegel // 
-Most nezavisnih lista :: 2012 // Most nezavisnih lista // 
-Moldova :: 1991 // Moldova // 
-Bosnia and Herzegovina :: 1992 // Bosnia and Herzegovina // 
-Lithuania :: 1990 // Lithuania // 
-Grover Cleveland :: 1893 - 1897 // Presidents of the U.S. // 
-Canada :: 1931 // Canada // 
-Constitution of the Year X - Napoleon becomes First Consul for life :: 1802 // Rise of Napoleon // 
-Andrew Jackson :: 1829 - 1837 // Presidents of the U.S. // 
-Ionic order :: -567 - -534 // Ionic order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ionic order
-Democratic-Republican Party :: 1783 - 1817 // Democratic-Republican Party // 
-Aruba :: 1986 // Aruba // 
-Hundred Days Offensive :: 1918.5835616438355 - 1918.835616438356 // Western Front of WWI // 
-Wellesley captures Madrid :: 1812 // Peninsular War // 
-Hrvoje Sarinic :: 1992 - 1993 // Prime ministers of Croatia // 
-Champ de Mars Massacre :: 1791.4986301369863 // French Revolution // 
-Friedrich Nietzsche :: 1851 - 1901 // Friedrich Nietzsche // 
-Ponte di Rialto :: 1501 - 1601 // Ponte di Rialto // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Ponte di Rialto.jpg
-Sweden :: 1905 // Sweden // 
-Japan joins the Allied Powers :: 1914.5835616438355 // WWI timeline // 
-Eritrea :: 1991 // Eritrea // 
-Franklin Pierce :: 1853 - 1857 // Presidents of the U.S. // 
-Belarus :: 1991 // Belarus // 
-Nikita Khrushchev :: 1955 - 1964 // Leaders of the Soviet Union // 
-South Korea :: 1948 // South Korea // 
-Airship :: 1834 - 1867 // Airship // 
-Ireland :: 1937 // Ireland // 
-Alexander the Great :: -356 - -323 // Alexander the Great // 
-NSDAP wins 18% of the vote in the Reichstag elections :: 1930 // Hitlers rise to power // 
-Tonga :: 1970 // Tonga // 
-Assassination of Archduke Franz Ferdinand of Austria-Hungary :: 1914.490410958904 // WWI timeline // 
-Estates-General :: 1789.331506849315 // French Revolution // 
-Treaty of Brest-Litovsk :: 1918.164383561644 // Eastern Front of WWI // 
-Siege of Toulon :: 1793 // Rise of Napoleon // 
-New Kingdom :: -1500 - -1000 // Ancient Egyptian periods // 
-Dominican Republic :: 1924 // Dominican Republic // 
-Return to France :: 1799.5835616438355 // Rise of Napoleon // 
-James Madison :: 1809 - 1817 // Presidents of the U.S. // 
-Macedonia :: 1991 // Macedonia // 
-France occupies Madrid :: 1808.1666666666667 // Peninsular War // 
-Germany declares war on France :: 1914.5890410958905 // WWI timeline // 
-Vanuatu :: 1980 // Vanuatu // 
-Claudius :: 41 - 54 // Julio-Claudian dynasty // 
-New Zealand :: 1947 // New Zealand // 
-Jimmy Carter :: 1977 - 1981 // Presidents of the U.S. // 
-Hitler becomes chairman of the NSDAP :: 1921 // Hitlers rise to power // 
-Croatian Democratic Union :: 1989 // Croatian Democratic Union // 
-Ukraine :: 1991 // Ukraine // 
-Philippines :: 1946 // Philippines // 
-American Civil War :: 1861 - 1865 //  // 
-Nero :: 54 - 68 // Julio-Claudian dynasty // 
-Stjepan Mesic :: 1990 // Prime ministers of Croatia // 
-President Hindenburg appoints Hitler as chancellor after two parliamentary elections without a majority government :: 1933.0027397260274 // Hitlers rise to power // 
-Cross of Lothair :: 1000 // Cross of Lothair // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Lothair
-Battle of Friedland :: 1807.4164383561645 // War of the Fourth Coalition // 
-George W. Bush :: 2001 - 2009 // Presidents of the U.S. // 
-Bahrain :: 1971 // Bahrain // 
-War of the Third Coalition :: 1803 - 1806 // War of the Third Coalition // 
-Federalist Party :: 1783 - 1817 //  // 
-El Salvador :: 1841 // El Salvador // 
-John Quincy Adams :: 1825 - 1829 // Presidents of the U.S. // 
-Coup of 18 Brumaire - Napoleon becomes First Consul :: 1799.835616438356 // Rise of Napoleon // 
-John Tyler :: 1841 - 1845 // Presidents of the U.S. // 
-China :: 1949 // China // 
-Baruch Spinoza :: 1601 - 1701 // Baruch Spinoza // 
-Armistice of Compiegne :: 1918.86301369863 // WWI timeline // 
-Czech Republic :: 1993 // Czech Republic // 
-Paraguay :: 1811 // Paraguay // 
-Hungary :: 1989 // Hungary // 
-Ivica Racan :: 2000 - 2003 // Prime ministers of Croatia // 
-France and Spain invade Portugal :: 1807 // Peninsular War // 
-Bulgaria joins the Central Powers :: 1915.7506849315068 // WWI timeline // 
-Estonia :: 1991 // Estonia // 
-Comoros :: 1975 // Comoros // 
-Bill Clinton :: 1993 - 2001 // Presidents of the U.S. // 
-Serbia :: 2006 // Serbia // 
-Immanuel Kant :: 1701 - 1801 // Immanuel Kant // 
-Franklin D. Roosevelt :: 1933 - 1945 // Presidents of the U.S. // 
-First Battle of Champagne :: 1914.9178082191781 - 1915.164383561644 // Western Front of WWI // 
-Republican Party :: 1834 - 1867 // Republican Party // 
-Ara Pacis (Altar of Peace) :: -34 - -1 // Ara Pacis (Altar of Peace) // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ara Pacis.jpg
-Napoleon embarks for Egypt :: 1798.331506849315 // Rise of Napoleon // 
-Battle of Ulm :: 1805.7506849315068 // War of the Third Coalition // 
-Adolf Hitler :: 1889 - 1945.3287671232877 // Adolf Hitler // 
-War of the Sixth Coalition :: 1812 - 1814 // War of the Sixth Coalition // 
-Cuban revolutionists win :: 1959 //  // 
-Germany occupies Luxembourg :: 1914.5863013698631 // WWI timeline // 
-The light bulb :: 1867 - 1900 // The light bulb // 
-NSDAP wins 44% of the vote in the Reichstag elections; the Reichstag passes the Enabling Act :: 1933.164383561644 // Hitlers rise to power // 
-The Gambia :: 1965 // The Gambia // 
-Chester A. Arthur :: 1881 - 1885 // Presidents of the U.S. // 
-William H. Harrison :: 1841 // Presidents of the U.S. // 
-Battle of Trafalgar :: 1805.7506849315068 // War of the Third Coalition // 
-John Adams :: 1797 - 1801 // Presidents of the U.S. // 
-Francois-Marie Arouet/Voltaire :: 1701 - 1801 // Francois-Marie Arouet/Voltaire // 
-Leonid Brezhnev :: 1964 - 1982 // Leaders of the Soviet Union // 
-Saint Vincent and the Grenadines :: 1979 // Saint Vincent and the Grenadines // 
-Battle of Bailen: The French retreat :: 1808.5 // Peninsular War // 
-Battle of Tannenberg :: 1914.6438356164383 - 1914.66301369863 // Eastern Front of WWI // 
-War of the Second Coalition :: 1798 - 1802 // War of the Second Coalition // 
-Norway :: 1905 // Norway // 
-Hundred Days :: 1815.164383561644 - 1815.4986301369863 //  // 
-Greece joins the Allied Powers :: 1917.4164383561645 // WWI timeline // 
-Peru :: 1824 // Peru // 
-Battle of Bautzen :: 1813.331506849315 // War of the Sixth Coalition // 
-United Kingdom :: 1922 // United Kingdom // 
-Second Battle of Champagne :: 1915.668493150685 - 1915.835616438356 // Western Front of WWI // 
-Cape Verde :: 1975 // Cape Verde // 
-Mozambique :: 1990 // Mozambique // 
-First Italian campaign :: 1796 - 1797 // Rise of Napoleon // 
-Augustus :: -27 - 14 // Julio-Claudian dynasty // 
-Battle of the Somme :: 1916.5 - 1916.8360655737704 // Western Front of WWI // 
-George H. W. Bush :: 1989 - 1993 // Presidents of the U.S. // 
-Germany declares war on Russia :: 1914.5835616438355 // WWI timeline // 
-Woodrow Wilson :: 1913 - 1921 // Presidents of the U.S. // 
-Late Period :: -667 - -334 // Ancient Egyptian periods // 
-Russia :: 1991 // Russia // 
-Battle of the Yser :: 1914.7506849315068 // Western Front of WWI // 
-William H. Taft :: 1909 - 1913 // Presidents of the U.S. // 
-Harry S. Truman :: 1945 - 1953 // Presidents of the U.S. // 
-Northern Cyprus :: 1983 // Northern Cyprus // 
-Capture of Malta :: 1798.4164383561645 // Rise of Napoleon // 
-Romania :: 1989 // Romania // 
-Bhutan :: 1907 // Bhutan // 
-Yuri Andropov :: 1982 - 1984 // Leaders of the Soviet Union // 
-Papua New Guinea :: 1975 // Papua New Guinea // 
-Finland :: 1917 // Finland // 
-Battle of Jena-Auerstedt :: 1806.7506849315068 // War of the Fourth Coalition // 
-Somaliland :: 1991 // Somaliland // 
-Ulysses S. Grant :: 1869 - 1877 // Presidents of the U.S. // 
-Lyndon B. Johnson :: 1963 - 1969 // Presidents of the U.S. // 
-Battle of Valmy :: 1792 // War of the First Coalition // 
-Romania joins the Allied Powers :: 1916.5846994535518 // WWI timeline // 
-U.S. joins the Allied Powers :: 1917.2493150684932 // WWI timeline // 
-Armistice between Russia and the Central Powers :: 1917.9178082191781 // Eastern Front of WWI // 
-Fall of Constantinople :: 1453 //  // 
-Napoleon Bonaparte :: 1769 - 1821 // Napoleon Bonaparte // 
-Caligula :: 37 - 41 // Julio-Claudian dynasty // 
-American Revolutionary War :: 1775 - 1783 //  // 
-James A. Garfield :: 1881 // Presidents of the U.S. // 
-Gerald R. Ford :: 1974 - 1977 // Presidents of the U.S. // 
-Socrates :: -484 - -399 // Socrates // 
-Djibouti :: 1977 // Djibouti // 
-George Washington :: 1789 - 1797 // Presidents of the U.S. // 
-United Nations Buffer Zone in Cyprus :: 1974 // United Nations Buffer Zone in Cyprus // 
-Operation Faustschlag :: 1918.0876712328768 - 1918.164383561644 // Eastern Front of WWI // 
-Aristotle :: -384 - -322 // Aristotle // 
-Gorlice-Tarnow Offensive :: 1915.331506849315 - 1915.4164383561645 // Eastern Front of WWI // 
-Battles of the Frontiers :: 1914.5835616438355 - 1914.668493150685 // Western Front of WWI // 
-Kosovo :: 2008 // Kosovo // 
-The British declare war on Germany :: 1914.5917808219178 // WWI timeline // 
-Russian invasion of East Prussia :: 1914.5835616438355 - 1914.668493150685 // Eastern Front of WWI // 
-Gabon :: 1960 // Gabon // 
-Kuwait :: 1961 // Kuwait // 
-Richard M. Nixon :: 1969 - 1974 // Presidents of the U.S. // 
-Iraq :: 2004 // Iraq // 
-Saint Pierre and Miquelon :: 1816 // Saint Pierre and Miquelon // 
-Tiberius :: 14 - 37 // Julio-Claudian dynasty // 
-Honduras :: 1838 // Honduras // 
-Sino-Vietnamese War (Third Indochina War) :: 1979 //  // 
-13 Vendemiaire - Defense of the Tuileries Palace :: 1795 // Rise of Napoleon // 
-Jadranka Kosor :: 2009 - 2011 // Prime ministers of Croatia // 
-Hitler wins 35% of the vote in the presidential elections :: 1932 // Hitlers rise to power // 
-Vatican City :: 1929 // Vatican City // 
-Brusilov offensive :: 1916.4180327868853 - 1916.6693989071039 // Eastern Front of WWI // 
-Josip Manolic :: 1990 - 1991 // Prime ministers of Croatia // 
-Jan Hus :: 1383 - 1417 // Jan Hus // 
-United States :: 1776 // United States // 
-Suez canal :: 1869 //  // 
-Oman :: 1970 // Oman // 
-Poland :: 1989 // Poland // 
-Armenia :: 1991 // Armenia // 
-Rutherford B. Hayes :: 1877 - 1881 // Presidents of the U.S. // 
-Iceland :: 1944 // Iceland // 
-Homer :: -800 - -700 //  // 
-First Battle of Ypres :: 1914.7506849315068 - 1914.835616438356 // Western Front of WWI // 
-Reichstag fire and the Reichstag Fire Decree :: 1933.0876712328768 // Hitlers rise to power // 
-Battle of Dresden :: 1813.5835616438355 // War of the Sixth Coalition // 
 Whig Party :: 1817 - 1850 // Whig Party // 
-Montenegro :: 2006 // Montenegro // 
-Monaco :: 1861 // Monaco // 
-Francisco Goya :: 1750 - 1817 // Francisco Goya // 
-First Battle of the Aisne :: 1914.7013698630137 - 1914.7424657534248 // Western Front of WWI // 
-Baikonur Cosmodrome :: 1991 // Baikonur Cosmodrome // 
-Namibia :: 1990 // Namibia // 
-Iraq War :: 2003 - 2016 // Iraq War // 
-Treaty of Versailles :: 1919.490410958904 // WWI timeline // 
-Battle of Leipzig :: 1813.7506849315068 // War of the Sixth Coalition // 
-Zachary Taylor :: 1849 - 1850 // Presidents of the U.S. // 
-Tihomir Oreskovic :: 2016 // Prime ministers of Croatia // 
-Republic of Amalfi :: 851 - 1151 // Republic of Amalfi // 
-Great Lisbon Earthquake :: 1755.835616438356 //  // 
-Calvin Coolidge :: 1923 - 1929 // Presidents of the U.S. // 
-Kerensky Offensive :: 1917.4986301369863 // Eastern Front of WWI // 
-Zoran Milanovic :: 2011 - 2016 // Prime ministers of Croatia // 
-German Workers Party (DAP) changes name to NSDAP :: 1920 // Hitlers rise to power // 
-Thomas Jefferson :: 1801 - 1809 // Presidents of the U.S. // 
-Battle of the Pyramids :: 1798.4986301369863 // Rise of Napoleon // 
-Germany :: 1990 // Germany // 
-Belgium :: 1945 // Belgium // 
-Libya :: 1951 // Libya // 
-Winter War :: 1939.835616438356 - 1940.1666666666667 //  // 
-Zlatko Matesa :: 1995 - 2000 // Prime ministers of Croatia // 
-Crimean War :: 1853 - 1856 // Crimean War // 
-Turkey :: 1923 // Turkey // 
-Nivelle Offensive :: 1917.2493150684932 - 1917.331506849315 // Western Front of WWI // 
-Israel :: 1948 // Israel // 
-Barack Obama :: 2009 - 2016 // Presidents of the U.S. // 
-Womens March on Versailles :: 1789.7506849315068 // French Revolution // 
-Qatar :: 1971 // Qatar // 
-British army lands in Portugal under the command of Sir Arthur Wellesley :: 1808.5846994535518 // Peninsular War // 
-Night of the long knives :: 1934.4164383561645 //  // 
-War of the Fifth Coalition :: 1809 // War of the Fifth Coalition // 
-Ethiopia :: 1941 // Ethiopia // 
-Peninsular War :: 1807 - 1814 // Peninsular War // 
-Battle of Waterloo :: 1815.4164383561645 //  // 
-Portugal :: 1976 // Portugal // 
+San Marino :: 301 // San Marino // 
+First Italian campaign :: 1796 - 1797 // Rise of Napoleon // 
+Battle of Austerlitz :: 1805.9178082191781 // War of the Third Coalition // 
+Operation Faustschlag :: 1918.0876712328768 - 1918.164383561644 // Eastern Front of WWI // 
+Ireland :: 1937 // Ireland // 
+Lithuania :: 1990 // Lithuania // 
+Liberia :: 1847 // Liberia // 
+Ponte di Rialto :: 1501 - 1601 // Ponte di Rialto // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Ponte di Rialto.jpg
+Andrew Jackson :: 1829 - 1837 // Presidents of the U.S. // 
+Martin Van Buren :: 1837 - 1841 // Presidents of the U.S. // 
 Arthur Schopenhauer :: 1783 - 1850 // Arthur Schopenhauer // 
-Move into Syria :: 1799.0027397260274 // Rise of Napoleon // 
-Giotto (di Bondone) :: 1283 - 1350 // Giotto (di Bondone) // 
-Sectarian violence :: 2006 - 2007 // Iraq War // 
-Cuban Missile Crisis :: 1962 //  // 
-Battle of Lutzen :: 1813.331506849315 // War of the Sixth Coalition // 
-Saudi Arabia :: 1932 // Saudi Arabia // 
-Tennis Court Oath :: 1789.4164383561645 // French Revolution // 
-United States Virgin Islands :: 1917 // United States Virgin Islands // 
-Japan :: 1952 // Japan // 
-Egypt :: 1961 // Egypt // 
-Cambodia :: 1993 // Cambodia // 
-Dwight D. Eisenhower :: 1953 - 1961 // Presidents of the U.S. // 
-Lebanon :: 1943 // Lebanon // 
-Warren G. Harding :: 1921 - 1923 // Presidents of the U.S. // 
+Hundred Days Offensive :: 1918.5835616438355 - 1918.835616438356 // Western Front of WWI // 
+Croatian Democratic Union :: 1989 // Croatian Democratic Union // 
+Battle of Friedland :: 1807.4164383561645 // War of the Fourth Coalition // 
+Civil war :: 2013 - 2016 // Iraq War // 
+U.S. withdrawal :: 2011 // Iraq War // 
+Zlatko Matesa :: 1995 - 2000 // Prime ministers of Croatia // 
+Battle of Ulm :: 1805.7506849315068 // War of the Third Coalition // 
+Battle of Vitoria: Wellesley decisively defeats the French army :: 1813 // Peninsular War // 
+Austria-Hungary declares war on Serbia :: 1914.572602739726 // WWI timeline // 
+Nikita Khrushchev :: 1955 - 1964 // Leaders of the Soviet Union // 
+German Spring Offensives (Kaiserschlacht) :: 1918.164383561644 - 1918.4986301369863 // Western Front of WWI // 
+Suez canal :: 1869 //  // 
+The light bulb :: 1867 - 1900 // The light bulb // 
+Battle of Dresden :: 1813.5835616438355 // War of the Sixth Coalition // 
+Gorlice-Tarnow Offensive :: 1915.331506849315 - 1915.4164383561645 // Eastern Front of WWI // 
+Social Democratic Party of Croatia :: 1990 // Social Democratic Party of Croatia // 
+Stjepan Mesic :: 1990 // Prime ministers of Croatia // 
+Konstantin Chernenko :: 1984 - 1985 // Leaders of the Soviet Union // 
+Republic of Genoa :: 1051 - 1797 // Republic of Genoa // 
+War of the Fourth Coalition :: 1806 - 1807 // War of the Fourth Coalition // 
+Ronald Reagan :: 1981 - 1989 // Presidents of the U.S. // 
+Iceland :: 1944 // Iceland // 
+March on Rome; Mussolini becomes Prime Minister :: 1922 //  // 
+Hot air balloon :: 1767 - 1800 // Hot air balloon // 
+Reichstag fire and the Reichstag Fire Decree :: 1933.0876712328768 // Hitlers rise to power // 
+Adolf Hitler :: 1889 - 1945.3287671232877 // Adolf Hitler // 
+Palestine :: 1988 // Palestine // 
+Ukraine :: 1991 // Ukraine // 
+Homer :: -800 - -700 //  // 
+War of the Fifth Coalition :: 1809 // War of the Fifth Coalition // 
+Pinochets military dictatorship of Chile :: 1973 - 1990 //  // 
+Unification of Germany :: 1871 //  // 
+Austria :: 1955 // Austria // 
+Qatar :: 1971 // Qatar // 
+Saint Pierre and Miquelon :: 1816 // Saint Pierre and Miquelon // 
+The Gambia :: 1965 // The Gambia // 
+Benito Mussolini :: 1883 - 1945.323287671233 // Benito Mussolini // 
 Panama canal :: 1914 //  // 
+South Korea :: 1948 // South Korea // 
+U.S. joins the Allied Powers :: 1917.2493150684932 // WWI timeline // 
+Battle of Passchendaele :: 1917.4986301369863 - 1917.835616438356 // Western Front of WWI // 
+Late Period :: -667 - -334 // Ancient Egyptian periods // 
+Constitution completed :: 1791.668493150685 // French Revolution // 
+Battle of Borodino :: 1812.6693989071039 // French invasion of Russia // 
+Second Battle of Ypres :: 1915.2493150684932 - 1915.331506849315 // Western Front of WWI // 
+Croatia :: 1991 // Croatia // 
+Caligula :: 37 - 41 // Julio-Claudian dynasty // 
+Gas lighting :: 1767 - 1800 // Gas lighting // 
+Georg Wilhelm Friedrich Hegel :: 1783 - 1817 // Georg Wilhelm Friedrich Hegel // 
+Switzerland :: 1848 // Switzerland // 
+Germany declares war on Russia :: 1914.5835616438355 // WWI timeline // 
+Yemen :: 1990 // Yemen // 
+Dwight D. Eisenhower :: 1953 - 1961 // Presidents of the U.S. // 
+Treaty of Versailles :: 1919.490410958904 // WWI timeline // 
+Greece :: 1821 // Greece // 
+Republic of Venice :: 697 - 1797 // Republic of Venice // 
+Grover Cleveland :: 1893 - 1897 // Presidents of the U.S. // 
+Papua New Guinea :: 1975 // Papua New Guinea // 
+Beer hall putsch :: 1923 // Hitlers rise to power // 
+Martin Luther :: 1483 - 1550 // Martin Luther // 
+Baikonur Cosmodrome :: 1991 // Baikonur Cosmodrome // 
+Vietnam War (Second Indochina War) :: 1955 - 1975 //  // 
+Republic of the Congo :: 1960 // Republic of the Congo // 
+Federalist Party :: 1783 - 1817 //  // 
+United Nations Buffer Zone in Cyprus :: 1974 // United Nations Buffer Zone in Cyprus // 
+Battle of Marengo :: 1800 // War of the Second Coalition // 
+Estonia :: 1991 // Estonia // 
+Airplane :: 1903 // Airplane // 
+First Battle of the Aisne :: 1914.7013698630137 - 1914.7424657534248 // Western Front of WWI // 
+Francis Bacon :: 1550 - 1617 // Francis Bacon // 
+Martin Luther starts the Reformation by posting his 95 Theses on the church door in Wittenberg. :: 1517 //  // 
+Socrates :: -484 - -399 // Socrates // 
+Turkey :: 1923 // Turkey // 
+Invasion :: 2003 // Iraq War // 
+Millard Fillmore :: 1850 - 1853 // Presidents of the U.S. // 
+Egypt :: 1961 // Egypt // 
+October Revolution :: 1917.854794520548 //  // 
+Canada :: 1931 // Canada // 
+Storming of the Bastille :: 1789.5342465753424 // French Revolution // 
+Battle of Galicia :: 1914.5835616438355 - 1914.668493150685 // Eastern Front of WWI // 
+Tonga :: 1970 // Tonga // 
+Nero :: 54 - 68 // Julio-Claudian dynasty // 
+Richard M. Nixon :: 1969 - 1974 // Presidents of the U.S. // 
+First Battle of the Marne :: 1914.6794520547944 - 1914.6986301369864 // Western Front of WWI // 
+Francisco Goya :: 1750 - 1817 // Francisco Goya // 
+Bill Clinton :: 1993 - 2001 // Presidents of the U.S. // 
+Armistice between Russia and the Central Powers :: 1917.9178082191781 // WWI timeline // 
+Germany occupies Luxembourg :: 1914.5863013698631 // WWI timeline // 
+France :: 1958 // France // 
+Philippines :: 1946 // Philippines // 
+Pindar :: -500 - -400 //  // 
+Sectarian violence :: 2006 - 2007 // Iraq War // 
+Haiti :: 1934 // Haiti // 
+Hitler becomes chairman of the NSDAP :: 1921 // Hitlers rise to power // 
+Alexander the Great :: -356 - -323 // Alexander the Great // 
+Japan joins the Allied Powers :: 1914.5835616438355 // WWI timeline // 
+Somalia :: 1960 // Somalia // 
+Gabon :: 1960 // Gabon // 
+Australia :: 1942 // Australia // 
+Germany declares war on France :: 1914.5890410958905 // WWI timeline // 
+Lebanon :: 1943 // Lebanon // 
+George H. W. Bush :: 1989 - 1993 // Presidents of the U.S. // 
+Syrian Civil War :: 2011 // Syrian Civil War // 
+Battle of the Pyramids :: 1798.4986301369863 // Rise of Napoleon // 
+Sino-Vietnamese War (Third Indochina War) :: 1979 //  // 
+Basilica di San Marco :: 1001 - 1101 // Basilica di San Marco // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Basilica di San Marco
+Corinthian order :: -434 - -401 // Corinthian order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Corinthian order
+South Georgia and the South Sandwich Islands :: 1985 // South Georgia and the South Sandwich Islands // 
+Battle of Verdun :: 1916.0874316939892 - 1916.9180327868853 // Western Front of WWI // 
+Gerald R. Ford :: 1974 - 1977 // Presidents of the U.S. // 
+British army lands in Portugal under the command of Sir Arthur Wellesley :: 1808.5846994535518 // Peninsular War // 
+Leonid Brezhnev :: 1964 - 1982 // Leaders of the Soviet Union // 
+United Kingdom :: 1922 // United Kingdom // 
+German Workers Party (DAP) changes name to NSDAP :: 1920 // Hitlers rise to power // 
+Saudi Arabia :: 1932 // Saudi Arabia // 
+Battle of Berezina :: 1812.8360655737704 // French invasion of Russia // 
+Battle of Eylau :: 1807.0876712328768 // War of the Fourth Coalition // 
+Winter War :: 1939.835616438356 - 1940.1666666666667 //  // 
+Joseph Stalin :: 1924 - 1953 // Leaders of the Soviet Union // 
+Champ de Mars Massacre :: 1791.4986301369863 // French Revolution // 
+War of the First Coalition :: 1792 - 1797 // War of the First Coalition // 
+Albania :: 1992 // Albania // 
+Akrotiri and Dhekelia :: 1960 // Akrotiri and Dhekelia // 
+Saint Vincent and the Grenadines :: 1979 // Saint Vincent and the Grenadines // 
+Bulgaria joins the Central Powers :: 1915.7506849315068 // WWI timeline // 
+Assassination of Archduke Franz Ferdinand of Austria-Hungary :: 1914.490410958904 // WWI timeline // 
+Return to France :: 1799.5835616438355 // Rise of Napoleon // 
+Warren G. Harding :: 1921 - 1923 // Presidents of the U.S. // 
+Ara Pacis (Altar of Peace) :: -34 - -1 // Ara Pacis (Altar of Peace) // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Ara Pacis.jpg
+Russia :: 1991 // Russia // 
+Armenia :: 1991 // Armenia // 
+William McKinley :: 1897 - 1901 // Presidents of the U.S. // 
+Germany :: 1990 // Germany // 
+Democratic-Republican Party :: 1783 - 1817 // Democratic-Republican Party // 
+Battle of Valmy :: 1792 // War of the First Coalition // 
+Greece joins the Allied Powers :: 1917.4164383561645 // WWI timeline // 
+Andorra :: 1814 // Andorra // 
+Bosnia and Herzegovina :: 1992 // Bosnia and Herzegovina // 
+Treaty of Brest-Litovsk :: 1918.164383561644 // WWI timeline // 
+Monaco :: 1861 // Monaco // 
+Democratic Republic of the Congo :: 1960 // Democratic Republic of the Congo // 
+Bahrain :: 1971 // Bahrain // 
+Kosovo :: 2008 // Kosovo // 
+Hungary :: 1989 // Hungary // 
+First Indochina War :: 1946 - 1954 //  // 
+Ivica Racan :: 2000 - 2003 // Prime ministers of Croatia // 
+Montenegro :: 2006 // Montenegro // 
+Doric order :: -700 - -600 // Doric order // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Doric order
+Airship :: 1834 - 1867 // Airship // 
+Macau :: 1999 // Macau // 
+Zachary Taylor :: 1849 - 1850 // Presidents of the U.S. // 
+NSDAP wins 18% of the vote in the Reichstag elections :: 1930 // Hitlers rise to power // 
+Russian invasion of East Prussia :: 1914.5835616438355 - 1914.668493150685 // Eastern Front of WWI // 
+13 Vendemiaire - Defense of the Tuileries Palace :: 1795 // Rise of Napoleon // 
+Cambodia :: 1993 // Cambodia // 
+John Adams :: 1797 - 1801 // Presidents of the U.S. // 
+Hitler in prison; writes Mein Kampf :: 1924 // Hitlers rise to power // 
+Sinking of the Lusitania :: 1915.331506849315 //  // 
+Baruch Spinoza :: 1601 - 1701 // Baruch Spinoza // 
+Most nezavisnih lista :: 2012 // Most nezavisnih lista // 
+Belarus :: 1991 // Belarus // 
+Franjo Tudman (after his death in 1999 the acting presidents were Vlatko Pavletic and then Zlatko Tomcic) :: 1990 - 1999 // Presidents of Croatia // 
+Tennis Court Oath :: 1789.4164383561645 // French Revolution // 
+War of the Second Coalition :: 1798 - 1802 // War of the Second Coalition // 
+Micronesia :: 1986 // Micronesia // 
+Battle of Leipzig :: 1813.7506849315068 // War of the Sixth Coalition // 
+Abraham Lincoln :: 1861 - 1865 // Presidents of the U.S. // 
+Norway :: 1905 // Norway // 
+James K. Polk :: 1845 - 1849 // Presidents of the U.S. // 
+Liechtenstein :: 1806 // Liechtenstein // 
+Armistice of Compiegne :: 1918.86301369863 // WWI timeline // 
+Israel :: 1948 // Israel // 
+NSDAP wins 44% of the vote in the Reichstag elections; the Reichstag passes the Enabling Act :: 1933.164383561644 // Hitlers rise to power // 
+Lake Naroch Offensive :: 1916.1666666666667 // Eastern Front of WWI // 
+Republican Party :: 1834 - 1867 // Republican Party // 
+Great Retreat :: 1915.4986301369863 - 1915.668493150685 // Eastern Front of WWI // 
+Peninsular War :: 1807 - 1814 // Peninsular War // 
+Immanuel Kant :: 1701 - 1801 // Immanuel Kant // 
+Ulysses S. Grant :: 1869 - 1877 // Presidents of the U.S. // 
+Middle Kingdom :: -2000 - -1667 // Ancient Egyptian periods // 
+Northern Cyprus :: 1983 // Northern Cyprus // 
+Battles of the Frontiers :: 1914.5835616438355 - 1914.668493150685 // Western Front of WWI // 
+Jordan :: 1946 // Jordan // 
+The French retreat :: 1812.7513661202186 // French invasion of Russia // 
+Constitution of the Year III - Establishment of the Directory :: 1795 // French Revolution // 
+Tihomir Oreskovic :: 2016 // Prime ministers of Croatia // 
+Theodore Roosevelt :: 1901 - 1909 // Presidents of the U.S. // 
+Zoran Milanovic :: 2011 - 2016 // Prime ministers of Croatia // 
+Constitution of the Year X - Napoleon becomes First Consul for life :: 1802 // Rise of Napoleon // 
+Hundred Days :: 1815.164383561644 - 1815.4986301369863 //  // 
+Herbert Spencer :: 1801 - 1901 // Herbert Spencer // 
+Netherlands :: 1945 // Netherlands // 
+Slovenia :: 1991 // Slovenia // 
+Battle of the Somme :: 1916.5 - 1916.8360655737704 // Western Front of WWI // 
+El Salvador :: 1841 // El Salvador // 
+Kuwait :: 1961 // Kuwait // 
+United Arab Emirates :: 1971 // United Arab Emirates // 
+John Quincy Adams :: 1825 - 1829 // Presidents of the U.S. // 
+James Buchanan :: 1857 - 1861 // Presidents of the U.S. // 
+France and Spain invade Portugal :: 1807 // Peninsular War // 
+Coup of 18 Brumaire - Napoleon becomes First Consul :: 1799.835616438356 // Rise of Napoleon // 
+Battle of Wagram :: 1809.4986301369863 // War of the Fifth Coalition // 
+Ethiopia :: 1941 // Ethiopia // 
+Great Lisbon Earthquake :: 1755.835616438356 //  // 
+Slovakia :: 1993 // Slovakia // 
+Wellesley captures Madrid :: 1812 // Peninsular War // 
+Calvin Coolidge :: 1923 - 1929 // Presidents of the U.S. // 
+Rutherford B. Hayes :: 1877 - 1881 // Presidents of the U.S. // 
+Macedonia :: 1991 // Macedonia // 
+Cuban Missile Crisis :: 1962 //  // 
+Curacao :: 2010 // Curacao // 
+Cross of Lothair :: 1000 // Cross of Lothair // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Lothair
+Jimmy Carter :: 1977 - 1981 // Presidents of the U.S. // 
+Second Battle of the Masurian Lakes :: 1915.0876712328768 // Eastern Front of WWI // 
+Popular uprisings begin :: 1808.3360655737704 // Peninsular War // 
+Hrvoje Sarinic :: 1992 - 1993 // Prime ministers of Croatia // 
+Georgia :: 1991 // Georgia // 
+Tiberius :: 14 - 37 // Julio-Claudian dynasty // 
+John Wycliffe :: 1301 - 1401 // John Wycliffe // 
+Arsenale di Venezia :: 1100 // Arsenale di Venezia // C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\art\Venezia\Arsenale di Venezia.jpg
+George W. Bush :: 2001 - 2009 // Presidents of the U.S. // 
+Republic of Amalfi :: 851 - 1151 // Republic of Amalfi // 
+China :: 1949 // China // 
+Gibraltar :: 1713 // Gibraltar // 
+Hitler wins 35% of the vote in the presidential elections :: 1932 // Hitlers rise to power // 
+Maximilien Robespierre heads the Committee of Public Safety - Reign of Terror :: 1793 - 1794 // French Revolution // 
+Franklin Pierce :: 1853 - 1857 // Presidents of the U.S. // 
+Night of the long knives :: 1934.4164383561645 //  // 
+Second Battle of Champagne :: 1915.668493150685 - 1915.835616438356 // Western Front of WWI // 
+Francois-Marie Arouet/Voltaire :: 1701 - 1801 // Francois-Marie Arouet/Voltaire // 
+Move into Syria :: 1799.0027397260274 // Rise of Napoleon // 
+First Battle of the Masurian Lakes :: 1914.668493150685 // Eastern Front of WWI // 
+Napoleon Bonaparte :: 1769 - 1821 // Napoleon Bonaparte // 
+Libya :: 1951 // Libya // 
+Democratic Party :: 1801 - 1834 // Democratic Party // 
+Battle of the Yser :: 1914.7506849315068 // Western Front of WWI // 
+Battle of Neuve Chapelle :: 1915.164383561644 // Western Front of WWI // 
+The British declare war on Germany :: 1914.5917808219178 // WWI timeline // 
+First Battle of Ypres :: 1914.7506849315068 - 1914.835616438356 // Western Front of WWI // 
+John Tyler :: 1841 - 1845 // Presidents of the U.S. // 
+Battle of Lutzen :: 1813.331506849315 // War of the Sixth Coalition // 
+John F. Kennedy :: 1961 - 1963 // Presidents of the U.S. // 
+Bay of Pigs Invasion :: 1961 //  // 
+Thomas Jefferson :: 1801 - 1809 // Presidents of the U.S. // 
+Somaliland :: 1991 // Somaliland // 
+(Royal) Flight to Varennes :: 1791.4164383561645 // French Revolution // 
+Estates-General :: 1789.331506849315 // French Revolution // 

@@ -1877,6 +1877,8 @@ def qType_RecognizeItem(listKey, items, color):
 
 def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 	entry = catalot[key]
+	usedGUI = False
+
 	for attribute in entry:
 		if getType(entry[attribute]) is Type.Image:
 			if geoType == "":

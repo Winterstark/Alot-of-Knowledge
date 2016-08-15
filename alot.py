@@ -2249,7 +2249,7 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 		#process correct answer
 		index = itemsLCaseWithoutParentheses.index(answer)
 
-		if itemsCopy[index] != itemsLCaseWithoutParentheses[index] and showFullAnswer:
+		if itemsCopy[index].lower() != itemsLCaseWithoutParentheses[index] and showFullAnswer:
 			fullAnswer = "Full answer: " + itemsCopy[index] + ". "
 		else:
 			fullAnswer = ""

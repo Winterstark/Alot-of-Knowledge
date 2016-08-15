@@ -874,7 +874,7 @@ def toString(answer, makeMoreReadable=True):
 	elif answerType is Type.Class:
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "").replace('"', '')
 	elif answerType is Type.Set:
-		s = str(answer).replace('frozenset', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
+		s = str(answer).replace('frozenset({', '').replace('})', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
 		if s != "" and s[0] == '(' and s[-1] == ')': #remove brackets only if they enclose the whole string
 			#check that the two brackets correspond to each other
 			ind = 0

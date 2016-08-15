@@ -85,30 +85,33 @@ class Date:
 
 
 	def __repr__(self):
-		if self.prefix == "":
-			outputPrefix = ""
+		if self.isToday():
+			s = "--"
 		else:
-			#convert prefix back to short form
-			for prefix in Date.PREFIXES:
-				if prefix[1] == self.prefix:
-					outputPrefix = prefix[0]
-					break
+			if self.prefix == "":
+				outputPrefix = ""
+			else:
+				#convert prefix back to short form
+				for prefix in Date.PREFIXES:
+					if prefix[1] == self.prefix:
+						outputPrefix = prefix[0]
+						break
 
-		if self.M != -1:
-			s = outputPrefix + str(self.M) + "m."
-		elif self.c != -1:
-			s = outputPrefix + str(self.c) + "c."
-		else:
-			s = str(self.y)
-			if self.m != -1:
-				s += "-" + str(self.m)
-			if self.d != -1:
-				s += "-" + str(self.d)
-			if self.isDecade:
-				s = outputPrefix + s + 's'
+			if self.M != -1:
+				s = outputPrefix + str(self.M) + "m."
+			elif self.c != -1:
+				s = outputPrefix + str(self.c) + "c."
+			else:
+				s = str(self.y)
+				if self.m != -1:
+					s += "-" + str(self.m)
+				if self.d != -1:
+					s += "-" + str(self.d)
+				if self.isDecade:
+					s = outputPrefix + s + 's'
 
-		if self.bc:
-			s = "-" + s
+			if self.bc:
+				s = "-" + s
 
 		return "'" + s + "'"
 
@@ -122,6 +125,10 @@ class Date:
 
 	def __hash__(self):
 		return hash(str(self))
+
+
+	def isToday(self):
+		return not self.bc and self.y == datetime.now().year and self.m == datetime.now().month and self.d == datetime.now().day
 
 
 	def totalDays(self):
@@ -865,7 +872,7 @@ def toString(answer, makeMoreReadable=True):
 						return str(answer[0].d) + " " + Date.fullMonthName(answer[0].m) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
 
 			#if the Date range is ongoing, replace today's date with '--'
-			if answer[1].bc == False and answer[1].y == datetime.now().year and answer[1].m == datetime.now().month and answer[1].d == datetime.now().day:
+			if answer[1].isToday():
 				return str(answer[0]) + "--"
 			else:
 				return str(answer[0]) + " - " + str(answer[1])
@@ -1485,6 +1492,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 	elif getType(a) is Type.DateRange:
 		aIsDate = True
 		prompt = "{0}{1} {2} - {3}?\n{0}{1} ".format('\t'*indentLevel, promptPrefix, a[0].precisionPrompt(), a[1].precisionPrompt())
+		a1Precision = a[1].precision() #used to convert '--' to a representation of today's date
 		a = repr(a[0]) + "-" + repr(a[1])
 	else:
 		aIsDate = False
@@ -1562,7 +1570,25 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 							firstAttempt = False
 					else:
 						answerRange = answer.split(' - ')
+						#check if the user entered an ongoing DateRange
+						if len(answerRange) == 1:
+							if len(answer) > 2 and answer[-2:] == '--':
+								if a1Precision == 'y':
+									a1 = "{0}".format(datetime.now().year)
+								elif a1Precision == 'm':
+									a1 = "{0}-{1}".format(datetime.now().year, datetime.now().month)
+								else: # a1Precision == 'd'
+									a1 = "{0}-{1}-{2}".format(datetime.now().year, datetime.now().month, datetime.now().day)
+
+								answer = answer[:-2] + " - " + a1
+								answerRange = answer.split(' - ')
+								
+								if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
+									correct = True
+									break
+
 						if len(answerRange) == 2:
+							#check if the user's answer is relatively close to the correct DateRange
 							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
 								print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
 								tryAgain = True

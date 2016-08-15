@@ -635,8 +635,6 @@
 
 
 	OTHER/PLAINS/REGIONS/PARKS
-	"King Christian IX Land": "GEO:UNKNOWN_TYPE/King Christian IX Land",
-	"King Christian X Land": "GEO:UNKNOWN_TYPE/King Christian X Land",
 	"King Wilhelm Land": "GEO:UNKNOWN_TYPE/King Wilhelm Land",
 	"King Frederik VIII Land": "GEO:UNKNOWN_TYPE/King Frederik VIII Land",
 	"Nyeboe Land": "GEO:UNKNOWN_TYPE/Nyeboe Land",
@@ -646,7 +644,6 @@
 	"Irrawaddy Delta": "GEO:UNKNOWN_TYPE/Irrawaddy Delta",
 	"Ganges Delta": "GEO:UNKNOWN_TYPE/Ganges Delta",
 	"Iwembere Steppe": "GEO:UNKNOWN_TYPE/Iwembere Steppe",
-	"LES LAURENTIDES": "GEO:UNKNOWN_TYPE/LES LAURENTIDES",
 	"Junggar Basin": "GEO:UNKNOWN_TYPE/Junggar Basin",
 	"Qaidam Basin": "GEO:UNKNOWN_TYPE/Qaidam Basin",
 	"KOLYMA LOWLAND": "GEO:UNKNOWN_TYPE/KOLYMA LOWLAND",
@@ -659,7 +656,6 @@
 	"Yangtze Gorges": "GEO:UNKNOWN_TYPE/Yangtze Gorges",
 	"Tsangpo Gorge": "GEO:UNKNOWN_TYPE/Tsangpo Gorge",
 	"Valle Longitudinal": "GEO:UNKNOWN_TYPE/Valle Longitudinal",
-	"Central Valley": "GEO:UNKNOWN_TYPE/Central Valley",
 	"Entre Rios": "GEO:UNKNOWN_TYPE/Entre Rios",
 	"Niger Delta": "GEO:UNKNOWN_TYPE/Niger Delta",
 	"Amazon Delta": "GEO:UNKNOWN_TYPE/Amazon Delta",
@@ -677,7 +673,6 @@
 	"PANTANAL": "GEO:UNKNOWN_TYPE/PANTANAL",
 	"SUDD": "GEO:UNKNOWN_TYPE/SUDD",
 	"KNUD RASMUSSEN LAND": "GEO:UNKNOWN_TYPE/KNUD RASMUSSEN LAND",
-	"MANCHURIAN PLAIN": "GEO:UNKNOWN_TYPE/MANCHURIAN PLAIN",
 	"TURAN LOWLAND": "GEO:UNKNOWN_TYPE/TURAN LOWLAND",
 	"SAHEL": "GEO:UNKNOWN_TYPE/SAHEL",
 	"GANGES PLAIN": "GEO:UNKNOWN_TYPE/GANGES PLAIN",
@@ -698,5 +693,4 @@
 	"Kemp Land": "GEO:UNKNOWN_TYPE/Kemp Land",
 	"Tikchik Lakes": "GEO:UNKNOWN_TYPE/Tikchik Lakes",
 	"Finger Lakes": "GEO:UNKNOWN_TYPE/Finger Lakes",
-	"Fiordland": "GEO:UNKNOWN_TYPE/Fiordland",
 	"Marlborough Sounds": "GEO:UNKNOWN_TYPE/Marlborough Sounds",

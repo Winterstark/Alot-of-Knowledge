@@ -19,52 +19,48 @@ Type = Enum("Type", "Number NumberRange Date DateRange String Image Sound Diagra
 
 
 
-#a custom class instead of DateTime allows for greater flexibility, e.g. 11 November 1918, 322 BC, 5th century, 3rd millennium BC
+#a custom class instead of DateTime allows for greater flexibility, e.g. 11 November 1918, 322 BC, 5th century, 3rd millennium BC, 60s
 class Date:
 	ZERO = datetime(1, 1, 1)
 	PREFIXES = [("early ", "Early "), ("mid ", "Mid "), ("late ", "Late "), ("1. half ", "First half of the "), ("2. half ", "Second half of the ")]
 
 	def __init__(self, value):
-		if value[0] == '-': #b.c. year
-			value = value[1:]
-			self.bc = True
+		#init fields
+		self.bc = self.isDecade = False
+		self.prefix = ""
+		self.M = self.c = self.y = self.m = self.d = -1
+
+		if value == '--':
+			#set Date to today
+			self.y = datetime.now().year
+			self.m = datetime.now().month
+			self.d = datetime.now().day
 		else:
-			self.bc = False
+			if value[0] == '-': #b.c. year
+				value = value[1:]
+				self.bc = True
 
-		if value[-2:] == "c.":
-			self.prefix, value = Date.extractPrefix(value)
-			self.M = -1
-			self.c = int(value[:-2])
-			self.y = -1
-			self.m = -1
-			self.d = -1
-		elif value[-2:] == "m.":
-			self.prefix, value = Date.extractPrefix(value)
-
-			self.M = int(value[:-2])
-			self.c = -1
-			self.y = -1
-			self.m = -1
-			self.d = -1
-		else:
-			self.prefix = ""
-			self.M = -1
-			self.c = -1
-			
-			parts = value.split('-')
-
-			if len(parts) == 1:
-				self.y = int(parts[0])
-				self.m = -1
-				self.d = -1
-			elif len(parts) == 2:
-				self.y = int(parts[0])
-				self.m = int(parts[1])
-				self.d = -1
-			else: #== 3
-				self.y = int(parts[0])
-				self.m = int(parts[1])
-				self.d = int(parts[2])
+			if value[-2:] == "m.":
+				self.prefix, value = Date.extractPrefix(value)
+				self.M = int(value[:-2])
+			elif value[-2:] == "c.":
+				self.prefix, value = Date.extractPrefix(value)
+				self.c = int(value[:-2])
+			elif value[-1] == 's':
+				self.prefix, value = Date.extractPrefix(value[:-1])
+				self.isDecade = True
+				self.y = int(value)
+			else:
+				parts = value.split('-')
+				if len(parts) == 1:
+					self.y = int(parts[0])
+				elif len(parts) == 2:
+					self.y = int(parts[0])
+					self.m = int(parts[1])
+				else: #== 3
+					self.y = int(parts[0])
+					self.m = int(parts[1])
+					self.d = int(parts[2])
 
 
 	def __str__(self):
@@ -79,6 +75,8 @@ class Date:
 				s = Date.fullMonthName(self.m) + " " + s
 			if self.d != -1:
 				s = str(self.d) + " " + s
+			if self.isDecade:
+				s += 's'
 
 		if self.bc:
 			s += " BC"
@@ -106,6 +104,8 @@ class Date:
 				s += "-" + str(self.m)
 			if self.d != -1:
 				s += "-" + str(self.d)
+			if self.isDecade:
+				s = outputPrefix + s + 's'
 
 		if self.bc:
 			s = "-" + s
@@ -159,6 +159,8 @@ class Date:
 			return "M"
 		elif self.c != -1:
 			return "c"
+		elif self.isDecade:
+			return "dec"
 		elif self.d != -1:
 			return "d"
 		elif self.m != -1:
@@ -181,6 +183,8 @@ class Date:
 				return "Century"
 			else:
 				return "Part of Century"
+		elif precision == "dec":
+			return "Decade"
 		elif precision == "y":
 			return "Year"
 		elif precision == "m":
@@ -267,6 +271,8 @@ class Date:
 			else:
 				marginForError = 4
 			return abs(self.c - answerDate.c) <= marginForError
+		elif precision == "dec":
+			return abs(self.y - answerDate.y) <= 10
 		elif precision == "y":
 			marginForError = (datetime.now().year - self.y) // 100 + 1
 			return abs(self.y - answerDate.y) <= marginForError
@@ -281,9 +287,10 @@ class Date:
 		if entry == "":
 			return False
 
-		eType = type(entry)
-		if eType is str:
-			if entry[0] == '-':
+		if type(entry) is str:
+			if entry == "--":
+				return True
+			elif entry[0] == '-':
 				entry = entry[1:]
 
 			prefix, entry = Date.extractPrefix(entry)
@@ -291,6 +298,12 @@ class Date:
 			if entry[-2:] == "c." or entry[-2:] == "m.":
 				try:
 					int(entry[:-2])
+					return True
+				except:
+					pass
+			elif entry[-1] == 's':
+				try:
+					int(entry[:-1])
 					return True
 				except:
 					pass
@@ -850,8 +863,12 @@ def toString(answer, makeMoreReadable=True):
 						return str(answer[0].d) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[0].m) + " " + str(answer[0].y)
 					else:
 						return str(answer[0].d) + " " + Date.fullMonthName(answer[0].m) + " - " + str(answer[1].d) + " " + Date.fullMonthName(answer[1].m) + " " + str(answer[0].y)
-			
-			return str(answer[0]) + " - " + str(answer[1])
+
+			#if the Date range is ongoing, replace today's date with '--'
+			if answer[1].bc == False and answer[1].y == datetime.now().year and answer[1].m == datetime.now().month and answer[1].d == datetime.now().day:
+				return str(answer[0]) + "--"
+			else:
+				return str(answer[0]) + " - " + str(answer[1])
 		else:
 			return repr(answer[0]) + " - " + repr(answer[1])
 	elif answerType is Type.Class:
@@ -1527,6 +1544,17 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 			elif not tryAgain:
 				if aIsDate and firstAttempt:
 					if getType(originalA) is Type.Date:
+						#check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
+						if len(answer) == 3 and answer[2] == 's':
+							if answer[:2] == "00" or answer[:2] == "10":
+								answer = "20" + answer[:2] + "s"
+							else:
+								answer = "19" + answer[:2] + "s"
+
+							if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
+								correct = True
+								break
+
 						#check if the user's answer is relatively close to the correct Date
 						if originalA.isAlmostCorrect(answer):
 							print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")

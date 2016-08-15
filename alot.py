@@ -857,7 +857,13 @@ def toString(answer, makeMoreReadable=True):
 	elif answerType is Type.Class:
 		return str(answer).replace('{', '').replace('}', '').replace(", ", "\n   ").replace("'", "").replace('"', '')
 	elif answerType is Type.Set:
-		return str(answer).replace('frozenset', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
+		s = str(answer).replace('frozenset', '').replace('{', '').replace('}', '').replace("'", "").replace('"', '')
+		#remove parentheses only if they are the first or last character
+		if s[0] == '(':
+			s = s[1:]
+		if s[-1] == ')':
+			s = s[:-1]
+		return s
 	elif answerType is Type.Tuple:
 		s = ""
 		for el in answer:

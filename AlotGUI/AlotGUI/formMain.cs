@@ -160,8 +160,10 @@ namespace AlotGUI
         {
             if (msg == "logo")
             {
-                this.BackgroundImage = logo;
                 mode = DisplayMode.Logo;
+                this.BackgroundImage = logo;
+                picMini.Left = this.Width; //hide picMini
+                picMini.Image = null;
 
                 updateStatus("");
                 mapExplorationMode = false;
@@ -178,35 +180,7 @@ namespace AlotGUI
             else if (msg.Contains("audio"))
                 processAudioMsg(msg);
             else
-            {
-                string path = msg.Substring(msg.IndexOf(' ') + 1);
-
-                if (File.Exists(path))
-                {
-                    imgs = new string[1];
-                    imgs[0] = path;
-                }
-                else if (Directory.Exists(path))
-                {
-                    imgs = Directory.GetFiles(path);
-                    imgIndex = 0;
-                }
-                else
-                {
-                    System.Media.SystemSounds.Beep.Play();
-                    updateStatus("Invalid path!");
-                    return;
-                }
-
-                if (msg[0] == 'I')
-                {
-                    //question type: identify
-                    this.BackgroundImage = Image.FromFile(imgs[imgIndex]);
-                    mode = DisplayMode.Image;
-                }
-                else if (msg[0] == 'C')
-                    processMosaicMsg(msg);
-            }
+                processImageMsg(msg);
         }
 
         void sendFeedbackToAlot(string feedback)
@@ -253,7 +227,54 @@ namespace AlotGUI
             return Math.Abs(pt1.X - pt2.X) <= SystemInformation.DoubleClickSize.Width && Math.Abs(pt1.Y - pt2.Y) <= SystemInformation.DoubleClickSize.Height;
         }
 
-        #region Mosaic
+        #region Image
+        void processImageMsg(string msg)
+        {
+            string path = msg.Substring(msg.IndexOf(' ') + 1);
+
+            if (File.Exists(path))
+            {
+                imgs = new string[1];
+                imgs[0] = path;
+            }
+            else if (Directory.Exists(path))
+            {
+                imgs = Directory.GetFiles(path);
+                imgIndex = 0;
+            }
+            else
+            {
+                System.Media.SystemSounds.Beep.Play();
+                updateStatus("Invalid path!");
+                return;
+            }
+
+            switch (msg[0])
+            {
+                case 'I': //identify image
+                    this.BackgroundImage = Image.FromFile(imgs[imgIndex]);
+                    mode = DisplayMode.Image;
+                    break;
+                case 'C': //choose correct image
+                    processMosaicMsg(msg);
+                    break;
+                case 'M': //mini image in the lower-right corner
+                    setupMiniImage(imgs[imgIndex]);
+                    break;
+            }
+        }
+
+        void setupMiniImage(string imgPath)
+        {
+            picMini.Image = Image.FromFile(imgPath);
+
+            int maxSize = Math.Min(this.ClientSize.Width, this.ClientSize.Height) / 3;
+            Rectangle alignment = alignImageToRectangle(picMini.Image.Size, new Rectangle(this.ClientSize.Width - 10 - maxSize, this.ClientSize.Height - 10 - maxSize, maxSize, maxSize));
+
+            picMini.Location = alignment.Location;
+            picMini.Size = alignment.Size;
+        }
+
         void processMosaicMsg(string msg)
         {
             //question type: choose
@@ -351,20 +372,9 @@ namespace AlotGUI
 
                     visMosaic.SetResolution(visuals[ind].HorizontalResolution, visuals[ind].VerticalResolution);
                     gfx = Graphics.FromImage(visMosaic);
-
-                    int resizedW, resizedH;
-                    if ((float)visuals[ind].Width / visuals[ind].Height > (float)w / h)
-                    {
-                        resizedW = w;
-                        resizedH = (int)((float)visuals[ind].Height / visuals[ind].Width * w);
-                    }
-                    else
-                    {
-                        resizedW = (int)((float)visuals[ind].Width / visuals[ind].Height * h);
-                        resizedH = h;
-                    }
-
-                    gfx.DrawImage(visuals[ind], x * w + (w - resizedW) / 2, y * h + (h - resizedH) / 2, resizedW, resizedH);
+                    
+                    Rectangle alignment = alignImageToRectangle(visuals[ind].Size, new Rectangle(x * w, y * h, w, h));
+                    gfx.DrawImage(visuals[ind], alignment.Left, alignment.Top, alignment.Width, alignment.Height);
 
                     ind++;
                 }
@@ -388,7 +398,34 @@ namespace AlotGUI
                     gfx.DrawString(ind.ToString(), SystemFonts.DefaultFont, blackBrush, x * w + 1, y * h + 1);
                 }
 
+            //draw borders
+            Pen pen = new Pen(Color.Black, 4);
+            for (int i = 0; i <= 2; i++)
+                gfx.DrawLine(pen, i * w, 0, i * w, this.ClientSize.Height);
+            for (int i = 0; i <= 3; i++)
+                gfx.DrawLine(pen, 0, i * h, this.ClientSize.Width, i * h);
+
             return visMosaic;
+        }
+
+        Rectangle alignImageToRectangle(Size imageSize, Rectangle frame)
+        {
+            Rectangle alignment = new Rectangle();
+
+            if ((float)imageSize.Width / imageSize.Height > (float)frame.Width / frame.Height)
+            {
+                alignment.Width = frame.Width;
+                alignment.Height = (int)((float)imageSize.Height / imageSize.Width * frame.Width);
+            }
+            else
+            {
+                alignment.Width = (int)((float)imageSize.Width / imageSize.Height * frame.Height);
+                alignment.Height = frame.Height;
+            }
+
+            alignment.Location = new Point(frame.Left + (frame.Width - alignment.Width) / 2, frame.Top + (frame.Height - alignment.Height) / 2);
+
+            return alignment;
         }
 
         bool arrayContainsString(string[] array, string s)
@@ -1464,6 +1501,8 @@ namespace AlotGUI
             this.Height = int.Parse(file.ReadLine());
             file.Close();
 
+            picMini.Left = this.Width;
+
             logo = Bitmap.FromFile(LOGO_PATH);
             this.BackgroundImage = logo;
 
@@ -1496,9 +1535,9 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Scarborough Reef");
+            //processMsg("C2 C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\flags\\Cape Verde.png");
         }
-        
+
         protected override void OnPaint(PaintEventArgs e)
         {
             switch (mode)

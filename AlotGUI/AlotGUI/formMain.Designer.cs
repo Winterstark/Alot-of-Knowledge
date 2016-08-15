@@ -39,6 +39,8 @@
             this.buttPlay5 = new System.Windows.Forms.Button();
             this.buttPlay6 = new System.Windows.Forms.Button();
             this.timerAudioDoubleClick = new System.Windows.Forms.Timer(this.components);
+            this.picMini = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picMini)).BeginInit();
             this.SuspendLayout();
             // 
             // lblStatus
@@ -122,6 +124,19 @@
             // 
             this.timerAudioDoubleClick.Tick += new System.EventHandler(this.timerAudioDoubleClick_Tick);
             // 
+            // picMini
+            // 
+            this.picMini.BackColor = System.Drawing.Color.Black;
+            this.picMini.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.picMini.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picMini.Location = new System.Drawing.Point(361, 307);
+            this.picMini.Name = "picMini";
+            this.picMini.Padding = new System.Windows.Forms.Padding(2);
+            this.picMini.Size = new System.Drawing.Size(124, 88);
+            this.picMini.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picMini.TabIndex = 7;
+            this.picMini.TabStop = false;
+            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,6 +144,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(604, 534);
+            this.Controls.Add(this.picMini);
             this.Controls.Add(this.buttPlay6);
             this.Controls.Add(this.buttPlay5);
             this.Controls.Add(this.buttPlay4);
@@ -145,6 +161,7 @@
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.formMain_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.formMain_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.formMain_MouseUp);
+            ((System.ComponentModel.ISupportInitialize)(this.picMini)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -162,6 +179,7 @@
         private System.Windows.Forms.Button buttPlay5;
         private System.Windows.Forms.Button buttPlay6;
         private System.Windows.Forms.Timer timerAudioDoubleClick;
+        private System.Windows.Forms.PictureBox picMini;
     }
 }
 

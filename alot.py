@@ -1872,23 +1872,29 @@ def qType_RecognizeItem(listKey, items, color):
 
 def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 	entry = catalot[key]
-	usedGUIVisually = False
-
 	for attribute in entry:
-		if getType(entry[attribute]) is Type.Image and not usedGUIVisually:
-			msgGUI("I {}".format(fullPath(entry[attribute])))
-			usedGUI = usedGUIVisually = True
-		if getType(entry[attribute]) is Type.Geo and not usedGUIVisually:
+		if getType(entry[attribute]) is Type.Image:
+			if geoType == "":
+				msgGUI("I {}".format(fullPath(entry[attribute])))
+				usedGUI = True
+			else:
+				#if the class contains both a map element and an image (probably a flag), show the image in the lower-right corner
+				msgGUI("M {}".format(fullPath(entry[attribute])))
+		elif getType(entry[attribute]) is Type.Geo:
 			geoType, geoName = splitGeoName(entry, attribute)
 			msgGUI("map 1 {}".format(geoName))
-			usedGUI = usedGUIVisually = True
+			usedGUI = True
 		elif getType(entry[attribute]) is Type.Sound:
 			msgGUI("audio B {}".format(fullPath(entry[attribute])))
-			usedGUI = usedGUIVisually = True
+			usedGUI = True
 		else:
-			print(attribute + ": " + toString(entry[attribute]))
+			print(attribute + ": " + toString(entry[attribute]).replace(key, "???"))
 
-	correct, exit, immediately = qType_EnterAnswer("What is the name of this entry? ", key, color, catalot=catalot, otherNames=otherNames, acceptOtherNames=False, geoType=geoType)
+	if geoType != "":
+		identifier = geoType
+	else:
+		identifier = "entry"
+	correct, exit, immediately = qType_EnterAnswer("What is the name of this {}? ".format(identifier), key, color, catalot=catalot, otherNames=otherNames, acceptOtherNames=False, geoType=geoType)
 	return usedGUI, correct, exit, immediately
 
 
@@ -2510,7 +2516,8 @@ def quiz(category, catalot, metacatalot, corewords):
 				if "Consort" in entry:
 					nFTreeAttributes += 1
 
-				if random.randint(0, len(entry)) == 0:
+				#if random.randint(0, len(entry)) == 0:
+				if True:
 					usedGUI, correct, exit, immediately = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
 				elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
 					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)

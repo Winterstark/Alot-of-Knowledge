@@ -374,7 +374,7 @@ def msgGUI(msg):
 	pipe.seek(0)
 
 
-def getFeedbackFromGUI():
+def getFeedbackFromGUI(catalot={}):
 	while "pipe" not in locals():
 		try:
 			pipe = open(r'\\.\pipe\alotPipeFeedback', 'r+b', 0)
@@ -391,6 +391,30 @@ def getFeedbackFromGUI():
 		userSelection = pipe.read(n).decode("utf-8")
 
 		if userSelection != "":
+			if catalot != {}:
+				#find the key corresponding to this geoName
+				geoKey = userSelection #if the search fails, try with the given geoName
+
+				for key in catalot:
+					if getType(catalot[key]) is Type.Geo:
+						name = catalot[key]
+						if '/' in name:
+							name = name[name.rfind('/')+1:] #strip "GEO:type/" from the name
+						if name == userSelection:
+							geoKey = key
+							break
+					elif getType(catalot[key]) is Type.Class:
+						for attribute in catalot[key]:
+							if getType(catalot[key][attribute]) is Type.Geo:
+								name = catalot[key][attribute]
+								if '/' in name:
+									name = name[name.rfind('/')+1:] #strip "GEO:type/" from the name
+								if name == userSelection:
+									geoKey = key
+									break
+
+				userSelection = geoKey
+
 			correct += " You selected -> " + userSelection
 
 	return correct, False, False
@@ -1333,6 +1357,8 @@ def feedback(msg, playSound=True):
 	if msg != "":
 		if "Correct answer: False" in msg:
 			msg = msg.replace("Correct answer: False", "") #this shouldn't be printed
+		if " GEO You selected" in msg:
+			msg = msg.replace(" GEO You selected", " You selected") #"GEO" shouldn't be printed
 
 		if correct:
 			color = Fore.GREEN
@@ -2385,11 +2411,11 @@ def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
 	elif step == 2:
 		colorPrint(key, color)
 		print("Select this {} on the map.".format(geoType))
-		correct, exit, immediately = getFeedbackFromGUI()
+		correct, exit, immediately = getFeedbackFromGUI(catalot)
 	elif step == 3:
 		colorPrint(key, color)
 		print("Find the {} on the map.".format(geoType))
-		correct, exit, immediately = getFeedbackFromGUI()
+		correct, exit, immediately = getFeedbackFromGUI(catalot)
 	elif step == 4:
 		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color, otherNames=otherNames, geoType=geoType)
 

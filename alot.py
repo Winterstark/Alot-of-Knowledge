@@ -2686,7 +2686,6 @@ def quiz(category, catalot, metacatalot, corewords):
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, corewords, color, geoType=geoType)
 						else:
-							print("geoType:", geoType)
 							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames, geoType=geoType)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])

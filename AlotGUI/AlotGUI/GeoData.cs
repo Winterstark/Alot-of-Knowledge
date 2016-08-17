@@ -455,7 +455,11 @@ namespace AlotGUI
                         if (mapEntities[mapEnt].GeoType == GeoType.City && qType == -3)
                             mapEntities[mapEnt].Enabled = true;
                         else
+                        {
+                            if (mapEntities[mapEnt].GeoType == GeoType.River && qType == -3)
+                                mapEntities[mapEnt].Enabled = true;
                             mapEntities[mapEnt].Highlighted = true;
+                        }
                     }
                 }
                 else

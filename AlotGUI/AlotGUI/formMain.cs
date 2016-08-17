@@ -1535,7 +1535,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("C2 C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\flags\\Cape Verde.png");
+            //processMsg("map 3 Colorado..17");
         }
 
         protected override void OnPaint(PaintEventArgs e)

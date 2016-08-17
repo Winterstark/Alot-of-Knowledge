@@ -280,13 +280,9 @@ class Date:
 			return abs(self.c - answerDate.c) <= marginForError
 		elif precision == "dec":
 			return abs(self.y - answerDate.y) <= 10
-		elif precision == "y":
+		else:
 			marginForError = (datetime.now().year - self.y) // 100 + 1
 			return abs(self.y - answerDate.y) <= marginForError
-		elif precision == "m":
-			return self.y == answerDate.y
-		elif precision == "d":
-			return self.y == answerDate.y and self.m == answerDate.m
 
 
 	#checks if string represents a Date (short form, e.g. "18c.")

@@ -1535,7 +1535,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 3 Colorado..17");
+            //processMsg("map 1 Great Morava..4");
         }
 
         protected override void OnPaint(PaintEventArgs e)

@@ -2613,6 +2613,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
 				elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
 					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
+					usedGUI = True
 				else:
 					attribute = random.choice(list(entry.keys()))
 					attributeType = getType(entry[attribute])

@@ -127,6 +127,10 @@ class Date:
 		return hash(str(self))
 
 
+	def __lt__(self, other):
+		return self.totalDays() < other.totalDays()
+
+
 	def isToday(self):
 		return not self.bc and self.y == datetime.now().year and self.m == datetime.now().month and self.d == datetime.now().day
 
@@ -1443,6 +1447,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	colorPrint(toString(q), color)
 
 	answers.insert(random.randint(0, len(answers)), a)
+	answers.sort()
 
 	#print choices
 	i = 1
@@ -2134,7 +2139,7 @@ def quizNumber(catalot, key, step, color, attribute="", otherNames={}):
 			correct, exit, immediately = qType_EnterAnswer(key, catalot[key], color, catalot=catalot, otherNames=otherNames)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key][attribute]), key, color, catalot=catalot, attribute=attribute, otherNames=otherNames)
+			correct, exit, immediately = qType_EnterAnswer(attribute + ": " + toString(catalot[key][attribute]), key, color, catalot=catalot, attribute=attribute, otherNames=otherNames)
 		else:
 			correct, exit, immediately = qType_EnterAnswer(toString(catalot[key]), key, color, catalot=catalot, otherNames=otherNames)
 

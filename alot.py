@@ -697,6 +697,9 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 	userAnswer = userAnswer.lower()
 	correctAnswer = correctAnswer.lower()
 
+	if len(correctAnswer) == 1:
+		return userAnswer #don't check for typos with 1-letter answers
+
 	if userAnswer[:len(correctAnswer)] == correctAnswer or len(userAnswer) < len(correctAnswer) - 1: #if the answer is correct or hopelessly wrong (more than just a typo)
 		if len(userAnswer) == len(correctAnswer) + 1: #check for an extra letter at the end of user's answer
 			print('\t'*indentLevel + "You have a typo in your answer, but it will be accepted anyway. Correct answer:", originalCorrectAnswer)

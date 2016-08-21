@@ -570,10 +570,10 @@ def convertToDateIfAny(data):
 		for value in data:
 			if Date.isValid(value):
 				toDel.append(value)
-				toAdd.append(Date(validDate))
+				toAdd.append(Date(value))
 			elif getType(value) is Type.DateRange:
 				toDel.append(value)
-				toAdd.append((Date(validDate[0]), Date(validDate[1])))
+				toAdd.append((Date(value[0]), Date(value[1])))
 			elif getType(value) is Type.Tuple:
 				newValue = convertToDateIfAnyInTuple(value)
 				if newValue != value:
@@ -762,6 +762,36 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 					return correctedAnswer
 	
 	return userAnswer
+
+
+def areWordsSynonyms(word1, word2):
+	word1 = word1.lower()
+	word2 = word2.lower()
+
+	with open("mobythes.aur") as f:
+		lines = f.readlines()
+
+	if word2 in bSearchThesaurus(word1, lines, 0, len(lines)-1):
+		return True
+	else:
+		return word1 in bSearchThesaurus(word2, lines, 0, len(lines)-1)
+
+
+def bSearchThesaurus(word, lines, lb, ub):
+	if ub - lb <= 10:
+		#switch to linear search
+		for i in range(lb, ub+1):
+			if lines[i][:lines[i].index(',')] == word:
+				return lines[i][lines[i].index(',')+1:].split(',')
+		return "not found"
+
+	mid = (lb + ub) // 2
+	if lines[mid] == word:
+		return lines[mid]
+	elif lines[mid] > word:
+		return bSearchThesaurus(word, lines, lb, mid-1)
+	else:
+		return bSearchThesaurus(word, lines, mid+1, ub)
 
 
 def pluralizeIfNecessary(n, s):
@@ -1549,7 +1579,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 
 		result = isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType)
 		if result == "try again":
-			print("Your answer is another name for this entry. Please try again.")
+			print('\t'*indentLevel + "Your answer is another name for this entry. Please try again.")
 			tryAgain = True
 		elif result == True:
 			correct = True
@@ -1642,7 +1672,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 
 						if relativeError < 0.05:
 							#close enough; accept the answer
-							print("Exact number: " + str(a))
+							print('\t'*indentLevel + "Exact number: " + aStr)
 							correct = True
 							break
 						elif firstAttempt and relativeError < 0.10:
@@ -1663,7 +1693,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 
 						if maxRelativeError < 0.05:
 							#close enough; accept the answer
-							print("Exact number: " + str(a))
+							print('\t'*indentLevel + "Exact number: " + aStr)
 							correct = True
 							break
 						elif firstAttempt and maxRelativeError < 0.10:
@@ -1672,6 +1702,15 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 							firstAttempt = False
 					except:
 						pass
+				else:
+					if areWordsSynonyms(answer, aStr):
+						if acceptOtherNames:
+							print('\t'*indentLevel + "Actual answer: " + aStr)
+							correct = True
+							break
+						else:
+							print('\t'*indentLevel + "Your answer is synonymous with the correct answer. Please try again.")
+							tryAgain = True
 			
 			if tryAgain:
 				continue
@@ -1915,10 +1954,19 @@ def qType_FillString(q, s, difficulty, corewords, color):
 			answer, exit, immediately = checkForExit(input(""))
 
 			if answer[:nChars].lower() != parts[i].lower():
+				#check for typos
 				answer = removeTypos(answer, parts[i], returnTruncatedAnswer=False)
 				if answer[:nChars].lower() != parts[i].lower():
-					allCorrect = False
-					break
+					#check for synonyms
+					ub = len(answer)
+					if ' ' in answer:
+						ub = answer.index(' ')
+						nChars = ub
+					if areWordsSynonyms(answer[:ub], parts[i]):
+						print("Actual word:", parts[i])
+					else:
+						allCorrect = False
+						break
 
 			extraAnswerChars = answer[nChars:].rstrip() #if the user entered more than one blank entry, save the rest of his answer
 
@@ -2327,16 +2375,21 @@ def quizSet(setKey, items, step, corewords, color, geoType=""):
 		elif answer in itemsLCaseWithoutParentheses:
 			pass #continue to process correct answer
 		else:
-			#check for typos
-			typos = False
+			#check for typos and synonyms
+			acceptAnswer = False
 
 			for i in range(len(itemsCopy)):
 				if isAnswerCorrect(answer, itemsCopy[i], showFullAnswer=showFullAnswer, geoType=geoType):
-					typos = True
-					answer = itemsLCaseWithoutParentheses[i]
+					acceptAnswer = True
+					break
+				elif areWordsSynonyms(answer, itemsCopy[i]):
+					print("Actual answer: " + itemsCopy[i])
+					acceptAnswer = True
 					break
 
-			if not typos:
+			if acceptAnswer:
+				answer = itemsLCaseWithoutParentheses[i]
+			else:
 				correct = ""
 				for item in itemsCopy:
 					correct += item + ", "
@@ -2431,6 +2484,7 @@ def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
 		correct, exit, immediately = getFeedbackFromGUI(catalot)
 	elif step == 4:
 		correct, exit, immediately = qType_EnterAnswer("What is the name of the highlighted {}?".format(geoType), key, color, otherNames=otherNames, geoType=geoType)
+		#correct, exit, immediately = qType_FillString("What is the name of the highlighted {}?".format(geoType), key, 5, [], color) #switch to FillString?
 
 	return correct, exit, immediately
 

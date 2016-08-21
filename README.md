@@ -32,6 +32,7 @@ Credits
 * [Colorama](https://pypi.python.org/pypi/colorama)
 * [Geographic data source](naturalearthdata.com)
 * C# dBASE reader by [Brian Duke @ Codeproject](http://www.codeproject.com/Articles/24247/Load-a-DBF-into-a-DataTable)
+* Uses [Moby Thesaurus](http://icon.shef.ac.uk/Moby/mthes.html) for word synonyms
 * Uses [NAudio](https://naudio.codeplex.com/) to play sounds
 * Uses [NVorbis](https://github.com/ioctlLR/NVorbis) to play OGG sounds
 * Play and pause icons by [Modern UI Icons](http://modernuiicons.com/)

@@ -128,7 +128,16 @@ class Date:
 
 
 	def __lt__(self, other):
-		return self.totalDays() < other.totalDays()
+		if getType(other) is Type.Date:
+			return self.totalDays() < other.totalDays()
+		elif getType(other) is Type.DateRange:
+			return self.totalDays() < (other[0].totalDays() + other[1].totalDays()) / 2
+		else:
+			return toString(self) < toString(other)
+
+
+	def __gt__(self, other):
+		return not self < other and self != other
 
 
 	def isToday(self):

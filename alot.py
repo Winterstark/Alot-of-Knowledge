@@ -1536,7 +1536,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, otherNames={}, acceptOtherNames=True, geoType=""):
+def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, validAnswers=set(), otherNames=set(), acceptOtherNames=True, geoType=""):
 	if type(q) is not str:
 		q = str(q)
 	
@@ -1589,29 +1589,21 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 			correct = True
 		else:
 			if catalot != None and a in catalot:
-				#check if the user's answer is correct for another entry
-				if attribute == "":
-					for key in catalot:
-						if key != a and toString(catalot[key]) == q and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
-							if color == COLOR_UNLEARNED:
-								print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
-								tryAgain = True
-							else:
-								print('\t'*indentLevel + "Expected answer:", a)
-								correct = True
-							break
-				else:
-					for key in catalot:
-						if key != a and attribute in catalot[key]:
-							#check if entry contains the items in question
-							entryContainsAllTimes = True
-							for item in items:
-								if item not in catalot[key][attribute]:
-									entryContainsAllTimes = False
-									break
+				#check if the user's answer is in validAnswers
+				for validAnswer in validAnswers:
+					if isAnswerCorrect(answer, validAnswer, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
+						if color == COLOR_UNLEARNED:
+							print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+							tryAgain = True
+						else:
+							print('\t'*indentLevel + "Expected answer:", a)
+							correct = True
 
-							#is this the user's answer?
-							if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
+				if not correct and not tryAgain:
+					#check if the user's answer is correct for another entry
+					if attribute == "":
+						for key in catalot:
+							if key != a and toString(catalot[key]) == q and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
 								if color == COLOR_UNLEARNED:
 									print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
 									tryAgain = True
@@ -1619,6 +1611,25 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 									print('\t'*indentLevel + "Expected answer:", a)
 									correct = True
 								break
+					else:
+						for key in catalot:
+							if key != a and attribute in catalot[key]:
+								#check if entry contains the items in question
+								entryContainsAllTimes = True
+								for item in items:
+									if item not in catalot[key][attribute]:
+										entryContainsAllTimes = False
+										break
+
+								#is this the user's answer?
+								if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
+									if color == COLOR_UNLEARNED:
+										print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+										tryAgain = True
+									else:
+										print('\t'*indentLevel + "Expected answer:", a)
+										correct = True
+									break
 
 			if "correct" in locals() and correct:
 				break
@@ -1740,7 +1751,7 @@ def convertToFullNumber(answer):
 	return answer
 
 
-def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames={}, acceptOtherNames=True, geoType=""):
+def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames=set(), acceptOtherNames=True, geoType=""):
 	originalAnswer = answer
 	aStr = toString(a, False)
 
@@ -1812,7 +1823,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		#if wrong -> check other names
 		if answer != correctAnswer and len(otherNames) > 0:	
 			for alt in otherNames:
-				if isAnswerCorrect(answer, alt, aIsDate=aIsDate, showFullAnswer=True, indentLevel=indentLevel, otherNames={}, geoType=geoType):
+				if isAnswerCorrect(answer, alt, aIsDate=aIsDate, showFullAnswer=True, indentLevel=indentLevel, otherNames=set(), geoType=geoType):
 					if acceptOtherNames:
 						answer = correctAnswer
 						showFullAnswer = False
@@ -1987,7 +1998,7 @@ def qType_FillString(q, s, difficulty, corewords, color):
 	return allCorrect, exit, immediately
 
 
-def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames={}, geoType=""):
+def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames=set(), geoType=""):
 	#pick 3 random items
 	randomItems = list(items)
 	random.shuffle(randomItems)
@@ -2038,8 +2049,7 @@ def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 				msgGUI("I {}".format(fullPath(entry[attribute])))
 				usedGUI = True
 			else:
-				#if the class contains both a map element and an image (probably a flag), show the image in the lower-right corner
-				msgGUI("M {}".format(fullPath(entry[attribute])))
+				msgGUI("M {}".format(fullPath(entry[attribute]))) #if the class contains both a map element and an image (probably a flag), show the image in the lower-right corner
 		elif getType(entry[attribute]) is Type.Geo:
 			geoType, geoName = splitGeoName(entry, attribute)
 			msgGUI("map 1 {}".format(geoName))
@@ -2050,11 +2060,26 @@ def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 		else:
 			print(attribute + ": " + toString(entry[attribute]).replace(key, "???"))
 
+	#get a list of other classes that have the same attributes as this one, and accept them as correct answers
+	validAnswers = set()
+	if not usedGUI: #don't do this if this class has an associated Image, Geo, or Sound, because those attributes should be unique
+		for k in catalot:
+			if k != key and getType(catalot[k]) is Type.Class:
+				addK = True
+				for attribute in entry:
+					aType = getType(entry[attribute])
+					if aType is not Type.Image and aType is not Type.Geo and aType is not Type.Sound:
+						if attribute not in catalot[k] or catalot[k][attribute] != entry[attribute]:
+							addK = False
+							break
+				if addK:
+					validAnswers.add(k)
+
 	if geoType != "":
 		identifier = geoType
 	else:
 		identifier = "entry"
-	correct, exit, immediately = qType_EnterAnswer("What is the name of this {}? ".format(identifier), key, color, catalot=catalot, otherNames=otherNames, acceptOtherNames=False, geoType=geoType)
+	correct, exit, immediately = qType_EnterAnswer("What is the name of this {}? ".format(identifier), key, color, catalot=catalot, validAnswers=validAnswers, otherNames=otherNames, acceptOtherNames=False, geoType=geoType)
 	return correct, exit, immediately, usedGUI
 
 
@@ -2102,7 +2127,7 @@ def qType_OrderItems(listKey, items, color):
 		return correctOrder, exit, immediately
 
 
-def qType_Image(imageKey, path, learned=False, otherNames={}):
+def qType_Image(imageKey, path, learned=False, otherNames=set()):
 	if learned:
 		color = COLOR_LEARNED
 	else:
@@ -2134,7 +2159,7 @@ def qType_Image(imageKey, path, learned=False, otherNames={}):
 			return correctAnswer, quit, immediately
 
 
-def qType_Sound(soundKey, path, learned=False, otherNames={}):
+def qType_Sound(soundKey, path, learned=False, otherNames=set()):
 	if learned:
 		color = COLOR_LEARNED
 	else:
@@ -2163,7 +2188,7 @@ def qType_Sound(soundKey, path, learned=False, otherNames={}):
 			return correctAnswer, quit, immediately
 
 
-def qType_Timeline(key, otherNames={}):
+def qType_Timeline(key, otherNames=set()):
 	msgGUI("timeline " + key + " ?")
 	colorPrint("What event (???) is highlighted on the timeline?", COLOR_LEARNED)
 	answer, quit, immediately = checkForExit(input("> "))
@@ -2174,7 +2199,7 @@ def qType_Timeline(key, otherNames={}):
 		return key, quit, immediately
 
 
-def qType_FamilyTree(catalot, key, otherNames={}):
+def qType_FamilyTree(catalot, key, otherNames=set()):
 	msgGUI("ftree " + exportFamilyTree(catalot, key, True))
 	colorPrint("Who (???) is highlighted in the family tree?", COLOR_LEARNED)
 	answer, quit, immediately = checkForExit(input("> "))
@@ -2185,7 +2210,7 @@ def qType_FamilyTree(catalot, key, otherNames={}):
 		return key, quit, immediately
 
 
-def quizNumber(catalot, key, step, color, attribute="", otherNames={}):
+def quizNumber(catalot, key, step, color, attribute="", otherNames=set()):
 	if step == 1:
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(catalot, key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
@@ -2469,7 +2494,7 @@ def splitGeoName(geoName, attribute):
 	return geoName[:separator].lower(), geoName[separator+1:]
 
 
-def quizGeo(catalot, key, step, color, attribute="", otherNames={}):
+def quizGeo(catalot, key, step, color, attribute="", otherNames=set()):
 	if attribute != "" and type(step) is dict:
 		step = step[attribute]
 
@@ -2538,7 +2563,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				if "Other names" in entry:
 					otherNames = entry["Other names"]
 				else:
-					otherNames = {}
+					otherNames = set()
 
 				if "Map" in entry:
 					geoType, geoName = splitGeoName(entry, "Map")
@@ -2667,7 +2692,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				if "Other names" in entry:
 					otherNames = entry["Other names"]
 				else:
-					otherNames = {}
+					otherNames = set()
 
 				if "Map" in entry:
 					geoType, geoName = splitGeoName(entry, "Map")

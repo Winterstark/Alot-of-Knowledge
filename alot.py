@@ -1489,12 +1489,7 @@ def constructHint(a):
 	return hint
 
 
-def qType_MultipleChoice(catalot, q, a, answers, color):
-	colorPrint(toString(q), color)
-
-	answers.insert(random.randint(0, len(answers)), a)
-	answers.sort()
-
+def multipleChoice(answers):
 	#print choices
 	i = 1
 	for answer in answers:
@@ -1505,16 +1500,24 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	choice = ""
 	while (choice == "" or not choice.isdigit() or int(choice) < 1 or int(choice) > len(answers)) and "exit" not in choice:
 		choice = input("> ")
-
 	choice, exit, immediately = checkForExit(choice)
 
 	try:
 		userA = answers[int(choice)-1]
-		correct = userA == a
 	except:
 		userA = ""
-		correct = False
+	return userA, exit, immediately
 
+
+def qType_MultipleChoice(catalot, q, a, answers, color):
+	colorPrint(toString(q), color)
+
+	answers.insert(random.randint(0, len(answers)), a)
+	answers.sort()
+
+	userA, exit, immediately = multipleChoice(answers)
+
+	correct = userA == a
 	if not correct and userA != "":
 		correct = toString(a)
 
@@ -3067,13 +3070,13 @@ def mainLoop(alot, metalot):
 		print(("{0:<8}{1:<" + maxLen + "}\n").format(str(i+2)+'.', "exit"))
 
 		choice = ""
-		while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and ("map " not in choice or len(choice) <= 4) and choice not in wordChoices:
+		while choice not in alot and not (choice.isdigit() and int(choice) in cats.keys()) and ("map " not in choice or len(choice) <= 4) and ("unlearn " not in choice or len(choice) <= 8) and choice not in wordChoices:
 			choice = input('Choose a category: ')
 		if choice.isdigit():
 			choice = cats[int(choice)]
 
 		if choice == "help":
-			print("List of other commands:\n\tmap [geo object]\tShows the specified object on the map.\n\ttimeline\t\tNOT YET IMPLEMENTED")
+			print("List of other commands:\n\tmap [key]\tShows the specified object on the map\n\ttimeline\tNOT YET IMPLEMENTED\n\tunlearn [key]\tResets the progress of an entry")
 			input("Press Enter to return to the menu...")
 		elif choice == "timeline":
 			pass
@@ -3082,6 +3085,41 @@ def mainLoop(alot, metalot):
 		elif choice[:4] == "map ":
 			choice = choice[4:]
 			exploreMap(choice, alot)
+		elif choice[:8] == "unlearn ":
+			choice = choice[8:]
+			foundIn = []
+
+			for category in alot:
+				if choice in alot[category]:
+					foundIn.append(category)
+
+			if len(foundIn) == 0:
+				print("Entry not found!")
+				category = ""
+			elif len(foundIn) == 1:
+				category = foundIn[0]
+			else:
+				print("Multiple entries found! Choose which one to unlearn:")
+				category, exit, immediately = multipleChoice(foundIn)
+				if exit:
+					category = ""
+
+			if category != "":
+				meta = metalot[category][choice]
+				if not meta["learned"]:
+					print("Entry is not learned!")
+				else:
+					meta["learned"] = False
+					meta["nextTest"] = datetime.now() + timedelta(hours=22)
+
+					if type(meta["step"]) is dict:
+						for attribute in meta["step"]:
+							meta["step"][attribute] = 1
+					else:
+						meta["step"] = 1
+
+					saveToFile(alot[category], metalot[category], DIR + os.sep + category + ".txt") #save changes
+					print("Entry unlearned!")
 		elif choice == "all": #test all categories one by one
 			for category in alot:
 				quiz(category, alot[category], metalot[category], corewords)

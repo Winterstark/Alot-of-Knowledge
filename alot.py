@@ -1301,6 +1301,10 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 
 			finalAnswers.remove(targetNumber)
 
+	#convert to strings
+	for i in range(len(finalAnswers)):
+		finalAnswers[i] = toString(finalAnswers[i])
+
 	return finalAnswers
 
 

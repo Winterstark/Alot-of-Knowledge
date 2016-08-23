@@ -765,33 +765,33 @@ def removeTypos(userAnswer, correctAnswer, originalCorrectAnswer="", indentLevel
 
 
 def areWordsSynonyms(word1, word2):
+	if word1 == "" or word2 == "":
+		return False
+
 	word1 = word1.lower()
 	word2 = word2.lower()
 
-	with open("mobythes.aur") as f:
-		lines = f.readlines()
-
-	if word2 in bSearchThesaurus(word1, lines, 0, len(lines)-1):
+	if word2 in bSearchThesaurus(word1, 0, len(thesaurus)-1):
 		return True
 	else:
-		return word1 in bSearchThesaurus(word2, lines, 0, len(lines)-1)
+		return word1 in bSearchThesaurus(word2, 0, len(thesaurus)-1)
 
 
-def bSearchThesaurus(word, lines, lb, ub):
+def bSearchThesaurus(word, lb, ub):
 	if ub - lb <= 10:
 		#switch to linear search
 		for i in range(lb, ub+1):
-			if lines[i][:lines[i].index(',')] == word:
-				return lines[i][lines[i].index(',')+1:].split(',')
-		return "not found"
+			if thesaurus[i][:thesaurus[i].index(',')] == word:
+				return thesaurus[i][thesaurus[i].index(',')+1:].split(',')
+		return ""
 
 	mid = (lb + ub) // 2
-	if lines[mid] == word:
-		return lines[mid]
-	elif lines[mid] > word:
-		return bSearchThesaurus(word, lines, lb, mid-1)
+	if thesaurus[mid] == word:
+		return thesaurus[mid]
+	elif thesaurus[mid] > word:
+		return bSearchThesaurus(word, lb, mid-1)
 	else:
-		return bSearchThesaurus(word, lines, mid+1, ub)
+		return bSearchThesaurus(word, mid+1, ub)
 
 
 def pluralizeIfNecessary(n, s):
@@ -1602,7 +1602,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 							print('\t'*indentLevel + "Expected answer:", a)
 							correct = True
 
-				if not correct and not tryAgain:
+				if ("correct" not in locals() or not correct) and not tryAgain:
 					#check if the user's answer is correct for another entry
 					if attribute == "":
 						for key in catalot:
@@ -1842,7 +1842,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	return correct
 
 
-def qType_FillString(q, s, difficulty, corewords, color):
+def qType_FillString(q, s, difficulty, color):
 	#split string into parts
 	parts = s.replace("\n", " __NEWLINE__ ").split()
 	
@@ -2238,7 +2238,7 @@ def quizNumber(catalot, key, step, color, attribute="", otherNames=set()):
 	return correct, exit, immediately
 
 
-def quizString(catalot, key, step, corewords, color, attribute=""):
+def quizString(catalot, key, step, color, attribute=""):
 	if step == 1:
 		if attribute != "":
 			correct, exit, immediately = qType_MultipleChoice(catalot, key + ", " + attribute, catalot[key][attribute], getAltAnswers(catalot, key, False, attribute), color)
@@ -2251,19 +2251,19 @@ def quizString(catalot, key, step, corewords, color, attribute=""):
 			correct, exit, immediately = qType_MultipleChoice(catalot, catalot[key], key, getAltAnswers(catalot, key, True), color)
 	elif step == 3:
 		if attribute != "":
-			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, corewords, color)
+			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 1, color)
 		else:
-			correct, exit, immediately = qType_FillString(key, catalot[key], 1, corewords, color)
+			correct, exit, immediately = qType_FillString(key, catalot[key], 1, color)
 	elif step == 4:
 		if attribute != "":
-			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 2, corewords, color)
+			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 2, color)
 		else:
-			correct, exit, immediately = qType_FillString(key, catalot[key], 2, corewords, color)
+			correct, exit, immediately = qType_FillString(key, catalot[key], 2, color)
 	elif step == 5:
 		if attribute != "":
-			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 3, corewords, color)
+			correct, exit, immediately = qType_FillString(key + ", " + attribute, catalot[key][attribute], 3, color)
 		else:
-			correct, exit, immediately = qType_FillString(key, catalot[key], 3, corewords, color)
+			correct, exit, immediately = qType_FillString(key, catalot[key], 3, color)
 
 	return correct, exit, immediately
 
@@ -2318,7 +2318,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				subSetStep = 1
 			else:
 				subSetStep = 2
-			correct, exit, immediately = quizSet("", items[step-1], subSetStep, color)
+			correct, exit, immediately = quizSet("", items[step-1], subSetStep, [], [], color)
 		elif type(items[step-1]) is tuple:
 			correct = True
 			for item in items[step-1]:
@@ -2366,14 +2366,14 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		return "False", exit, immediately, usedGUI #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
 
 
-def quizSet(setKey, items, step, corewords, color, geoType=""):
+def quizSet(setKey, items, step, color, geoType=""):
 	if len(items) == 1:
 		#for sets with only 1 item switch to qType_FillString()
 		if step == 1:
 			fillStringStep = 1
 		else:
 			fillStringStep = 3
-		return qType_FillString(setKey, list(items)[0], fillStringStep, corewords, color)
+		return qType_FillString(setKey, list(items)[0], fillStringStep, color)
 
 	itemsCopy = list(items)
 	hasSubSets, itemsSets = unwrapSets(itemsCopy)
@@ -2521,7 +2521,7 @@ def quizGeo(catalot, key, step, color, attribute="", otherNames=set()):
 	return correct, exit, immediately
 
 
-def quiz(category, catalot, metacatalot, corewords):
+def quiz(category, catalot, metacatalot):
 	ready, nNew, nLearned = getReadyKeys(metacatalot)
 	if nNew + nLearned == 0:
 		return
@@ -2557,7 +2557,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				usedGUI = True
 				correct, exit, immediately = qType_Sound(key, fullPath(entry), False)
 			elif entryType is Type.String:
-				correct, exit, immediately = quizString(catalot, key, step, corewords, color)
+				correct, exit, immediately = quizString(catalot, key, step, color)
 			elif entryType is Type.Geo:
 				correct, exit, immediately = quizGeo(catalot, key, step, color)
 				usedGUI = True
@@ -2636,14 +2636,14 @@ def quiz(category, catalot, metacatalot, corewords):
 							usedGUI = True
 							correct[attribute], exit, immediately = qType_Sound(key, fullPath(entry[attribute]), False, otherNames=otherNames)
 						elif attributeType is Type.String:
-							correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], corewords, color, attribute)
+							correct[attribute], exit, immediately = quizString(catalot, key, step[attribute], color, attribute)
 						elif attributeType is Type.Geo:
 							correct[attribute], exit, immediately = quizGeo(catalot, key, step, color, attribute, otherNames=otherNames)
 							usedGUI = True
 						elif attributeType is Type.List:
 							correct[attribute], exit, immediately, usedGUI = quizList(key + ", " + attribute, entry[attribute], step[attribute])
 						elif attributeType is Type.Set:
-							correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], corewords, color, geoType=geoType)
+							correct[attribute], exit, immediately = quizSet(key + ", " + attribute, entry[attribute], step[attribute], color, geoType=geoType)
 
 						if not immediately:
 							if type(correct[attribute]) is int or type(correct[attribute]) is list:
@@ -2664,7 +2664,7 @@ def quiz(category, catalot, metacatalot, corewords):
 			elif entryType is Type.List:
 				correct, exit, immediately, usedGUI = quizList(key, entry, step)
 			elif entryType is Type.Set:
-				correct, exit, immediately = quizSet(key, entry, step, corewords, color)
+				correct, exit, immediately = quizSet(key, entry, step, color)
 		else:
 			color = COLOR_LEARNED
 
@@ -2690,7 +2690,7 @@ def quiz(category, catalot, metacatalot, corewords):
 				correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color)
 				usedGUI = True
 			elif entryType is Type.String:
-				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), corewords, color) #don't test learned entries on hardest difficulty
+				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:
 				if "Other names" in entry:
 					otherNames = entry["Other names"]
@@ -2788,7 +2788,7 @@ def quiz(category, catalot, metacatalot, corewords):
 								msgGUI("timeline " + key)
 							usedGUI = True
 
-						correct, exit, immediately = quizString(catalot, key, qType, corewords, color, attribute)
+						correct, exit, immediately = quizString(catalot, key, qType, color, attribute)
 					elif attributeType is Type.Geo:
 						correct, exit, immediately = quizGeo(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
 						usedGUI = True
@@ -2810,7 +2810,7 @@ def quiz(category, catalot, metacatalot, corewords):
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 					elif attributeType is Type.Set:
 						if random.randint(0, 1) == 0:
-							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, corewords, color, geoType=geoType)
+							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color, geoType=geoType)
 						else:
 							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames, geoType=geoType)
 			elif entryType is Type.List:
@@ -2822,7 +2822,7 @@ def quiz(category, catalot, metacatalot, corewords):
 					correct, exit, immediately = qType(key, entry, color)
 			elif entryType is Type.Set:
 				if random.randint(0, 1) == 0:
-					correct, exit, immediately = quizSet(key, entry, 1, corewords, color)
+					correct, exit, immediately = quizSet(key, entry, 1, color)
 				else:
 					correct, exit, immediately = qType_RecognizeList(key, entry, color, catalot=catalot)
 
@@ -3009,13 +3009,6 @@ def exploreMap(key, alot):
 
 
 def mainLoop(alot, metalot):
-	#load corewords
-	if os.path.isfile("corewords.txt"):
-		with open("corewords.txt") as f:
-			corewords = f.read().split()
-	else:
-		corewords = ["BibleThump", "FeelsBadMan"]
-
 	choice = ""
 	while choice != "exit":
 		maxLen = getMaxKeyLen(alot)
@@ -3122,12 +3115,12 @@ def mainLoop(alot, metalot):
 					print("Entry unlearned!")
 		elif choice == "all": #test all categories one by one
 			for category in alot:
-				quiz(category, alot[category], metalot[category], corewords)
+				quiz(category, alot[category], metalot[category])
 				keys, nNew, nLearned = getReadyKeys(metalot[category])
 				if nNew + nLearned > 0:
 					break
 		elif choice != "exit":
-			quiz(choice, alot[choice], metalot[choice], corewords)
+			quiz(choice, alot[choice], metalot[choice])
 
 	return False
 
@@ -3136,6 +3129,20 @@ def mainLoop(alot, metalot):
 print("Alot of Knowledge")
 
 init() #colorama init
+
+#load corewords
+if os.path.isfile("corewords.txt"):
+	with open("corewords.txt") as f:
+		corewords = f.read().split()
+else:
+	corewords = ["BibleThump"]
+
+#load thesaurus
+if os.path.isfile("mobythes.aur"):
+	with open("mobythes.aur") as f:
+		thesaurus = f.readlines()
+else:
+	thesaurus = ["FeelsBadMan"]
 
 #ensure required directories exist
 if not os.path.isdir(DIR):

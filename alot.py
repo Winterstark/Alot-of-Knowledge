@@ -1510,16 +1510,17 @@ def multipleChoice(answers):
 
 
 def qType_MultipleChoice(catalot, q, a, answers, color):
+	aStr = toString(a)
 	colorPrint(toString(q), color)
 
-	answers.insert(random.randint(0, len(answers)), toString(a))
+	answers.insert(random.randint(0, len(answers)), aStr)
 	answers.sort()
 
 	userA, exit, immediately = multipleChoice(answers)
 
-	correct = userA == a
+	correct = userA == aStr
 	if not correct and userA != "":
-		correct = toString(a)
+		correct = aStr
 
 		if catalot != None:
 			#find the value (or key) associated with the user's wrong answer

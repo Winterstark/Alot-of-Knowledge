@@ -604,13 +604,15 @@
 
 
 
-	DESERTS/SALT FLATS	
-	"Hamada du Dr?a": "GEO:Desert/Hamada du Dr?a",
-	"T?n?r?": "GEO:Desert/T?n?r?",
+	DESERTS/SALT FLATS
+
+	"Hamada du Draa": "GEO:Hamada/Hamada du Dr?a",
+	"Tenere": "GEO:Desert/T?n?r?",
 	"Tassili oua-n-Ahaggar": "GEO:Desert/Tassili oua-n-Ahaggar",
 	"Tassili-n-Ajjer": "GEO:Desert/Tassili-n-Ajjer",
 	"Sar?r Kalanshiyu ar Ramli al Kabi": "GEO:Desert/Sar?r Kalanshiyu ar Ramli al Kabi",
 	"Grand Erg Oriental": "GEO:Desert/Grand Erg Oriental",
+	
 	"Grand Erg Occidental": "GEO:Desert/Grand Erg Occidental",
 	"?Erg Chech": "GEO:Desert/?Erg Chech",
 	"El Djouf": "GEO:Desert/El Djouf",

@@ -1301,10 +1301,6 @@ def getAltAnswers(catalot, targetKey, returnKeys, attribute=""):
 
 			finalAnswers.remove(targetNumber)
 
-	#convert to strings
-	for i in range(len(finalAnswers)):
-		finalAnswers[i] = toString(finalAnswers[i])
-
 	return finalAnswers
 
 
@@ -1513,8 +1509,21 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	aStr = toString(a)
 	colorPrint(toString(q), color)
 
-	answers.insert(random.randint(0, len(answers)), aStr)
-	answers.sort()
+	answers.insert(random.randint(0, len(answers)), a)
+
+	allDates = True
+	for answer in answers:
+		if getType(answer) is not Type.Date and getType(answer) is not Type.DateRange:
+			allDates = False
+			break
+	if allDates:
+		answers.sort() #dates should be sorted before string conversion
+		
+	#convert to strings
+	for i in range(len(answers)):
+		answers[i] = toString(answers[i])
+	if not allDates:
+		answers.sort()
 
 	userA, exit, immediately = multipleChoice(answers)
 

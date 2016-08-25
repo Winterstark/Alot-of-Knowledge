@@ -252,8 +252,7 @@ namespace AlotGUI
             switch (msg[0])
             {
                 case 'I': //identify image
-                    this.BackgroundImage = Image.FromFile(imgs[imgIndex]);
-                    mode = DisplayMode.Image;
+                    setupSingleImage(imgs[imgIndex]);
                     break;
                 case 'C': //choose correct image
                     processMosaicMsg(msg);
@@ -262,6 +261,35 @@ namespace AlotGUI
                     setupMiniImage(imgs[imgIndex]);
                     break;
             }
+        }
+
+        void setupSingleImage(string imgPath)
+        {
+            Image imgOriginal = Image.FromFile(imgPath);
+
+            //draw borders around the image (by copying the image to a new, slightly enlarged, black, Bitmap)
+            Image imgWithBorders;
+            int x, y;
+            if ((float)imgOriginal.Width / imgOriginal.Height < (float)this.ClientSize.Width / this.ClientSize.Height)
+            {
+                imgWithBorders = new Bitmap(imgOriginal.Width + 8, imgOriginal.Height);
+                x = 4;
+                y = 0;
+            }
+            else
+            {
+                imgWithBorders = new Bitmap(imgOriginal.Width, imgOriginal.Height + 8);
+                x = 0;
+                y = 4;
+            }
+
+            Graphics gfx = Graphics.FromImage(imgWithBorders);
+            gfx.FillRectangle(Brushes.Black, 0, 0, imgWithBorders.Width, imgWithBorders.Height);
+            gfx.DrawImage(imgOriginal, x, y);
+            gfx.Dispose();
+
+            this.BackgroundImage = imgWithBorders;
+            mode = DisplayMode.Image;
         }
 
         void setupMiniImage(string imgPath)
@@ -1535,7 +1563,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 1 Great Morava..4");
+            //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\flags\\Estonia.png");
         }
 
         protected override void OnPaint(PaintEventArgs e)

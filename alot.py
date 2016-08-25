@@ -1512,7 +1512,7 @@ def multipleChoice(answers):
 def qType_MultipleChoice(catalot, q, a, answers, color):
 	colorPrint(toString(q), color)
 
-	answers.insert(random.randint(0, len(answers)), a)
+	answers.insert(random.randint(0, len(answers)), toString(a))
 	answers.sort()
 
 	userA, exit, immediately = multipleChoice(answers)

@@ -2558,8 +2558,8 @@ def quiz(category, catalot, metacatalot):
 				correct, exit, immediately = quizNumber(catalot, key, step, color)
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
-				usedGUI = True
 				correct, exit, immediately, usedGUI = quizList(key, entry[1], step)
+				usedGUI = True
 			elif entryType is Type.Image:
 				usedGUI = True
 				correct, exit, immediately = qType_Image(key, fullPath(entry), False)

@@ -132,7 +132,6 @@
 	"Sumba": "GEO:Island/Sumba",
 	"Sumbawa": "GEO:Island/Sumbawa",
 	"Lombok": "GEO:Island/Lombok",
-	"Bali": "GEO:Island/Bali",
 	"Madura I.": "GEO:Island/Madura I.",
 	"Belitung": "GEO:Island/Belitung",
 	"Bangka": "GEO:Island/Bangka",
@@ -253,9 +252,6 @@
 	"Hearst Island": "GEO:Island/Hearst Island",
 	"James Ross Island": "GEO:Island/James Ross Island",
 	"Joinville Island": "GEO:Island/Joinville Island",
-	"Brabant Island": "GEO:Island/Brabant Island",
-	"Anvers Island": "GEO:Island/Anvers Island",
-	"Adelaide Island": "GEO:Island/Adelaide Island",
 	"Charcot Island": "GEO:Island/Charcot Island",
 	"Latady Island": "GEO:Island/Latady Island",
 	"Spaatz Island": "GEO:Island/Spaatz Island",
@@ -272,7 +268,6 @@
 	"Burke Island": "GEO:Island/Burke Island",
 	"Farwell Island": "GEO:Island/Farwell Island",
 	"Marshall Archipelago": "GEO:Archipelago/Marshall Archipelago",
-	"Biscoe Islands": "GEO:Archipelago/Biscoe Islands",
 	"Palmer Land": "GEO:Island/Palmer Land",
 	"Graham Land": "GEO:Island/Graham Land",
 	"Null Island": "GEO:Island/Null Island",
@@ -398,8 +393,6 @@
 	"MacDonnell Ranges": "GEO:Mountain range/MacDonnell Ranges",
 	"Darling Range": "GEO:Mountain range/Darling Range",
 	"Hamersley Ra.": "GEO:Mountain range/Hamersley Ra.",
-	"Owen Stanley Ra.": "GEO:Mountain range/Owen Stanley Ra.",
-	"Maoke Mts.": "GEO:Mountain range/Maoke Mts.",
 	"Hentiyn Mts.": "GEO:Mountain range/Hentiyn Mts.",
 	"Bureinskiy Ra.": "GEO:Mountain range/Bureinskiy Ra.",
 	"Yam Alin? Range": "GEO:Mountain range/Yam Alin? Range",
@@ -448,7 +441,6 @@
 	"SELWYN MTS.": "GEO:Mountain range/SELWYN MTS.",
 	"COLUMBIA MTS.": "GEO:Mountain range/COLUMBIA MTS.",
 	"TORNGAT MTS.": "GEO:Mountain range/TORNGAT MTS.",
-	"NEW GUINEA HIGHLANDS": "GEO:Mountain range/NEW GUINEA HIGHLANDS",
 	"Hamgyong Mts.": "GEO:Mountain range/Hamgyong Mts.",
 	"SREDINNYY RANGE": "GEO:Mountain range/SREDINNYY RANGE",
 	"Koryak Range": "GEO:Mountain range/Koryak Range",
@@ -457,7 +449,6 @@
 	"Yin Mts.": "GEO:Mountain range/Yin Mts.",
 	"Taihang Mts.": "GEO:Mountain range/Taihang Mts.",
 	"L?liang Mts.": "GEO:Mountain range/L?liang Mts.",
-	"Qinling Mountains": "GEO:Mountain range/Qinling Mountains",
 	"ATLAS SAHARIEN": "GEO:Mountain range/ATLAS SAHARIEN",
 	"HAUT ATLAS": "GEO:Mountain range/HAUT ATLAS",
 	"DRAKENSBERG": "GEO:Mountain range/DRAKENSBERG",
@@ -470,7 +461,6 @@
 	"SIKHOTE-ALIN? RANGE": "GEO:Mountain range/SIKHOTE-ALIN? RANGE",
 	"VERKHOYANSK RANGE": "GEO:Mountain range/VERKHOYANSK RANGE",
 	"YABLONOVYY RANGE": "GEO:Mountain range/YABLONOVYY RANGE",
-	"Dabie Mts.": "GEO:Mountain range/Dabie Mts.",
 	"Sierra Madre del Sur": "GEO:Mountain range/Sierra Madre del Sur",
 	"COAST RANGES": "GEO:Mountain range/COAST RANGES",
 	"SIERRA MADRE ORIENTAL": "GEO:Mountain range/SIERRA MADRE ORIENTAL",
@@ -600,30 +590,7 @@
 
 
 
-
-
-
-
-	DESERTS/SALT FLATS
-
-	"Hamada du Draa": "GEO:Hamada/Hamada du Dr?a",
-	"Tenere": "GEO:Desert/T?n?r?",
-	"Tassili oua-n-Ahaggar": "GEO:Desert/Tassili oua-n-Ahaggar",
-	"Tassili-n-Ajjer": "GEO:Desert/Tassili-n-Ajjer",
-	"Sar?r Kalanshiyu ar Ramli al Kabi": "GEO:Desert/Sar?r Kalanshiyu ar Ramli al Kabi",
-	"Grand Erg Oriental": "GEO:Desert/Grand Erg Oriental",
 	
-	"Grand Erg Occidental": "GEO:Desert/Grand Erg Occidental",
-	"?Erg Chech": "GEO:Desert/?Erg Chech",
-	"El Djouf": "GEO:Desert/El Djouf",
-	"Mu Us Desert": "GEO:Desert/Mu Us Desert",
-	"BETPAQDALA DESERT": "GEO:Desert/BETPAQDALA DESERT",
-	"PUNJAB": "GEO:Desert/PUNJAB",
-	"CAATINGAS": "GEO:Desert/CAATINGAS",
-
-
-	
-
 
 	OTHER/PLAINS/REGIONS/PARKS
 	"Zambezi Delta": "GEO:UNKNOWN_TYPE/Zambezi Delta",
@@ -640,7 +607,6 @@
 	"Banaadir Coast": "GEO:UNKNOWN_TYPE/Banaadir Coast",
 	"Riverina": "GEO:UNKNOWN_TYPE/Riverina",
 	"Hexi Corridor": "GEO:UNKNOWN_TYPE/Hexi Corridor",
-	"BALUCHISTAN": "GEO:UNKNOWN_TYPE/BALUCHISTAN",
 	"Yangtze Gorges": "GEO:UNKNOWN_TYPE/Yangtze Gorges",
 	"Tsangpo Gorge": "GEO:UNKNOWN_TYPE/Tsangpo Gorge",
 	"Valle Longitudinal": "GEO:UNKNOWN_TYPE/Valle Longitudinal",
@@ -653,8 +619,6 @@
 	"BARREN  GROUNDS": "GEO:UNKNOWN_TYPE/BARREN  GROUNDS",
 	"NULLARBOR PLAIN": "GEO:UNKNOWN_TYPE/NULLARBOR PLAIN",
 	"NORTH SLOPE": "GEO:UNKNOWN_TYPE/NORTH SLOPE",
-	"CHACO BOREAL": "GEO:UNKNOWN_TYPE/CHACO BOREAL",
-	"CHACO AUSTRAL": "GEO:UNKNOWN_TYPE/CHACO AUSTRAL",
 	"MURRAY-DARLING BASIN": "GEO:UNKNOWN_TYPE/MURRAY-DARLING BASIN",
 	"SICHUAN BASIN": "GEO:UNKNOWN_TYPE/SICHUAN BASIN",
 	"TARIM BASIN": "GEO:UNKNOWN_TYPE/TARIM BASIN",
@@ -665,7 +629,6 @@
 	"GANGES PLAIN": "GEO:UNKNOWN_TYPE/GANGES PLAIN",
 	"Fergana Valley": "GEO:UNKNOWN_TYPE/Fergana Valley",
 	"Bol?shezemel?skaya Tundra": "GEO:UNKNOWN_TYPE/Bol?shezemel?skaya Tundra",
-	"KAZAKH STEPPE": "GEO:UNKNOWN_TYPE/KAZAKH STEPPE",
 	"CONGO BASIN": "GEO:UNKNOWN_TYPE/CONGO BASIN",
 	"AMAZON BASIN": "GEO:UNKNOWN_TYPE/AMAZON BASIN",
 	"Victoria Land": "GEO:UNKNOWN_TYPE/Victoria Land",

@@ -2202,7 +2202,7 @@ def qType_Sound(soundKey, path, learned=False, otherNames=set()):
 
 
 def qType_Timeline(key, otherNames=set()):
-	msgGUI("timeline " + key + " ?")
+	msgGUI("timeline " + key.replace("'", "").replace('"', '') + " ?")
 	colorPrint("What event (???) is highlighted on the timeline?", COLOR_LEARNED)
 	answer, quit, immediately = checkForExit(input("> "))
 
@@ -2680,7 +2680,7 @@ def quiz(category, catalot, metacatalot):
 
 			if entryType is Type.Number or entryType is Type.NumberRange or entryType is Type.DateRange:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
-			if entryType is Type.Date:
+			elif entryType is Type.Date:
 				if random.randint(0, 1) == 0:
 					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 				else:

@@ -269,23 +269,44 @@ namespace AlotGUI
 
             //draw borders around the image (by copying the image to a new, slightly enlarged, black, Bitmap)
             Image imgWithBorders;
-            int x, y;
-            if ((float)imgOriginal.Width / imgOriginal.Height < (float)this.ClientSize.Width / this.ClientSize.Height)
+            float imgRatio = (float)imgOriginal.Width / imgOriginal.Height;
+            int x, y, w, h;
+
+            if (imgRatio < (float)this.ClientSize.Width / this.ClientSize.Height)
             {
-                imgWithBorders = new Bitmap(imgOriginal.Width + 8, imgOriginal.Height);
+                h = Math.Min(imgOriginal.Height, this.ClientSize.Height);
+                w = (int)(h * imgRatio);
+                imgWithBorders = new Bitmap(w + 8, h);
+
                 x = 4;
                 y = 0;
             }
             else
             {
-                imgWithBorders = new Bitmap(imgOriginal.Width, imgOriginal.Height + 8);
+                w = Math.Min(imgOriginal.Width, this.ClientSize.Width);
+                h = (int)(w / imgRatio);
+                imgWithBorders = new Bitmap(w, h + 8);
+
                 x = 0;
                 y = 4;
             }
 
             Graphics gfx = Graphics.FromImage(imgWithBorders);
-            gfx.FillRectangle(Brushes.Black, 0, 0, imgWithBorders.Width, imgWithBorders.Height);
-            gfx.DrawImage(imgOriginal, x, y);
+            gfx.DrawImage(imgOriginal, x, y, w, h);
+
+            //draw borders
+            Pen pen = new Pen(Color.Black, 4);
+            if (imgRatio <= 1)
+            {
+                gfx.DrawLine(pen, 2, 0, 2, this.ClientSize.Height);
+                gfx.DrawLine(pen, w + 2, 0, w + 2, this.ClientSize.Height);
+            }
+            else
+            {
+                gfx.DrawLine(pen, 0, 2, this.ClientSize.Width, 2);
+                gfx.DrawLine(pen, 0, h + 2, this.ClientSize.Width, h + 2);
+            }
+
             gfx.Dispose();
 
             this.BackgroundImage = imgWithBorders;
@@ -1564,6 +1585,7 @@ namespace AlotGUI
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
             //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\flags\\Estonia.png");
+            //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\mythology\\Greek\\Herakles.jpg");
         }
 
         protected override void OnPaint(PaintEventArgs e)

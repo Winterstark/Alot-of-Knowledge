@@ -1583,9 +1583,8 @@ namespace AlotGUI
             loadTimelineData();
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
-
-            //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\flags\\Estonia.png");
-            //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\mythology\\Greek\\Herakles.jpg");
+            
+            //processMsg("map explore 4 King Christian X Land");
         }
 
         protected override void OnPaint(PaintEventArgs e)

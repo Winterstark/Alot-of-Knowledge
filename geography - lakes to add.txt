@@ -11,8 +11,6 @@
 	"Reindeer Lake": "GEO:Lake/Reindeer Lake",
 	"Lake of the Woods": "GEO:Lake/Lake of the Woods",
 	"Lake Nipigon": "GEO:Lake/Lake Nipigon",
-	"Lake Manitoba": "GEO:Lake/Lake Manitoba",
-	"Lake Winnipegosis": "GEO:Lake/Lake Winnipegosis",
 	"Lake Athabasca": "GEO:Lake/Lake Athabasca",
 	"Lake Mistassini": "GEO:Lake/Lake Mistassini",
 	"Oneida Lake": "GEO:Lake/Oneida Lake",

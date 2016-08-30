@@ -373,6 +373,8 @@ namespace AlotGUI
                             drawEntityCollection(gfx, GeoType.River, preDrawing);
                         if (qGeoType != GeoType.Lake || Math.Abs(qType) != 3)
                             drawEntityCollection(gfx, GeoType.Lake, preDrawing);
+                        if (qGeoType == GeoType.PhysicalRegion && qType == 4)
+                            drawPhysicalRegionsOfTheSameType(gfx, preDrawing);
                         if (qGeoType != GeoType.City || Math.Abs(qType) != 3)
                             drawEntityCollection(gfx, GeoType.City, preDrawing);
                     }

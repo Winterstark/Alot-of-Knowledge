@@ -12,7 +12,7 @@ namespace AlotGUI
         public const int SHAPE_TYPE_POLYLINE = 3;
         public const int SHAPE_TYPE_POLYGON = 5;
 
-        public enum GeoType {Landmass, PhysicalRegion, MarineArea, Lake, River, Country, Region, City};
+        public enum GeoType {Landmass, PhysicalRegion, MarineArea, Lake, River, Country, Region, City, All}; //GeoType.All is used only when selecting areas to indicate that any GeoType is valid
         enum ColorRegionsMode {Initialize, Highlight, Reset};
 
         Shape worldLandmass;
@@ -210,8 +210,12 @@ namespace AlotGUI
                         ForceDraw();
                     }
                 }
-                
-                return GetSelectedArea(new PointF(lon, lat), qGeoType);
+
+                string selectedArea = GetSelectedArea(new PointF(lon, lat), qGeoType);
+                if (selectedArea == "")
+                    selectedArea = GetSelectedArea(new PointF(lon, lat), GeoType.All);
+
+                return selectedArea;
             }
             catch (Exception exc)
             {
@@ -227,9 +231,18 @@ namespace AlotGUI
                 List<Tuple<string, double>> enclosingAreas = new List<Tuple<string, double>>();
                 double avgDistance;
 
-                foreach (var entity in mapEntities)
-                    if (entity.Value.GeoType == geoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(coords)) && entity.Value.IsSelected(coords.X, coords.Y, out avgDistance))
-                        enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
+                if (geoType == GeoType.All)
+                {
+                    foreach (var entity in mapEntities)
+                        if ((entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(coords)) && entity.Value.IsSelected(coords.X, coords.Y, out avgDistance))
+                            enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
+                }
+                else
+                {
+                    foreach (var entity in mapEntities)
+                        if (entity.Value.GeoType == geoType && (entity.Value.GeoType == GeoType.City || entity.Value.Box.Contains(coords)) && entity.Value.IsSelected(coords.X, coords.Y, out avgDistance))
+                            enclosingAreas.Add(new Tuple<string, double>(entity.Key, avgDistance));
+                }
 
                 //there may be more than one enclosing area if the user selected an enclave (e.g. San Marino or Lesotho), so select the one whose points are on average closest to the point of selection
                 double minAvgDistance = double.MaxValue;
@@ -429,7 +442,7 @@ namespace AlotGUI
                     entity.Draw(gfx);
         }
 
-        public void Highlight(string[] entities, int qType, bool initQuestion = false)
+        public void Highlight(string[] entities, int qType, bool initQuestion = false, bool mapExploration = false)
         {
             if (initQuestion)
             {
@@ -549,13 +562,16 @@ namespace AlotGUI
                         
                         break;
                     case 3:
-                        //unzoom to a continental-wide view
-                        RectangleF box = new RectangleF(mapEntities[entities[0]].Box.X, mapEntities[entities[0]].Box.Y, mapEntities[entities[0]].Box.Width, mapEntities[entities[0]].Box.Height);
-                        for (int i = 1; i < entities.Length; i++)
-                            addRectangles(ref box, mapEntities[entities[i]].Box);
+                        if (!mapExploration)
+                        {
+                            //unzoom to a continental-wide view
+                            RectangleF box = new RectangleF(mapEntities[entities[0]].Box.X, mapEntities[entities[0]].Box.Y, mapEntities[entities[0]].Box.Width, mapEntities[entities[0]].Box.Height);
+                            for (int i = 1; i < entities.Length; i++)
+                                addRectangles(ref box, mapEntities[entities[i]].Box);
 
-                        rand = new Random((int)DateTime.Now.Ticks);
-                        zoomOnPoint(box.Left + box.Width / 2 + (float)rand.NextDouble() * 10.0f - 5.0f, box.Top + box.Height * 2 + (float)rand.NextDouble() * 10.0f - 5.0f, 10); //the center of the view is randomly displaced to prevent the user from zooming into the target location
+                            rand = new Random((int)DateTime.Now.Ticks);
+                            zoomOnPoint(box.Left + box.Width / 2 + (float)rand.NextDouble() * 10.0f - 5.0f, box.Top + box.Height * 2 + (float)rand.NextDouble() * 10.0f - 5.0f, 10); //the center of the view is randomly displaced to prevent the user from zooming into the target location
+                        }
 
                         return;
                 }
@@ -573,15 +589,20 @@ namespace AlotGUI
 
                 if (qType > 0)
                 {
-                    //zoom in on the highlighted entities
-                    float newZoom;
-                    if (highlightedEntitiesBox.Width / highlightedEntitiesBox.Height > 1)
-                        newZoom = windowSize.Width / highlightedEntitiesBox.Width * 0.75f;
+                    if (mapExploration)
+                        preDrawMap();
                     else
-                        newZoom = windowSize.Height / highlightedEntitiesBox.Height * 0.75f;
-                    newZoom = Math.Min(newZoom, 200);
+                    {
+                        //zoom in on the highlighted entities
+                        float newZoom;
+                        if (highlightedEntitiesBox.Width / highlightedEntitiesBox.Height > 1)
+                            newZoom = windowSize.Width / highlightedEntitiesBox.Width * 0.75f;
+                        else
+                            newZoom = windowSize.Height / highlightedEntitiesBox.Height * 0.75f;
+                        newZoom = Math.Min(newZoom, 200);
 
-                    zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
+                        zoomOnPoint(highlightedEntitiesBox.X + highlightedEntitiesBox.Width / 2, highlightedEntitiesBox.Y + highlightedEntitiesBox.Height / 2, newZoom);
+                    }
                 }
 
                 if (initQuestion)

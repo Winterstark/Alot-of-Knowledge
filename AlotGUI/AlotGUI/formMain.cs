@@ -1584,7 +1584,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
             
-            //processMsg("map explore 4 King Christian X Land");
+            //processMsg("map explore 1 Danube..15");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1799,7 +1799,11 @@ namespace AlotGUI
             timerDoubleClick.Enabled = false;
 
             if (mapExplorationMode)
-                updateStatus(viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y));
+            {
+                string selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
+                updateStatus(selectedArea);
+                viz.Highlight(selectedArea.Split('+'), mapQType * 10, true, true);
+            }
             else if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
             {
                 selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);

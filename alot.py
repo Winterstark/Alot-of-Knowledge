@@ -912,7 +912,7 @@ def getMaxKeyLen(dictionary):
 	return str(maxLen + 8)
 
 
-def toString(answer, makeMoreReadable=True):
+def toString(answer, makeMoreReadable=True, hideDates=False):
 	answerType = getType(answer)
 
 	if answerType is Type.Number and makeMoreReadable:
@@ -965,7 +965,7 @@ def toString(answer, makeMoreReadable=True):
 	elif answerType is Type.Tuple:
 		s = ""
 		for el in answer:
-			if getType(el) is not Type.Image and getType(el) is not Type.Sound:
+			if getType(el) is not Type.Image and getType(el) is not Type.Sound and not hideDates or (getType(el) is not Type.Date and getType(el) is not Type.DateRange):
 				s += toString(el) + ", "
 		return s[:-2]
 	elif answerType is Type.List:
@@ -1367,17 +1367,6 @@ def removeParentheses(s, concealContents=False):
 				s = s.rstrip().replace("  ", " ")
 		except:
 			return s.replace("[[[", "(").replace("]]]", ")")
-
-
-def hideDates(s):
-	newS = ""
-	for item in s.split(", "):
-		if not Date.isValid(item):
-			newS += item + ", "
-
-	if newS[-2:] == ", ":
-		newS = newS[:-2]
-	return newS
 
 
 def fullPath(relativePath):
@@ -2039,8 +2028,7 @@ def qType_RecognizeItem(listKey, items, color):
 	colorPrint(listKey, color)
 	index = random.randint(0, len(items)-1)
 
-	item = removeParentheses(toString(items[index]), True) #hide the contents of the parentheses because it might reveal the answer to the user
-	item = hideDates(item) #hide dates for the same reason
+	item = removeParentheses(toString(items[index], hideDates=True), True) #hide the contents of the parentheses because it might reveal the answer to the user
 	answer, exit, immediately = checkForExit(input("What is the index of this item: " + item + "? "))
 
 	try:
@@ -2116,14 +2104,13 @@ def qType_OrderItems(listKey, items, color):
 
 	#get answer from user
 	for i in range(len(shuffledItems)):
-		item = toString(shuffledItems[i])
+		item = toString(shuffledItems[i], hideDates=True)
 		if "), (" in item:
 			item = item.replace("), (", ", ").replace('(', '').replace(')', '') #item contains several sub items
 		item = removeParentheses(item, True) #hide the contents of the parentheses because it might reveal the answer to the user
-		item = hideDates(item) #hide dates for the same reason
 
 		if item == "(???)":
-			item = toString(shuffledItems[i]) #don't hide items that are just titles
+			item = toString(shuffledItems[i], hideDates=True) #don't hide items that are just titles
 
 		print("{}. {}".format(i+1, item))
 

@@ -193,7 +193,7 @@ namespace AlotGUI
             viewportBox = new RectangleF(-viewportX / zoom, (viewportY - windowSize.Height) / zoom, windowSize.Width / zoom, windowSize.Height / zoom);
         }
 
-        public string GetSelectedArea(int mx, int my)
+        public string GetSelectedArea(int mx, int my, bool mapExploration = false)
         {
             try
             {
@@ -212,7 +212,7 @@ namespace AlotGUI
                 }
 
                 string selectedArea = GetSelectedArea(new PointF(lon, lat), qGeoType);
-                if (selectedArea == "")
+                if (selectedArea == "" && mapExploration)
                     selectedArea = GetSelectedArea(new PointF(lon, lat), GeoType.All);
 
                 return selectedArea;

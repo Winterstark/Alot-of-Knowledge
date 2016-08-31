@@ -1584,7 +1584,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
             
-            //processMsg("map explore 1 Danube..15");
+            //processMsg("map explore 3 Islamabad");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1800,7 +1800,7 @@ namespace AlotGUI
 
             if (mapExplorationMode)
             {
-                string selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y);
+                string selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y, true);
                 updateStatus(selectedArea);
                 viz.Highlight(selectedArea.Split('+'), mapQType * 10, true, true);
             }

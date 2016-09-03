@@ -2000,7 +2000,7 @@ def qType_FillString(q, s, difficulty, color):
 	return allCorrect, exit, immediately
 
 
-def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames=set(), geoType=""):
+def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", otherNames=set(), acceptOtherNames=True, geoType=""):
 	#pick 3 random items
 	randomItems = list(items)
 	random.shuffle(randomItems)
@@ -2021,7 +2021,7 @@ def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", other
 	else:
 		attributeName = ""
 
-	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems, otherNames=otherNames, geoType=geoType)
+	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType)
 
 
 def qType_RecognizeItem(listKey, items, color):
@@ -2809,7 +2809,8 @@ def quiz(category, catalot, metacatalot):
 						if random.randint(0, 1) == 0:
 							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color, geoType=geoType)
 						else:
-							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames, geoType=geoType)
+							acceptOtherNames = attribute != "Other names" #don't accept other names as answers if they are displayed to the user
+							correct, exit, immediately = qType_RecognizeList(key, entry[attribute], color, catalot=catalot, attribute=attribute, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType)
 			elif entryType is Type.List:
 				qType = random.choice([quizList, qType_RecognizeList, qType_RecognizeItem, qType_OrderItems])
 

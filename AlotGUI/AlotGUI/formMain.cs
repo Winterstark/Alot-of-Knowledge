@@ -1584,7 +1584,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
             
-            //processMsg("map explore 3 Islamabad");
+            //processMsg("map explore 1 HIMALAYAS");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1802,7 +1802,7 @@ namespace AlotGUI
             {
                 string selectedArea = viz.GetSelectedArea(mouseClickPoint.X, mouseClickPoint.Y, true);
                 updateStatus(selectedArea);
-                viz.Highlight(selectedArea.Split('+'), mapQType * 10, true, true);
+                viz.Highlight(selectedArea.Split('+'), mapQType, true, true);
             }
             else if (mapQType == 2 || mapQType == 3) //only these modes request the user to select something on the map
             {

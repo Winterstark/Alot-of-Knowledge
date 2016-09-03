@@ -1832,7 +1832,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 						break
 					else:
 						return "try again"
-
+	
 	correct = answer == correctAnswer
 	
 	if correct and showFullAnswer and removeParentheses(aStr) != aStr:
@@ -2689,10 +2689,13 @@ def quiz(category, catalot, metacatalot):
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:
-				if "Other names" in entry:
-					otherNames = entry["Other names"]
-				else:
-					otherNames = set()
+				otherNames = set()
+				for otherNamesAttribute in ["Other names", "Name"]:
+					if otherNamesAttribute in entry:
+						otherNames = entry[otherNamesAttribute]
+						break
+				if getType(otherNames) is not Type.Set:
+					otherNames = {otherNames}
 
 				if "Map" in entry:
 					geoType, geoName = splitGeoName(entry, "Map")

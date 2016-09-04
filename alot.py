@@ -437,8 +437,9 @@ def addNodeToFamilyTree(catalot, key, visited=[]):
 		checkNodes = []
 		visited.append(key)
 
-		if "Appearance" in catalot[key]:
-			nodeOutput += key + ", Appearance: " + fullPath(catalot[key]["Appearance"]) + "\n"
+		img = getAttribute(catalot[key], ["Picture", "Appearance", "Portrait"])
+		if img != "":
+			nodeOutput += key + ", Appearance: " + fullPath(img) + "\n"
 
 		if "Parents" in catalot[key]:
 			parents = ""
@@ -474,10 +475,7 @@ def collectDatesForTimeline(entryKey, data, img, timeline):
 	dataType = getType(data)
 
 	if dataType is Type.Class:
-		if "Picture" in data:
-			img = fullPath(data["Picture"])
-		elif "Appearance" in data:
-			img = fullPath(data["Appearance"])
+		img = getAttribute(data, ["Picture", "Appearance", "Portrait"], img)
 
 		for key in data:
 			entryType = getType(data[key])
@@ -2475,12 +2473,21 @@ def unwrapSets(items):
 	return foundSubSets, itemsSets
 
 
-def getSetsInList(items):	
+def getSetsInList(items):
 	sets = []
 	for item in items:
 		if getType(item) is Type.Set:
 			sets.append(item)
 	return sets
+
+
+def getAttribute(entry, possibleAttributeNames, defaultValue=""):
+	value = defaultValue
+	for attribute in possibleAttributeNames:
+		if attribute in entry:
+			value = entry[attribute]
+			break
+	return value
 
 
 def splitGeoName(geoName, attribute):
@@ -2560,10 +2567,9 @@ def quiz(category, catalot, metacatalot):
 				usedGUI = True
 			elif entryType is Type.Class:
 				#custom class
-				if "Other names" in entry:
-					otherNames = entry["Other names"]
-				else:
-					otherNames = set()
+				otherNames = getAttribute(entry, ["Other names", "Name"], set())
+				if getType(otherNames) is not Type.Set:
+					otherNames = {otherNames}
 
 				if "Map" in entry:
 					geoType, geoName = splitGeoName(entry, "Map")
@@ -2694,11 +2700,7 @@ def quiz(category, catalot, metacatalot):
 			elif entryType is Type.String:
 				correct, exit, immediately = quizString(catalot, key, random.randint(1, 4), color) #don't test learned entries on hardest difficulty
 			elif entryType is Type.Class:
-				otherNames = set()
-				for otherNamesAttribute in ["Other names", "Name"]:
-					if otherNamesAttribute in entry:
-						otherNames = entry[otherNamesAttribute]
-						break
+				otherNames = getAttribute(entry, ["Other names", "Name"], set())
 				if getType(otherNames) is not Type.Set:
 					otherNames = {otherNames}
 

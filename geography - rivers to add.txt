@@ -2323,8 +2323,6 @@
 	"Yaque del Norte 2": "GEO:River/Yaque del Norte 2",
 	"Yaque del Norte 3": "GEO:River/Yaque del Norte 3",
 	"San Miguel 8": "GEO:River/San Miguel 8",
-	"Illinois": "GEO:River/Illinois",
-	"Illinois 2": "GEO:River/Illinois 2",
 	"Kanawha": "GEO:River/Kanawha",
 	"Kanawha 2": "GEO:River/Kanawha 2",
 	"Osage": "GEO:River/Osage",

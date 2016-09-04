@@ -2578,6 +2578,11 @@ def quiz(category, catalot, metacatalot):
 					if not isLearned(step[attribute], entry[attribute]):
 						unlearnedAttributes.append(attribute)
 
+				if "Map" in unlearnedAttributes and unlearnedAttributes[0] != "Map":
+					#set the Map attribute as the first element so it gets tested first
+					index = unlearnedAttributes.index("Map")
+					unlearnedAttributes[0], unlearnedAttributes[index] = unlearnedAttributes[index], unlearnedAttributes[0]
+
 				if unlearnedAttributes == []:
 					correct["__finalStep__"], exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType) #final step
 				else:

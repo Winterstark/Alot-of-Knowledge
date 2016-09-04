@@ -963,7 +963,7 @@ def toString(answer, makeMoreReadable=True, hideDates=False):
 	elif answerType is Type.Tuple:
 		s = ""
 		for el in answer:
-			if getType(el) is not Type.Image and getType(el) is not Type.Sound and not hideDates or (getType(el) is not Type.Date and getType(el) is not Type.DateRange):
+			if getType(el) is not Type.Image and getType(el) is not Type.Sound and (not hideDates or (getType(el) is not Type.Date and getType(el) is not Type.DateRange)):
 				s += toString(el) + ", "
 		return s[:-2]
 	elif answerType is Type.List:

@@ -2279,32 +2279,37 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 	else:
 		subStep = 1
 
-	if step <= len(items):
+	if step >= 0:
 		stepOffset = printList(items, step, indentLevel, color)
 		finalStep = False
 	else:
 		#this is the final step, which demands the user to enter every list item
 		finalStep = True
-		step = 1
-		stepOffset = 0
+		step *= -1
+		startedOnStep = step
+		subStep *= -1
+
+		stepOffset = 0 #takes into account how many sublists the list contains before the current item (so that we know its correct index)
+		for i in range(1, step):
+			if type(items[i-1]) is list:
+				stepOffset -= 1
+
+	endOnStep = len(items)+1
 
 	correct = playSound = True
 	usedGUI = False
-	while type(correct) is bool and step <= len(items):
+	while type(correct) is bool and step < endOnStep:
 		if type(items[step-1]) is list:
-			if finalStep:
-				subStep = len(items[step-1]) + 1
-
 			correct, exit, immediately, usedGUIInSublist = quizList("", items[step-1], subStep, indentLevel=indentLevel+1, learned=learned)
 			usedGUI = usedGUI or usedGUIInSublist
 			stepOffset -= 1
-
+			
 			if immediately:
 				break
 			elif type(correct) is list:
 				step = [step] + correct
 			elif type(correct) is int:
-				if correct == len(items[step-1]) + 1:
+				if abs(correct) == len(items[step-1]) + 1:
 					correct = True #sublist answered successfully
 				else:
 					step = [step] + [correct]
@@ -2348,17 +2353,31 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			return correct, exit, immediately, usedGUI
 		elif type(correct) is bool:
 			step += 1
+			if step == len(items)+1 and finalStep and startedOnStep > 1:
+				#the second stage of list testing requires the user to enter all items, so continue from the start of the list until the startedOnStep item is reached
+				colorPrint("Reached the end of the list. Continuing from the beginning until all of the list's items are entered.", color)
+				step = 1
+				stepOffset = 0
+				endOnStep = startedOnStep
 			if playSound:
 				feedback("")
 		elif type(correct) is str and correct != "False":
 			feedback("Wrong! Correct answer: " + correct)
 
 	if not finalStep:
-		return step, exit, immediately, usedGUI
-	elif step == len(items) + 1:
-		return True, exit, immediately, usedGUI
+		if type(step) is not int or step < endOnStep: #still on the first stage of list testing
+			return step, exit, immediately, usedGUI
+		else: #negative step indicates it's the second stage of list testing
+			return -1, exit, immediately, usedGUI
 	else:
-		return "False", exit, immediately, usedGUI #returning "False" instead of False because the script uses the type of that variable to check if correct, not the value
+		if step < endOnStep: #still on the second stage of list testing
+			if type(step) is int:
+				step = -step
+			else:
+				step = -step[0] #the second phase of list testing doesn't track sublist step
+			return step, exit, immediately, usedGUI
+		else: #list learned!
+			return True, exit, immediately, usedGUI
 
 
 def quizSet(setKey, items, step, color, geoType=""):
@@ -2655,7 +2674,10 @@ def quiz(category, catalot, metacatalot):
 
 						if not immediately:
 							if type(correct[attribute]) is int or type(correct[attribute]) is list:
-								print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
+								if correct[attribute] - 1 < 0:
+									print("List progress @ 100%.") #negative step indicates it's the second stage of list testing
+								else:
+									print("List progress @ {}%.".format(100*(correct[attribute]-1)//len(entry[attribute])))
 							elif type(correct[attribute]) is not str:
 								feedback("Correct!")
 							elif "FalseGEO" in correct[attribute]:
@@ -2916,7 +2938,10 @@ def quiz(category, catalot, metacatalot):
 					correct = False
 
 				if entryType is Type.List:
-					print("List progress @ {}%.".format(100*(newStepRoot-1)//len(entry)))
+					if newStepRoot - 1 < 0:
+						print("List progress @ 100%.") #negative step indicates it's the second stage of list testing
+					else:
+						print("List progress @ {}%.".format(100*(newStepRoot-1)//len(entry)))
 				else:
 					print("Diagram progress @ {}%.".format(100*(newStepRoot-1)//len(entry[1])))
 

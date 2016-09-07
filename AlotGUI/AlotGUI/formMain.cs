@@ -242,7 +242,7 @@ namespace AlotGUI
                 imgs = Directory.GetFiles(path);
                 imgIndex = 0;
             }
-            else
+            else if (msg[0] != 'D')
             {
                 System.Media.SystemSounds.Beep.Play();
                 updateStatus("Invalid path!");
@@ -259,6 +259,11 @@ namespace AlotGUI
                     break;
                 case 'M': //mini image in the lower-right corner
                     setupMiniImage(imgs[imgIndex]);
+                    break;
+                case 'D': //display all listed images
+                    msg = msg.Substring(2);
+                    this.BackgroundImage = combineImages(msg.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries), false);
+                    mode = DisplayMode.Image;
                     break;
             }
         }
@@ -397,24 +402,29 @@ namespace AlotGUI
             multipleChoiceImages[correctAnswer] = imgs[0];
 
             //generate composite image
-            this.BackgroundImage = combineImages(multipleChoiceImages);
+            this.BackgroundImage = combineImages(multipleChoiceImages, true);
             mode = DisplayMode.Mosaic;
         }
 
-        Bitmap combineImages(string[] files)
+        Bitmap combineImages(string[] files, bool writeLabels)
         {
+            //determine layout
+            double sqrtNFiles = Math.Sqrt(files.Length);
+            int nCols = (int)Math.Floor(sqrtNFiles);
+            int nRows = (int)Math.Ceiling((float)files.Length / nCols);
+
             Image[] visuals = new Bitmap[files.Length];
             for (int i = 0; i < files.Length; i++)
                 visuals[i] = Image.FromFile(files[i]);
 
             Graphics gfx;
             Bitmap visMosaic = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
-            int w = this.ClientSize.Width / 2;
-            int h = this.ClientSize.Height / 3;
+            int w = this.ClientSize.Width / nCols;
+            int h = this.ClientSize.Height / nRows;
             int ind = 0;
 
-            for (int y = 0; y < 3; y++)
-                for (int x = 0; x < 2; x++)
+            for (int y = 0; y < nRows; y++)
+                for (int x = 0; x < nCols; x++)
                 {
                     if (ind == visuals.Length)
                         break;
@@ -431,29 +441,31 @@ namespace AlotGUI
             foreach (Image vis in visuals)
                 vis.Dispose();
 
-            //write labels
             visMosaic.SetResolution(250, 250);
-
             gfx = Graphics.FromImage(visMosaic);
-            SolidBrush blackBrush = new SolidBrush(Color.Black);
-            SolidBrush whiteBrush = new SolidBrush(Color.White);
-            Font backgroundFont = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
-            ind = 1;
+            if (writeLabels)
+            {
+                SolidBrush blackBrush = new SolidBrush(Color.Black);
+                SolidBrush whiteBrush = new SolidBrush(Color.White);
+                Font backgroundFont = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
+                ind = 1;
 
-            for (int y = 0; y < 3; y++)
-                for (int x = 0; x < 2; x++, ind++)
-                {
-                    gfx.DrawString(ind.ToString(), backgroundFont, whiteBrush, x * w, y * h);
-                    gfx.DrawString(ind.ToString(), SystemFonts.DefaultFont, blackBrush, x * w + 1, y * h + 1);
-                }
+                for (int y = 0; y < nRows; y++)
+                    for (int x = 0; x < nCols; x++, ind++)
+                    {
+                        gfx.DrawString(ind.ToString(), backgroundFont, whiteBrush, x * w, y * h);
+                        gfx.DrawString(ind.ToString(), SystemFonts.DefaultFont, blackBrush, x * w + 1, y * h + 1);
+                    }
+            }
 
             //draw borders
             Pen pen = new Pen(Color.Black, 4);
-            for (int i = 0; i <= 2; i++)
+            for (int i = 0; i <= nCols; i++)
                 gfx.DrawLine(pen, i * w, 0, i * w, this.ClientSize.Height);
-            for (int i = 0; i <= 3; i++)
+            for (int i = 0; i <= nRows; i++)
                 gfx.DrawLine(pen, 0, i * h, this.ClientSize.Width, i * h);
 
+            gfx.Dispose();
             return visMosaic;
         }
 
@@ -1583,8 +1595,9 @@ namespace AlotGUI
             loadTimelineData();
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
-            
+
             //processMsg("map explore 1 HIMALAYAS");
+            //processMsg("D C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\reptiles\\Podarcis sicula.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Psychodidae.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Tipulidae.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Armadillidium vulgare\\Slater_rolled_up_for_wiki.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Pholcus phalangioides.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\birds\\Columba livia.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\birds\\Larus michahellis.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\birds\\Luscinia megarhynchos.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\mammals\\Canis lupus.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\mammals\\Felis silvestris.jpg");
         }
 
         protected override void OnPaint(PaintEventArgs e)

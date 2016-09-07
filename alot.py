@@ -429,6 +429,33 @@ def getFeedbackFromGUI(catalot={}):
 	return correct, False, False
 
 
+def getChildrenNodes(catalot, key):
+	children = []
+
+	for k in catalot:
+		if k != key and getType(catalot[k]) is Type.Class:
+			if key in getAttribute(catalot[k], FTREE_VERTICAL_ATTRIBUTES, defaultValue={}):
+				children += [k] + getChildrenNodes(catalot, k)
+
+	return children
+
+
+def displayChildrenNodeImages(catalot, key):
+	imgs = []
+	for child in getChildrenNodes(catalot, key):
+		img = getAttribute(catalot[child], ["Picture", "Appearance", "Portrait"])
+		if img != "":
+			imgPath = fullPath(img)
+			if imgPath not in imgs:
+				imgs.append(imgPath)
+
+	if imgs != []:
+		msgGUI("D {}".format("||".join(imgs)))
+		return True
+	else:
+		return False
+
+
 def addNodeToFamilyTree(catalot, key, visited=[]):
 	if key not in catalot or type(catalot[key]) is not dict:
 		return ""
@@ -441,19 +468,18 @@ def addNodeToFamilyTree(catalot, key, visited=[]):
 		if img != "":
 			nodeOutput += key + ", Appearance: " + fullPath(img) + "\n"
 
-		if "Parents" in catalot[key]:
-			parents = ""
-			for node in catalot[key]["Parents"]:
-				parents += node + '/'
-				checkNodes.append(node)
+		parents = getAttribute(catalot[key], FTREE_VERTICAL_ATTRIBUTES, defaultValue={})
+		if parents != {}:
+			checkNodes += parents
+			nodeOutput += key + ", Parents: " + '/'.join(parents) + "\n"
 
-			nodeOutput += key + ", Parents: " + parents[:-1] + "\n"
-		if "Consort" in catalot[key] and catalot[key]["Consort"] not in visited:
-			checkNodes.append(catalot[key]["Consort"])
-			nodeOutput += key + ", Consort: " + str(catalot[key]["Consort"]) + "\n"
+		consort = getAttribute(catalot[key], FTREE_HORIZONTAL_ATTRIBUTES)
+		if consort != "" and consort not in visited:
+			checkNodes.append(consort)
+			nodeOutput += key + ", Consort: " + str(consort) + "\n"
 
-		for k in catalot:
-			if type(catalot[k]) is dict and "Parents" in catalot[k] and key in catalot[k]["Parents"] and k not in visited:
+		for k in catalot: #find children nodes
+			if key in getAttribute(catalot[k], FTREE_VERTICAL_ATTRIBUTES, defaultValue={}) and k not in visited:
 				checkNodes.append(k)
 
 		for node in checkNodes:
@@ -769,24 +795,24 @@ def areWordsSynonyms(word1, word2):
 	word1 = word1.lower()
 	word2 = word2.lower()
 
-	if word2 in bSearchThesaurus(word1, 0, len(thesaurus)-1):
+	if word2 in bSearchThesaurus(word1, 0, len(THESAURUS)-1):
 		return True
 	else:
-		return word1 in bSearchThesaurus(word2, 0, len(thesaurus)-1)
+		return word1 in bSearchThesaurus(word2, 0, len(THESAURUS)-1)
 
 
 def bSearchThesaurus(word, lb, ub):
 	if ub - lb <= 10:
 		#switch to linear search
 		for i in range(lb, ub+1):
-			if thesaurus[i][:thesaurus[i].index(',')] == word:
-				return thesaurus[i][thesaurus[i].index(',')+1:].split(',')
+			if THESAURUS[i][:THESAURUS[i].index(',')] == word:
+				return THESAURUS[i][THESAURUS[i].index(',')+1:].split(',')
 		return ""
 
 	mid = (lb + ub) // 2
-	if thesaurus[mid] == word:
-		return thesaurus[mid]
-	elif thesaurus[mid] > word:
+	if THESAURUS[mid] == word:
+		return THESAURUS[mid]
+	elif THESAURUS[mid] > word:
 		return bSearchThesaurus(word, lb, mid-1)
 	else:
 		return bSearchThesaurus(word, mid+1, ub)
@@ -1887,7 +1913,7 @@ def qType_FillString(q, s, difficulty, color):
 	insideParentheses = False
 
 	for i in range(len(parts)):
-		if parts[i][0].isalnum() and len(parts[i]) > 1 and parts[i].lower() not in corewords and not insideParentheses:
+		if parts[i][0].isalnum() and len(parts[i]) > 1 and parts[i].lower() not in COREWORDS and not insideParentheses:
 			words.append(i)
 
 		for char in parts[i]:
@@ -2040,24 +2066,27 @@ def qType_RecognizeItem(listKey, items, color):
 
 def qType_RecognizeClass(catalot, key, color, otherNames, geoType):
 	entry = catalot[key]
-	usedGUI = False
+	usedGUI = usedGUIVisually = False
 
 	for attribute in entry:
 		if getType(entry[attribute]) is Type.Image:
 			if geoType == "":
 				msgGUI("I {}".format(fullPath(entry[attribute])))
-				usedGUI = True
+				usedGUI = usedGUIVisually = True
 			else:
 				msgGUI("M {}".format(fullPath(entry[attribute]))) #if the class contains both a map element and an image (probably a flag), show the image in the lower-right corner
 		elif getType(entry[attribute]) is Type.Geo:
 			geoType, geoName = splitGeoName(entry, attribute)
 			msgGUI("map 1 {}".format(geoName))
-			usedGUI = True
+			usedGUI = usedGUIVisually = True
 		elif getType(entry[attribute]) is Type.Sound:
 			msgGUI("audio B {}".format(fullPath(entry[attribute])))
 			usedGUI = True
 		else:
 			print(attribute + ": " + toString(entry[attribute]).replace(key, "???"))
+
+	if not usedGUIVisually:
+		usedGUI = usedGUIVisually = displayChildrenNodeImages(catalot, key)
 
 	#get a list of other classes that have the same attributes as this one, and accept them as correct answers
 	validAnswers = set()
@@ -2502,10 +2531,13 @@ def getSetsInList(items):
 
 def getAttribute(entry, possibleAttributeNames, defaultValue=""):
 	value = defaultValue
-	for attribute in possibleAttributeNames:
-		if attribute in entry:
-			value = entry[attribute]
-			break
+
+	if getType(entry) is Type.Class:
+		for attribute in possibleAttributeNames:
+			if attribute in entry:
+				value = entry[attribute]
+				break
+
 	return value
 
 
@@ -2639,6 +2671,8 @@ def quiz(category, catalot, metacatalot):
 					if not usedGUI and learnedDateAttribute:
 						msgGUI("timeline " + key)
 						usedGUI = usedGUIVisually = keepGUIActive = True
+					elif not usedGUIVisually:
+						usedGUI = usedGUIVisually = displayChildrenNodeImages(catalot, key)
 					
 					#ask a question for each unlearned attribute
 					firstQuestion = True
@@ -2732,10 +2766,9 @@ def quiz(category, catalot, metacatalot):
 					geoType = ""
 
 				nFTreeAttributes = 0
-				if "Parents" in entry:
-					nFTreeAttributes += 1
-				if "Consort" in entry:
-					nFTreeAttributes += 1
+				for fTreeAttribute in FTREE_VERTICAL_ATTRIBUTES+FTREE_HORIZONTAL_ATTRIBUTES:
+					if fTreeAttribute in entry:
+						nFTreeAttributes += 1
 
 				if random.randint(0, len(entry)) == 0:
 					correct, exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
@@ -2776,6 +2809,9 @@ def quiz(category, catalot, metacatalot):
 								msgGUI("audio B {}".format(fullPath(entry[attr])))
 								usedGUI = True
 								break
+
+					if not usedGUI and not showTimeline:
+						usedGUI = displayChildrenNodeImages(catalot, key)
 
 					if attributeType is Type.Number or entryType is Type.NumberRange:
 						qType = random.randint(1, 4)
@@ -3166,16 +3202,20 @@ init() #colorama init
 #load corewords
 if os.path.isfile("corewords.txt"):
 	with open("corewords.txt") as f:
-		corewords = f.read().split()
+		COREWORDS = f.read().split()
 else:
-	corewords = ["BibleThump"]
+	COREWORDS = ["BibleThump"]
 
 #load thesaurus
 if os.path.isfile("mobythes.aur"):
 	with open("mobythes.aur") as f:
-		thesaurus = f.readlines()
+		THESAURUS = f.readlines()
 else:
-	thesaurus = ["FeelsBadMan"]
+	THESAURUS = ["FeelsBadMan"]
+
+#attribute names used in family trees
+FTREE_VERTICAL_ATTRIBUTES = ["Parents", "Family", "Suborder", "Order", "Class", "Phylum", "Kingdom", "Domain"]
+FTREE_HORIZONTAL_ATTRIBUTES = ["Consort"]
 
 #ensure required directories exist
 if not os.path.isdir(DIR):

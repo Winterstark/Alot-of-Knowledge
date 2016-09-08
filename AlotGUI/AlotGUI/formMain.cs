@@ -261,9 +261,7 @@ namespace AlotGUI
                     setupMiniImage(imgs[imgIndex]);
                     break;
                 case 'D': //display all listed images
-                    msg = msg.Substring(2);
-                    this.BackgroundImage = combineImages(msg.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries), false);
-                    mode = DisplayMode.Image;
+                    setupMultiImage(msg.Substring(2));
                     break;
             }
         }
@@ -404,6 +402,26 @@ namespace AlotGUI
             //generate composite image
             this.BackgroundImage = combineImages(multipleChoiceImages, true);
             mode = DisplayMode.Mosaic;
+        }
+
+        void setupMultiImage(string msg)
+        {
+            List<string> imgs = msg.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> dirs = new List<string>();
+
+            //check if there are folder paths and replace them with their folder contents
+            foreach (string img in imgs)
+                if (Directory.Exists(img))
+                    dirs.Add(img);
+
+            foreach (string dir in dirs)
+            {
+                imgs.Remove(dir);
+                imgs.AddRange(Directory.GetFiles(dir));
+            }
+
+            this.BackgroundImage = combineImages(imgs.ToArray(), false);
+            mode = DisplayMode.Image;
         }
 
         Bitmap combineImages(string[] files, bool writeLabels)
@@ -1597,7 +1615,7 @@ namespace AlotGUI
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
             //processMsg("map explore 1 HIMALAYAS");
-            //processMsg("D C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\reptiles\\Podarcis sicula.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Psychodidae.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Tipulidae.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Armadillidium vulgare\\Slater_rolled_up_for_wiki.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Pholcus phalangioides.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\birds\\Columba livia.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\birds\\Larus michahellis.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\birds\\Luscinia megarhynchos.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\mammals\\Canis lupus.jpg||C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\mammals\\Felis silvestris.jpg");
+            //processMsg("D C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Armadillidium vulgare");
         }
 
         protected override void OnPaint(PaintEventArgs e)

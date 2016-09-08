@@ -424,7 +424,7 @@ namespace AlotGUI
             mode = DisplayMode.Image;
         }
 
-        Bitmap combineImages(string[] files, bool writeLabels)
+        Bitmap combineImages(string[] files, bool mosaicImage)
         {
             //determine layout
             double sqrtNFiles = Math.Sqrt(files.Length);
@@ -439,6 +439,15 @@ namespace AlotGUI
             Bitmap visMosaic = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
             int w = this.ClientSize.Width / nCols;
             int h = this.ClientSize.Height / nRows;
+            int leftMargin = 0, topMargin = 0;
+            if (!mosaicImage)
+            {
+                //draw multi images smaller to differentiate them from mosaic images
+                leftMargin = w / 6;
+                topMargin = h / 6;
+                w = w - leftMargin * 2;
+                h = h - topMargin * 2;
+            }
             int ind = 0;
 
             for (int y = 0; y < nRows; y++)
@@ -451,7 +460,7 @@ namespace AlotGUI
                     gfx = Graphics.FromImage(visMosaic);
                     
                     Rectangle alignment = alignImageToRectangle(visuals[ind].Size, new Rectangle(x * w, y * h, w, h));
-                    gfx.DrawImage(visuals[ind], alignment.Left, alignment.Top, alignment.Width, alignment.Height);
+                    gfx.DrawImage(visuals[ind], alignment.Left + leftMargin, alignment.Top + topMargin, alignment.Width, alignment.Height);
 
                     ind++;
                 }
@@ -459,10 +468,12 @@ namespace AlotGUI
             foreach (Image vis in visuals)
                 vis.Dispose();
 
-            visMosaic.SetResolution(250, 250);
-            gfx = Graphics.FromImage(visMosaic);
-            if (writeLabels)
+            if (mosaicImage)
             {
+                //draw labels
+                visMosaic.SetResolution(250, 250);
+                gfx = Graphics.FromImage(visMosaic);
+
                 SolidBrush blackBrush = new SolidBrush(Color.Black);
                 SolidBrush whiteBrush = new SolidBrush(Color.White);
                 Font backgroundFont = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
@@ -474,16 +485,18 @@ namespace AlotGUI
                         gfx.DrawString(ind.ToString(), backgroundFont, whiteBrush, x * w, y * h);
                         gfx.DrawString(ind.ToString(), SystemFonts.DefaultFont, blackBrush, x * w + 1, y * h + 1);
                     }
+
+                //draw borders
+                Pen pen = new Pen(Color.Black, 4);
+                for (int i = 0; i <= nCols; i++)
+                    gfx.DrawLine(pen, i * w, 0, i * w, this.ClientSize.Height);
+                for (int i = 0; i <= nRows; i++)
+                    gfx.DrawLine(pen, 0, i * h, this.ClientSize.Width, i * h);
+
+                gfx.Dispose();
             }
 
-            //draw borders
-            Pen pen = new Pen(Color.Black, 4);
-            for (int i = 0; i <= nCols; i++)
-                gfx.DrawLine(pen, i * w, 0, i * w, this.ClientSize.Height);
-            for (int i = 0; i <= nRows; i++)
-                gfx.DrawLine(pen, 0, i * h, this.ClientSize.Width, i * h);
-
-            gfx.Dispose();
+            
             return visMosaic;
         }
 

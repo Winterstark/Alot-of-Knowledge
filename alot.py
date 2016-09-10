@@ -2318,6 +2318,9 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		startedOnStep = step
 		subStep *= -1
 
+		if step != 1:
+			printList(items, step, indentLevel, color, firstItem=step-1) #print the last correctly-answered step
+
 		stepOffset = 0 #takes into account how many sublists the list contains before the current item (so that we know its correct index)
 		for i in range(1, step):
 			if type(items[i-1]) is list:
@@ -2382,12 +2385,12 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			return correct, exit, immediately, usedGUI
 		elif type(correct) is bool:
 			step += 1
-			if step == len(items)+1 and finalStep and startedOnStep > 1:
+			if step == len(items)+1 and finalStep and startedOnStep > 2:
 				#the second stage of list testing requires the user to enter all items, so continue from the start of the list until the startedOnStep item is reached
 				colorPrint("Reached the end of the list. Continuing from the beginning until all of the list's items are entered.", color)
 				step = 1
 				stepOffset = 0
-				endOnStep = startedOnStep
+				endOnStep = startedOnStep - 1
 			if playSound:
 				feedback("")
 		elif type(correct) is str and correct != "False":

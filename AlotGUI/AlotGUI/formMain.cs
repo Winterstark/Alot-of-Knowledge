@@ -74,6 +74,7 @@ namespace AlotGUI
         const string GEO_DIR = @"C:\dev\scripts\Alot of Knowledge\dat knowledge\!GEODATA";
         const string LOGO_PATH = @"C:\dev\scripts\Alot of Knowledge\alot.png";
         const string TIMELINE_PATH = @"C:\dev\scripts\Alot of Knowledge\timeline.txt";
+        const string FTREE_PATH = @"C:\dev\scripts\Alot of Knowledge\ftree.txt";
         readonly string[] MONTHS = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
         enum DisplayMode { Logo, Image, Mosaic, Timeline, FamilyTree, Map, Audio };
@@ -128,59 +129,73 @@ namespace AlotGUI
 
         void pipeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var server = new NamedPipeServerStream("alotPipe");
-
-            updateStatus("Waiting for connection from alot.py...");
-            server.WaitForConnection();
-
-            updateStatus("");
-            var br = new BinaryReader(server);
-            var bw = new BinaryWriter(server);
-
-            while (true)
+            try
             {
-                try
-                {
-                    var len = (int)br.ReadUInt32();
-                    var msg = new string(br.ReadChars(len));
+                var server = new NamedPipeServerStream("alotPipe");
 
-                    processMsg(msg);
-                }
-                catch (EndOfStreamException)
+                updateStatus("Waiting for connection from alot.py...");
+                server.WaitForConnection();
+
+                updateStatus("");
+                var br = new BinaryReader(server);
+                var bw = new BinaryWriter(server);
+
+                while (true)
                 {
-                    break;
+                    try
+                    {
+                        var len = (int)br.ReadUInt32();
+                        var msg = new string(br.ReadChars(len));
+
+                        processMsg(msg);
+                    }
+                    catch (EndOfStreamException)
+                    {
+                        break;
+                    }
                 }
+
+                server.Close();
+                server.Dispose();
             }
-
-            server.Close();
-            server.Dispose();
+            catch (Exception exc)
+            {
+                MessageBox.Show("Exception in pipeWorker_DoWork(): " + exc.Message);
+            }
         }
 
         void processMsg(string msg)
         {
-            if (msg == "logo")
+            try
             {
-                mode = DisplayMode.Logo;
-                this.BackgroundImage = logo;
-                picMini.Left = this.Width; //hide picMini
-                picMini.Image = null;
+                if (msg == "logo")
+                {
+                    mode = DisplayMode.Logo;
+                    this.BackgroundImage = logo;
+                    picMini.Left = this.Width; //hide picMini
+                    picMini.Image = null;
 
-                updateStatus("");
-                mapExplorationMode = false;
+                    updateStatus("");
+                    mapExplorationMode = false;
 
-                buttPlay1.Left = buttPlay2.Left = buttPlay3.Left = buttPlay4.Left = buttPlay5.Left = buttPlay6.Left = this.Width; //hide audio buttons
-                audio.Stop();
+                    buttPlay1.Left = buttPlay2.Left = buttPlay3.Left = buttPlay4.Left = buttPlay5.Left = buttPlay6.Left = this.Width; //hide audio buttons
+                    audio.Stop();
+                }
+                else if (msg.Contains("map"))
+                    processMapMsg(msg);
+                else if (msg.Contains("ftree"))
+                    processFamilyTreeMsg(msg);
+                else if (msg.Contains("timeline"))
+                    processTimelineMsg(msg);
+                else if (msg.Contains("audio"))
+                    processAudioMsg(msg);
+                else
+                    processImageMsg(msg);
             }
-            else if (msg.Contains("map"))
-                processMapMsg(msg);
-            else if (msg.Contains("ftree"))
-                processFamilyTreeMsg(msg);
-            else if (msg.Contains("timeline"))
-                processTimelineMsg(msg);
-            else if (msg.Contains("audio"))
-                processAudioMsg(msg);
-            else
-                processImageMsg(msg);
+            catch (Exception e)
+            {
+                MessageBox.Show("Exception in processMsg(): " + e.Message);
+            }
         }
 
         void sendFeedbackToAlot(string feedback)
@@ -213,13 +228,20 @@ namespace AlotGUI
 
         void updateStatus(string status)
         {
-            if (lblStatus.InvokeRequired)
+            try
             {
-                SetTextCallback d = new SetTextCallback(updateStatus);
-                this.Invoke(d, new object[] { status });
+                if (lblStatus.InvokeRequired)
+                {
+                    SetTextCallback d = new SetTextCallback(updateStatus);
+                    this.Invoke(d, new object[] { status });
+                }
+                else
+                    lblStatus.Text = status;
             }
-            else
-                lblStatus.Text = status;
+            catch (Exception e)
+            {
+                MessageBox.Show("Exception in updateStatus(): " + e.Message);
+            }
         }
 
         bool arePointsCloseEnough(Point pt1, Point pt2)
@@ -966,15 +988,18 @@ namespace AlotGUI
         #region FamilyTree
         void processFamilyTreeMsg(string msg)
         {
-            string args = msg.Substring(6);
-            if (args.Contains(" ?"))
+            questionNode = msg.Substring(6);
+            if (questionNode.Contains(" ?"))
             {
                 concealQuestionNode = true;
-                args = args.Replace(" ?", "");
+                questionNode = questionNode.Replace(" ?", "");
             }
 
-            questionNode = args.Substring(0, args.IndexOf('\n'));
-            List<string> treeLines = new List<string>(args.Substring(args.IndexOf('\n') + 1).Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+            //load family tree
+            StreamReader file = new StreamReader(FTREE_PATH);
+            string fTree = file.ReadToEnd();
+            file.Close();
+            List<string> treeLines = new List<string>(fTree.Substring(fTree.IndexOf(Environment.NewLine) + 2).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
 
             nodeImages = new Dictionary<string, Image>();
             foreach (string line in treeLines)
@@ -1017,7 +1042,6 @@ namespace AlotGUI
             if (node != questionNode || !concealQuestionNode)
             {
                 nodeLabelSize = drawCenteredNodeLabel(gfx, node, ref x, y);
-
                 if (nodeImages.ContainsKey(node))
                     gfx.DrawImageUnscaled(nodeImages[node], x - nodeImages[node].Width / 2, y + (int)nodeLabelSize.Height / 2 + 10);
             }
@@ -1045,7 +1069,7 @@ namespace AlotGUI
                 {
                     int consortNodeX;
                     SizeF consortLabelSize = drawFamilyTreeNode(gfx, consort, x + 150, y, out consortNodeX, visitedNodes, parentNodes);
-                    gfx.DrawLine(new Pen(getCoupleColor(nodeConsortCouple, 255), 2), x + nodeLabelSize.Width / 2 + 10, y, x + 150 - 10 - consortLabelSize.Width / 2, y);
+                    gfx.DrawLine(new Pen(getCoupleColor(nodeConsortCouple), 2), x + nodeLabelSize.Width / 2 + 10, y, x + 150 - 10 - consortLabelSize.Width / 2, y);
                 }
             }
 
@@ -1110,7 +1134,7 @@ namespace AlotGUI
 
         void connectParentToChild(Graphics gfx, Point p1, Point p2, string parentCouple, string childNode, SizeF childNodeLabelSize)
         {
-            Color lineColor = getCoupleColor(parentCouple, 128);
+            Color lineColor = getCoupleColor(parentCouple);
             Pen linePen = new Pen(lineColor, 2);
 
             if (p1.Y < p2.Y)
@@ -1208,9 +1232,9 @@ namespace AlotGUI
                 return nodes[1] + "/" + nodes[0];
         }
 
-        Color getCoupleColor(string couple, int alpha)
+        Color getCoupleColor(string couple)
         {
-            return Color.FromArgb(alpha, Color.FromArgb(couple.GetHashCode()));
+            return Color.FromArgb(255, Color.FromArgb(couple.GetHashCode()));
         }
 
         void reserveRow(ref int y, ref int x1, ref int x2, int margin, bool node, string parentCouple)
@@ -1627,8 +1651,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map explore 1 HIMALAYAS");
-            //processMsg("D C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\animals\\arthropods\\Armadillidium vulgare");
+            //processMsg("ftree Neith ?");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1642,8 +1665,8 @@ namespace AlotGUI
                     reservedNodeRows = new Dictionary<int, int[]>();
                     reservedLineRows = new Dictionary<int, int[]>();
                     reservedLineRowsBorders = new Dictionary<int, string[]>();
-                    int temp;
 
+                    int temp;
                     drawFamilyTreeNode(e.Graphics, questionNode, treeX, treeY, out temp, new List<string>(), new Dictionary<string, Point>());
                     break;
                 case DisplayMode.Map:

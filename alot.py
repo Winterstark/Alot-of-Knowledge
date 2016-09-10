@@ -489,11 +489,9 @@ def addNodeToFamilyTree(catalot, key, visited=[]):
 		return nodeOutput
 
 
-def exportFamilyTree(catalot, key, isQuestion):
-	if isQuestion:
-		return key + " ?\n" + addNodeToFamilyTree(catalot, key)
-	else:
-		return key + "\n" + addNodeToFamilyTree(catalot, key)
+def exportFamilyTree(catalot, key):
+	with open("ftree.txt", "w") as f:
+		f.write(addNodeToFamilyTree(catalot, key))
 
 
 def collectDatesForTimeline(entryKey, data, img, timeline):
@@ -2227,7 +2225,9 @@ def qType_Timeline(key, otherNames=set()):
 
 
 def qType_FamilyTree(catalot, key, otherNames=set()):
-	msgGUI("ftree " + exportFamilyTree(catalot, key, True))
+	exportFamilyTree(catalot, key)
+
+	msgGUI("ftree {} ?".format(key))
 	colorPrint("Who (???) is highlighted in the family tree?", COLOR_LEARNED)
 	answer, quit, immediately = checkForExit(input("> "))
 

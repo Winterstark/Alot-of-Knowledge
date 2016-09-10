@@ -135,7 +135,6 @@
 	"Lake Bangweulu": "GEO:Lake/Lake Bangweulu",
 	"Inarijrvi": "GEO:Lake/Inarijrvi",
 	"Lake Peipus": "GEO:Lake/Lake Peipus",
-	"Lake Kivu": "GEO:Lake/Lake Kivu",
 	"Tai Hu": "GEO:Lake/Tai Hu",
 	"Lago Argentino": "GEO:Lake/Lago Argentino",
 	"Nam Co": "GEO:Lake/Nam Co",

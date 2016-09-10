@@ -1,0 +1,47 @@
+Neith, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Neith.png
+Neith, Parents: Nu (primordial watery abyss)
+Neith, Consort: Khnum
+Khnum, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Khnum.png
+Khnum, Parents: Nu (primordial watery abyss)
+Sobek, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Sobek.png
+Sobek, Parents: Neith/Khnum
+Thoth, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Thoth.png
+Thoth, Parents: Neith/Khnum
+Thoth, Consort: Maat
+Maat, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Maat.png
+Maat, Parents: Ra/Hathor
+Ra, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Ra.png
+Ra, Parents: Neith/Khnum
+Ra, Consort: Hathor
+Hathor, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Hathor.png
+Hathor, Parents: Neith/Khnum
+Sekhmet, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Sekhmet.png
+Sekhmet, Parents: Ra/Hathor
+Sekhmet, Consort: Ptah
+Ptah, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Ptah.png
+Ptah, Parents: None (self-created)
+Bastet, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Bastet.png
+Bastet, Parents: Ra/Hathor
+Bastet, Consort: Anubis
+Anubis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Anubis.png
+Anubis, Parents: Nephthys/Set
+Nephthys, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Nephthys.png
+Nephthys, Parents: Geb/Nut
+Nephthys, Consort: Set
+Geb, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Geb.png
+Geb, Consort: Nut
+Nut, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Nut.png
+Isis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Isis.png
+Isis, Parents: Geb/Nut
+Isis, Consort: Osiris
+Osiris, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Osiris.png
+Osiris, Parents: Geb/Nut
+Min, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Min.png
+Min, Parents: Isis/Osiris
+Horus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Horus.png
+Horus, Parents: Isis/Osiris
+Horus, Consort: Serket
+Serket, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Serket.png
+Serket, Parents: Neith/Khnum
+Set, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Egyptian\Set.png
+Set, Parents: Geb/Nut

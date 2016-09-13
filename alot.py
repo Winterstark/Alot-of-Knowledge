@@ -470,8 +470,12 @@ def addNodeToFamilyTree(catalot, key, visited=[]):
 
 		parents = getAttribute(catalot[key], FTREE_VERTICAL_ATTRIBUTES, defaultValue={})
 		if parents != {}:
-			checkNodes += parents
-			nodeOutput += key + ", Parents: " + '/'.join(parents) + "\n"
+			if type(parents) is str:
+				checkNodes.append(parents)
+				nodeOutput += key + ", Parents: " + parents + "\n"
+			else:
+				checkNodes += parents
+				nodeOutput += key + ", Parents: " + '/'.join(parents) + "\n"
 
 		consort = getAttribute(catalot[key], FTREE_HORIZONTAL_ATTRIBUTES)
 		if consort != "" and consort not in visited:

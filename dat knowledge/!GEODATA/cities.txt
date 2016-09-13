@@ -29402,3 +29402,7 @@ Sankt Polten
 POINT
 15,616667, 48,2
 8
+Wakefield (City)
+POINT
+-1,499, 53,683
+7

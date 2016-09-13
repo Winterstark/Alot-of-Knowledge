@@ -147,6 +147,11 @@ namespace AlotGUI
                         var len = (int)br.ReadUInt32();
                         var msg = new string(br.ReadChars(len));
 
+                        //write received message to file (for debugging purposes)
+                        StreamWriter file = new StreamWriter(Application.StartupPath + "\\last received message.txt");
+                        file.WriteLine(msg);
+                        file.Close();
+
                         processMsg(msg);
                     }
                     catch (EndOfStreamException)
@@ -999,7 +1004,7 @@ namespace AlotGUI
             StreamReader file = new StreamReader(FTREE_PATH);
             string fTree = file.ReadToEnd();
             file.Close();
-            List<string> treeLines = new List<string>(fTree.Substring(fTree.IndexOf(Environment.NewLine) + 2).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+            List<string> treeLines = new List<string>(fTree.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
 
             nodeImages = new Dictionary<string, Image>();
             foreach (string line in treeLines)
@@ -1007,6 +1012,14 @@ namespace AlotGUI
                 {
                     string node = line.Substring(0, line.IndexOf(", "));
                     string imgPath = line.Substring(line.IndexOf(": ") + 2);
+
+                    if (Directory.Exists(imgPath))
+                    {
+                        //if imgPath points to a folder grab a random image from it
+                        string[] imgs = Directory.GetFiles(imgPath);
+                        Random rand = new Random((int)DateTime.Now.Ticks);
+                        imgPath = imgs[rand.Next(imgs.Length)];
+                    }
 
                     Image img = Bitmap.FromFile(imgPath);
                     nodeImages.Add(node, new Bitmap(img, img.Width * NODE_IMAGE_HEIGHT / img.Height, NODE_IMAGE_HEIGHT));
@@ -1651,7 +1664,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("ftree Neith ?");
+            //processMsg("ftree Passeriformes ?");
         }
 
         protected override void OnPaint(PaintEventArgs e)

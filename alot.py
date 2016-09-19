@@ -1832,6 +1832,12 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 			elif geoType == "strait":
 				ignoredWords.append("passage")
 				ignoredWords.append("entrance")
+			elif geoType == "region":
+				ignoredWords.append("valley")
+				ignoredWords.append("plain")
+				ignoredWords.append("plains")
+			elif geoType == "coast":
+				ignoredWords.append("land")
 
 			for ignoredWord in ignoredWords:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")

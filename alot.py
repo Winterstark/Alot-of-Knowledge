@@ -1438,8 +1438,9 @@ def colorPrint(text, color, endline="\n"):
 	print(Fore.RESET, end="")
 
 
-def printList(items, step, indentLevel, color, firstItem=1):
+def printList(items, step, indentLevel, color, firstItem=1, slowPrint=False):
 	stepOffset = 0 #takes into account how many sublists have been printed before the current item (so that we know its correct index)
+	sleepInterval = 1.5
 
 	for i in range(firstItem, step):
 		heading = i < len(items) and type(items[i]) is list
@@ -1458,6 +1459,12 @@ def printList(items, step, indentLevel, color, firstItem=1):
 				colorPrint("{0}{1}. {2}".format('\t'*indentLevel, i + stepOffset, items[i-1]), color)
 			else:
 				print("{0}{1}. {2}".format('\t'*indentLevel, i + stepOffset, items[i-1]))
+
+		if slowPrint:
+			sleep(sleepInterval)
+			sleepInterval *= 0.65
+			if sleepInterval < 0.001:
+				slowPrint = False
 
 	return stepOffset
 
@@ -2405,6 +2412,8 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				feedback("")
 		elif type(correct) is str and correct != "False":
 			feedback("Wrong! Correct answer: " + correct)
+			printList(items, len(items) + 1, indentLevel, color, step+1, True) #print the rest of the list
+			sleep(1.5)
 
 	if not finalStep:
 		if type(step) is not int or step < endOnStep: #still on the first stage of list testing
@@ -2992,7 +3001,10 @@ def quiz(category, catalot, metacatalot):
 					else:
 						print("List progress @ {}%.".format(100*(newStepRoot-1)//len(entry)))
 				else:
-					print("Diagram progress @ {}%.".format(100*(newStepRoot-1)//len(entry[1])))
+					if newStepRoot - 1 < 0:
+						print("Diagram progress @ 100%.") #negative step indicates it's the second stage of diagram testing
+					else:
+						print("Diagram progress @ {}%.".format(100*(newStepRoot-1)//len(entry[1])))
 
 				meta["step"] = newStep
 				meta["nextTest"] = datetime.now() + timedelta(hours=22)

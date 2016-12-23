@@ -1,1 +1,2 @@
-Rosales, Parents: Plantae
+Pontos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Pontos.jpg
+Pontos, Parents: Gaia

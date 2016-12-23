@@ -528,7 +528,7 @@ namespace AlotGUI
                                     neighbors.RemoveAt(19);
 
                                     while (neighbors.ContainsKey(distance)) //prevent two entries having the same distance
-                                        distance += 0.000001f;
+                                        distance += 0.0001f;
 
                                     neighbors.Add(distance, entName);
                                 }

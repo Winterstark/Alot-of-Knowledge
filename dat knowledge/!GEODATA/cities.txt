@@ -24825,7 +24825,7 @@ POINT
 International Falls
 POINT
 -93,41084, 48,60113
-4
+7
 St. Paul (City)
 POINT
 -93,08498, 44,94398
@@ -24965,7 +24965,7 @@ POINT
 Burlington 2
 POINT
 -73,21246, 44,4758
-4
+7
 Montgomery
 POINT
 -86,27919, 32,3616
@@ -29406,3 +29406,55 @@ Wakefield (City)
 POINT
 -1,499, 53,683
 7
+Wolverhampton (City)
+POINT
+-2,133333, 52,583333
+7
+Derby (City)
+POINT
+-1,475833, 52,921944
+7
+Road Town (City)
+POINT
+-64,623056, 18,431389
+7
+The Valley (City)
+POINT
+-63,051667, 18,220833
+7
+Marigot (City)
+POINT
+-63,0822, 18,0731
+7
+Philipsburg (City)
+POINT
+-63,0458, 18,0237
+7
+Gustavia (City)
+POINT
+-62,850556, 17,897908
+7
+Brades (City)
+POINT
+-62,210556, 16,792778
+8
+Tifariti (City)
+POINT
+-10,567, 26,158
+8
+Jamestown (Saint Helena) (City)
+POINT
+-5,718056, -15,924444
+8
+Saint Peter Port (City)
+POINT
+-2,5368, 49,4555
+8
+Saint Helier (City)
+POINT
+-2,107, 49,187
+8
+Camp Justice (City)
+POINT
+72,386, -7,291
+8

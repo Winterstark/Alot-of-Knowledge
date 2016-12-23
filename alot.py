@@ -1804,7 +1804,22 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 	correctAnswer = ''.join(e for e in correctAnswer.lower() if e.isalnum())
 
 	#check answer
-	if getType(a) is Type.String and not aIsDate:
+	if aIsDate:
+		#if wrong -> check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
+		if answer != correctAnswer:
+			if len(answer) == 3 and answer[2] == 's':
+				if answer[:2] == "00" or answer[:2] == "10":
+					answer = "20" + answer[:2] + "s"
+				else:
+					answer = "19" + answer[:2] + "s"
+
+		#TODO move to this function: if wrong -> check if the user's answer is relatively close to the correct Date
+		#if answer != correctAnswer:
+			#if originalA.isAlmostCorrect(answer):
+				#print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
+				#tryAgain = True
+				#firstAttempt = False
+	elif getType(a) is Type.String:
 		originalAnswer = answer
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 

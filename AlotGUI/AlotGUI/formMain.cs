@@ -1664,7 +1664,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("ftree Passeriformes ?");
+            //processMsg("map 2 Santa Cruz 4");
         }
 
         protected override void OnPaint(PaintEventArgs e)

@@ -1,2 +1,87 @@
+Tethys, Parents: Gaia/Ouranos
+Tethys, Consort: Okeanos
+Gaia, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Gaia.jpg
+Gaia, Parents: Chaos
+Gaia, Consort: {'Pontos', 'Ouranos'}
+Okeanos, Parents: Gaia/Ouranos
+Ouranos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Ouranos.jpg
+Ouranos, Parents: Gaia
+Aphrodite, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Venus.jpg
+Aphrodite, Parents: Ouranos
+Aphrodite, Consort: {'Nerites', 'Ares', 'Hephaistos', 'Adonis (mortal)', 'Anchises (mortal; father of Aeneas)'}
+Mnemosyne, Parents: Gaia/Ouranos
+Themis, Parents: Gaia/Ouranos
+Hyperion, Parents: Gaia/Ouranos
+Hyperion, Consort: Theia
+Theia, Parents: Gaia/Ouranos
+Helios, Parents: Theia/Hyperion
+Helios, Consort: Perse (Okeanid)
+Phaethon, Parents: Klymene (Okeanid)/Helios
+Selene, Parents: Theia/Hyperion
+Selene, Consort: Endymion
+Eos, Parents: Theia/Hyperion
+Eos, Consort: Astraios (Starry)
+Rhea, Parents: Gaia/Ouranos
+Rhea, Consort: Kronos
+Kronos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Kronos.png
+Kronos, Parents: Gaia/Ouranos
+Poseidon, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Poseidon.jpg
+Poseidon, Parents: Rhea/Kronos
+Poseidon, Consort: Amphitrite
+Amphitrite, Parents: Doris/Nereus
+Nereus, Parents: Pontos/Gaia
+Nereus, Consort: Doris (Okeanid)
 Pontos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Pontos.jpg
 Pontos, Parents: Gaia
+Thetis, Parents: Doris/Nereus
+Thetis, Consort: Peleus (Mortal hero (Argonaut))
+Triton, Parents: Poseidon/Amphitrite
+Hestia, Parents: Rhea/Kronos
+Hestia, Consort: None (virgin)
+Demeter, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Ceres.jpg
+Demeter, Parents: Rhea/Kronos
+Persephone, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Proserpine.jpg
+Persephone, Parents: Zeus/Demeter
+Persephone, Consort: Hades
+Zeus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Zeus.jpg
+Zeus, Parents: Rhea/Kronos
+Zeus, Consort: {'Semele (offspring: Dionysos)', 'Maia (Hermes)', 'Alkmene (disguised as her husband Amphitryon; offspring: Herakles)', 'Danae (in the form of golden rain; offspring: Perseus)', 'Hera (offspring: Ares, Hephaistos, and Hebe)', 'Demeter (offspring: Persephone)', 'Europa (in the form of a bull; offspring: Minos, Rhadamanthys, and Sarpedon)', 'Leda (in the form of a swan; offspring: Helen of Troy and Polydeukes (Pollux))', 'Leto (offspring: Apollo and Artemis)'}
+Hermes, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hermes.jpg
+Hermes, Parents: Zeus/Maia (Pleiad)
+Artemis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Diana.jpg
+Artemis, Parents: Zeus/Leto
+Artemis, Consort: None (virgin)
+Dionysos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Dionysos.jpg
+Dionysos, Parents: Zeus/Semele (mortal)
+Dionysos, Consort: Ariadne (mortal)
+Ares, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Ares.jpg
+Ares, Parents: Zeus/Hera
+Hera, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hera.jpg
+Hera, Parents: Rhea/Kronos
+Herakles, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Herakles.jpg
+Herakles, Parents: Zeus/Alkmene (mortal)
+Herakles, Consort: {'Megara (daughter of Creon, king of Thebes; Herakles killed their children in a fit of madness induced by Hera; to atone for this act, and to achieve immortality, the oracle at Delphi told him to perform 12 labors for Eurystheus, king of Mycenae)', "Deinaeira (the centaur Nessus tried to rape her but Herakles shot him with his poisoned arrows; as the centaur lay dying he tricked Deinaeira into mixing his blood and semen into a love potion that she later applied to Herakles's robes when she suspected he was unfaithful; since the centaur's blood was tainted by the arrows' poison it began to burn into Herakles's skin and bones; the agony being unendurable, he chose death in a pyre, but was instead transformed into an immortal and carried to Olympos)", 'Omphale (queen of Lydia who bought him as a slave, which was his punishment for a murder)', 'Hebe (goddess of youth; daughter of Zeus and Hera)'}
+Apollo, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Apollo.jpg
+Apollo, Parents: Zeus/Leto
+Apollo, Consort: {'Kassandra (mortal; daughter of king Priam of Troy; to seduce her Apollo promised her the gift of prophecy, but after she rejected him he cursed his gift so that nobody would believe her)', 'Hyakinthos (mortal man; accidently killed by Apollo with a discus)', 'Marpessa (mortal princess; chose a mortal suitor over Apollo)', 'Koronis (mortal; after conceiving Asklepios she agreed to marry a mortal so Apollo sent Artemis to kill her)', 'Kyrene (mortal, fierce huntress; eponym of Cyrene; mother of the rustic god Aristaios)', "Daphne (mortal or naiad; while she was fleeing Apollo's unwanted advances she prayed for divine aid and was transformed into a laurel plant)"}
+Asklepios, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Asklepios.jpg
+Asklepios, Parents: Koronis/Apollo
+Hephaistos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hephaistos.jpg
+Hephaistos, Parents: Zeus/Hera (In Hesiod's cosmology, Hera brought him to birth alone, as revenge at Zeus for his asexual birthing of Athena)
+Hephaistos, Consort: Aphrodite (the Theogony points to another union of opposites, stating that he was married to Aglaia, the youngest of the Graces, and the Iliad suggests similarly that he was married to Charis (Grace personified))
+Hades, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hades.jpg
+Hades, Parents: Rhea/Kronos
+Typhon, Parents: Gaia/Tartaros
+Typhon, Consort: Echidna
+Echidna, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Echidna.jpg
+Echidna, Parents: Keto/Phorkys
+Lernaian hydra, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hydra.jpg
+Lernaian hydra, Parents: Echidna/Typhon
+Kerberos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Kerberos.jpg
+Kerberos, Parents: Echidna/Typhon
+Chimaira, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Chimaira.jpg
+Chimaira, Parents: Echidna/Typhon
+Orthos, Parents: Echidna/Typhon
+Sphinx, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Sphinx.jpg
+Sphinx, Parents: Echidna (or Chimaira)/Orthos
+Nemean Lion, Parents: Echidna (or Chimaira)/Orthos

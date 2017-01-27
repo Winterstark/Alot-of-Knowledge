@@ -29381,7 +29381,7 @@ POINT
 Velika Gorica
 POINT
 16,066667, 45,7
-7
+8
 Sisak
 POINT
 16,366667, 45,483333
@@ -29457,4 +29457,28 @@ POINT
 Camp Justice (City)
 POINT
 72,386, -7,291
+8
+Padua (City)
+POINT
+11,866667, 45,416667
+7
+Mahon (City)
+POINT
+4,3, 39,866667
+7
+Saitama (City)
+POINT
+139,645556, 35,861389
+8
+Adamstown (City)
+POINT
+-130,1, -25,066667
+10
+Mata-Utu (City)
+POINT
+-176,183333, -13,283333
+10
+Baden-Baden (City)
+POINT
+8,240833, 48,762778
 8

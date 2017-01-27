@@ -863,7 +863,7 @@ def timeUntilAvailable(metacatalot):
 		time = time[:time.index('.')]
 	return time
 
-
+ 
 #checks if there are any more steps to be learned (based on the type of entry)
 def isLearned(step, answer):
 	return step == maxSteps(answer) + 1
@@ -881,7 +881,7 @@ def maxSteps(answer):
 	elif answerType is Type.Set:
 		return 2
 	elif answerType is Type.List:
-		return len(answer) + 1
+		return len(answer)
 	else:
 		print("TYPE NOT SUPPORTED FOR MAXSTEPS():", answerType)
 
@@ -2373,7 +2373,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			elif type(correct) is list:
 				step = [step] + correct
 			elif type(correct) is int:
-				if abs(correct) == len(items[step-1]) + 1:
+				if abs(correct) == len(items[step-1]) + 1 or not finalStep and correct == -1:
 					correct = True #sublist answered successfully
 				else:
 					step = [step] + [correct]
@@ -2436,7 +2436,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 		else: #negative step indicates it's the second stage of list testing
 			return -1, exit, immediately, usedGUI
 	else:
-		if step < endOnStep: #still on the second stage of list testing
+		if type(step) is not int or step < endOnStep: #still on the second stage of list testing
 			if type(step) is int:
 				step = -step
 			else:
@@ -2949,9 +2949,14 @@ def quiz(category, catalot, metacatalot):
 							if correct[attribute] == "already learned":
 								pass
 							elif type(correct[attribute]) is bool:
-								meta["step"][attribute] += 1
-								#skip some useless steps for certain types of attributes (the steps that ask the user to type in the name of the entry)
 								attributeType = getType(entry[attribute])
+
+								if attributeType is Type.List:
+									meta["step"][attribute] = len(entry[attribute]) + 1 #mark list as learned
+								else:
+									meta["step"][attribute] += 1
+
+								#skip some useless steps for certain types of attributes (the steps that ask the user to type in the name of the entry)
 								if attributeType is Type.String and meta["step"][attribute] == 2:
 									meta["step"][attribute] += 1
 								if (attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange) and (meta["step"][attribute] == 2 or meta["step"][attribute] == 4):

@@ -186,13 +186,13 @@ namespace AlotGUI
                     buttPlay1.Left = buttPlay2.Left = buttPlay3.Left = buttPlay4.Left = buttPlay5.Left = buttPlay6.Left = this.Width; //hide audio buttons
                     audio.Stop();
                 }
-                else if (msg.Contains("map"))
+                else if (msg.StartsWith("map"))
                     processMapMsg(msg);
-                else if (msg.Contains("ftree"))
+                else if (msg.StartsWith("ftree"))
                     processFamilyTreeMsg(msg);
-                else if (msg.Contains("timeline"))
+                else if (msg.StartsWith("timeline"))
                     processTimelineMsg(msg);
-                else if (msg.Contains("audio"))
+                else if (msg.StartsWith("audio"))
                     processAudioMsg(msg);
                 else
                     processImageMsg(msg);
@@ -1664,7 +1664,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("map 2 Santa Cruz 4");
+            //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\city maps\\Venezia.jpg");
         }
 
         protected override void OnPaint(PaintEventArgs e)

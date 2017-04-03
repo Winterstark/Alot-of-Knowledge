@@ -880,7 +880,7 @@ def maxSteps(answer):
 		return 1
 	elif answerType is Type.Set:
 		return 2
-	elif answerType is Type.List:
+	elif answerType is Type.List or answerType is Type.Diagram:
 		return len(answer)
 	else:
 		print("TYPE NOT SUPPORTED FOR MAXSTEPS():", answerType)

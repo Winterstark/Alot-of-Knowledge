@@ -1,0 +1,3 @@
+{
+	'Hydrogen': {'Date': 'late 18c.', 'Symbol': 'H', 'Atomic number': 1, 'Block': 'S', 'Appearance': 'Colorless gas', 'Oxidation states': {1, -1}, 'Group': 'Alkali metal (nominally a group 1 element but not normally considered to be an alkali metal)', 'Notes': {'Most abundant element in the universe (making up 75% of normal matter by mass and more than 90% by number of atoms)', 'Highly flammable'}, 'Period': 1, 'Isotopes': {'Tritium (3H)', 'Protium (1H)', 'Deuterium (2H)'}, 'Discovered by': 'Henry Cavendish'},
+}

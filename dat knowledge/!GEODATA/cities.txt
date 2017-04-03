@@ -2445,7 +2445,7 @@ POINT
 Riverside
 POINT
 -117,398, 33,94194
-8
+7
 Delano
 POINT
 -119,2431, 35,76194
@@ -13457,7 +13457,7 @@ POINT
 Cagliari
 POINT
 9,103981, 39,2224
-7
+6
 Pisa
 POINT
 10,40003, 43,72047
@@ -20697,7 +20697,7 @@ POINT
 Sassari
 POINT
 8,570009, 40,73001
-6
+7
 Turin
 POINT
 7,668015, 45,07233
@@ -24681,7 +24681,7 @@ POINT
 San Bernardino
 POINT
 -117,302, 34,12233
-4
+7
 Bridgeport
 POINT
 -73,2019, 41,18192
@@ -29481,4 +29481,24 @@ POINT
 Baden-Baden (City)
 POINT
 8,240833, 48,762778
+8
+Ecatepec de Morelos (City)
+POINT
+-99,06, 19,609722
+8
+Zapopan (City)
+POINT
+-103,4, 20,716667
+8
+Naucalpan (City)
+POINT
+-99,237778, 19,475278
+8
+Magas (City)
+POINT
+44,82, 43,17
+9
+Poole (City)
+POINT
+-1,983333, 50,716667
 8

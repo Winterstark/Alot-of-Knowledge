@@ -1,0 +1,1 @@
+{'Hydrogen': {'step': {'Date': 3, 'Symbol': 3, 'Atomic number': 3, 'Block': 3, 'Appearance': 3, 'Oxidation states': 2, 'Group': 3, 'Notes': 2, 'Period': 3, 'Isotopes': 2, 'Discovered by': 3}, 'nextTest': datetime(2017, 4, 4, 19, 21, 20, 443564), 'lastTest': datetime(2017, 4, 3, 21, 21, 20, 443564), 'learned': False}}

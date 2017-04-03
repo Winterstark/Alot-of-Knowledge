@@ -2455,7 +2455,7 @@ def quizSet(setKey, items, step, color, geoType=""):
 			fillStringStep = 3
 		return qType_FillString(setKey, list(items)[0], fillStringStep, color)
 
-	itemsCopy = list(items)
+	itemsCopy = [str(item) for item in list(items)] #convert every item to string
 	hasSubSets, itemsSets = unwrapSets(itemsCopy)
 
 	nSubSets = max(itemsSets)

@@ -891,14 +891,14 @@ def getType(entry, attribute=""):
 		entry = entry[attribute]
 	entryType = type(entry)
 
-	if entryType is int:
+	if entryType is int or entryType is float:
 		return Type.Number
 	elif entryType is Date:
 		return Type.Date
 	elif entryType is tuple:
 		if type(entry[1]) is list:
 			return Type.Diagram
-		elif len(entry) == 2 and (type(entry[0]) is type(entry[1]) is int):
+		elif len(entry) == 2 and ((type(entry[0]) is type(entry[1]) is int) or (type(entry[0]) is type(entry[1]) is float)):
 			return Type.NumberRange
 		elif len(entry) == 2 and (type(entry[0]) is type(entry[1]) is Date):
 			return Type.DateRange
@@ -2719,7 +2719,7 @@ def quiz(category, catalot, metacatalot):
 							firstQuestion = False
 						else:
 							print("\n")
-						
+
 						attributeType = getType(entry[attribute])
 						if attributeType is Type.Number or attributeType is Type.NumberRange or attributeType is Type.Date or attributeType is Type.DateRange:
 							correct[attribute], exit, immediately = quizNumber(catalot, key, step[attribute], color, attribute, otherNames=otherNames)

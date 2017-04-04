@@ -190,27 +190,24 @@ class Date:
 
 
 	def precisionPrompt(self):
+		if self.prefix != "":
+			prefix = "Part of "
+		else:
+			prefix = ""
+			
 		precision = self.precision()
-		prefixed = self.prefix != ""
-
 		if precision == "M":
-			if not prefixed:
-				return "Millennium"
-			else:
-				return "Part of Millennium"
+			return prefix + "Millennium"
 		elif precision == "c":
-			if not prefixed:
-				return "Century"
-			else:
-				return "Part of Century"
+			return prefix + "Century"
 		elif precision == "dec":
-			return "Decade"
+			return prefix + "Decade"
 		elif precision == "y":
-			return "Year"
+			return prefix + "Year"
 		elif precision == "m":
-			return "Year-Month"
+			return prefix + "Year-Month"
 		elif precision == "d":
-			return "Year-Month-Day"
+			return prefix + "Year-Month-Day"
 
 
 	def toGUIFormat(self, partOfRange):

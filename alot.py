@@ -2393,7 +2393,13 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 					itemCorrect, exit, immediately = qType_Image(items[step-1][0], fullPath(item), learned=learned)
 					usedGUI = True
 				else:
-					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(item), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
+					if removeParentheses(item) == "": #skip items that only consist of parenthesized texts
+						print("{}. {}".format(step + stepOffset, item))
+						itemCorrect = True
+						exit = immediately = False
+						playSound = False
+					else:
+						itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), toString(item), color, alwaysShowHint=not finalStep, indentLevel=indentLevel)
 
 				if type(itemCorrect) is not bool:
 					correct = itemCorrect

@@ -1,241 +1,92 @@
-Emydidae, Parents: Testudines
-Testudines, Parents: Reptilia
-Reptilia, Parents: Chordata
-Chordata, Parents: Animalia
-Animalia, Parents: Eukaryota
-Mollusca, Parents: Animalia
-Bivalvia, Parents: Mollusca
-Mytiloida, Parents: Bivalvia
-Mytilidae, Parents: Mytiloida
-Mytilus galloprovincialis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\invertebrates\Mytilus galloprovincialis.jpg
-Mytilus galloprovincialis, Parents: Mytilidae
-Cnidaria, Parents: Animalia
-Medusozoa, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\invertebrates\Pelagia noctiluca.jpg
-Medusozoa, Parents: Cnidaria
-Arthropoda, Parents: Animalia
-Chilopoda, Parents: Arthropoda
-Scutigeromorpha, Parents: Chilopoda
-Scutigeridae, Parents: Scutigeromorpha
-Scutigera coleoptrata, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Scutigera coleoptrata.jpg
-Scutigera coleoptrata, Parents: Scutigeridae
-Insecta, Parents: Arthropoda
-Hymenoptera, Parents: Insecta
-Formicidae, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Formicidae.jpg
-Formicidae, Parents: Hymenoptera
-Vespidae, Parents: Hymenoptera
-Vespula vulgaris, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Vespula vulgaris.jpg
-Vespula vulgaris, Parents: Vespidae
-Vespa crabro, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Vespa crabro.jpg
-Vespa crabro, Parents: Vespidae
-Apidae, Parents: Hymenoptera
-Apis mellifera, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Apis mellifera.jpg
-Apis mellifera, Parents: Apidae
-Bombus terrestris, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Bombus terrestris.jpg
-Bombus terrestris, Parents: Apidae
-Xylocopa violacea, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Xylocopa violacea.jpg
-Xylocopa violacea, Parents: Apidae
-Coleoptera, Parents: Insecta
-Curculionidae, Parents: Coleoptera
-Scolytinae, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Scolytinae.jpg
-Scolytinae, Parents: Curculionidae
-Lepidoptera, Parents: Insecta
-Papilionidae, Parents: Lepidoptera
-Iphiclides podalirius, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Iphiclides podalirius.jpg
-Iphiclides podalirius, Parents: Papilionidae
-Diptera, Parents: Insecta
-Culicidae, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Culicidae.jpg
-Culicidae, Parents: Diptera
-Tipulidae, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Tipulidae.jpg
-Tipulidae, Parents: Diptera
-Drosophilidae, Parents: Diptera
-Drosophila melanogaster, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Drosophila melanogaster.jpg
-Drosophila melanogaster, Parents: Drosophilidae
-Muscidae, Parents: Diptera
-Musca domestica, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Musca domestica.jpg
-Musca domestica, Parents: Muscidae
-Psychodidae, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Psychodidae.jpg
-Psychodidae, Parents: Diptera
-Malacostraca, Parents: Arthropoda
-Decapoda, Parents: Malacostraca
-Nephropidae, Parents: Decapoda
-Homarus gammarus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Homarus gammarus.jpg
-Homarus gammarus, Parents: Nephropidae
-Homarus americanus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Homarus americanus.jpg
-Homarus americanus, Parents: Nephropidae
-Palinuridae, Parents: Decapoda
-Palinurus elephas, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Palinurus elephas.jpg
-Palinurus elephas, Parents: Palinuridae
-Isopoda, Parents: Malacostraca
-Oniscidea, Parents: Isopoda
-Armadillidiidae, Parents: Oniscidea
-Armadillidium vulgare, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Armadillidium vulgare
-Armadillidium vulgare, Parents: Armadillidiidae
-Arachnidae, Parents: Arthropoda
-Araneae, Parents: Arachnidae
-Pholcidae, Parents: Araneae
-Pholcus phalangioides, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\arthropods\Pholcus phalangioides.jpg
-Pholcus phalangioides, Parents: Pholcidae
-Mammalia, Parents: Chordata
-Eulipotyphla, Parents: Mammalia
-Erinaceidae, Parents: Eulipotyphla
-Erinaceus europaeus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Erinaceus europaeus.jpg
-Erinaceus europaeus, Parents: Erinaceidae
-Primates, Parents: Mammalia
-Hominidae, Parents: Primates
-Homo sapiens, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Homo sapiens.jpg
-Homo sapiens, Parents: Hominidae
-Rodentia, Parents: Mammalia
-Cricetidae, Parents: Rodentia
-Mesocricetus auratus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Mesocricetus auratus.jpg
-Mesocricetus auratus, Parents: Cricetidae
-Cricetus cricetus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Cricetus cricetus.jpg
-Cricetus cricetus, Parents: Cricetidae
-Sciuridae, Parents: Rodentia
-Sciurus vulgaris, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Sciurus vulgaris.jpg
-Sciurus vulgaris, Parents: Sciuridae
-Sciurus carolinensis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Sciurus carolinensis.jpg
-Sciurus carolinensis, Parents: Sciuridae
-Perissodactyla, Parents: Mammalia
-Equidae, Parents: Perissodactyla
-Equus africanus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Equus africanus.jpg
-Equus africanus, Parents: Equidae
-Equus ferus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Equus ferus.jpg
-Equus ferus, Parents: Equidae
-Lagomorpha, Parents: Mammalia
-Leporidae, Parents: Lagomorpha
-Lepus europaeus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Lepus europaeus.jpg
-Lepus europaeus, Parents: Leporidae
-Oryctolagus cuniculus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Oryctolagus cuniculus.jpg
-Oryctolagus cuniculus, Parents: Leporidae
-Carnivora, Parents: Mammalia
-Felidae, Parents: Carnivora
-Felis silvestris, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Felis silvestris.jpg
-Felis silvestris, Parents: Felidae
-Ursidae, Parents: Carnivora
-Ursus arctos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Ursus arctos.jpg
-Ursus arctos, Parents: Ursidae
-Mustelidae, Parents: Carnivora
-Martes foina, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Martes foina.jpg
-Martes foina, Parents: Mustelidae
-Martes martes, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Martes martes.jpg
-Martes martes, Parents: Mustelidae
-Pinnipedia, Parents: Carnivora
-Canidae, Parents: Carnivora
-Vulpes vulpes, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Vulpes vulpes.jpg
-Vulpes vulpes, Parents: Canidae
-Canis aureus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Canis aureus.jpg
-Canis aureus, Parents: Canidae
-Canis lupus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Canis lupus.jpg
-Canis lupus, Parents: Canidae
-Artiodactyla, Parents: Mammalia
-Bovidae, Parents: Artiodactyla
-Ovis aries, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Ovis aries.jpg
-Ovis aries, Parents: Bovidae
-Bos taurus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Bos taurus.jpg
-Bos taurus, Parents: Bovidae
-Capra aegagrus hircus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Capra aegagrus hircus.jpg
-Capra aegagrus hircus, Parents: Bovidae
-Camelidae, Parents: Artiodactyla
-Camelus dromedarius, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Camelus dromedarius.jpg
-Camelus dromedarius, Parents: Camelidae
-Camelus bactrianus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Camelus bactrianus.jpg
-Camelus bactrianus, Parents: Camelidae
-Cervidae, Parents: Artiodactyla
-Cervus elaphus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Cervus elaphus.jpg
-Cervus elaphus, Parents: Cervidae
-Capreolus capreolus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Capreolus capreolus.jpg
-Capreolus capreolus, Parents: Cervidae
-Suidae, Parents: Artiodactyla
-Sus scrofa, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Sus scrofa.jpg
-Sus scrofa, Parents: Suidae
-Chiroptera, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\mammals\Chiroptera.jpg
-Chiroptera, Parents: Mammalia
-Chondrichthyes, Parents: Chordata
-Rajiformes, Parents: Chondrichthyes
-Rajidae, Parents: Rajiformes
-Raja clavata, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\fish\Raja clavata.jpg
-Raja clavata, Parents: Rajidae
-Aves, Parents: Chordata
-Galliformes, Parents: Aves
-Phasianidae, Parents: Galliformes
-Perdix perdix, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Perdix perdix.jpg
-Perdix perdix, Parents: Phasianidae
-Coturnix coturnix, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Coturnix coturnix.jpg
-Coturnix coturnix, Parents: Phasianidae
-Phasianus colchicus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Phasianus colchicus.jpg
-Phasianus colchicus, Parents: Phasianidae
-Gallus gallus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Gallus gallus.jpg
-Gallus gallus, Parents: Phasianidae
-Meleagris gallopavo, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Meleagris gallopavo.jpg
-Meleagris gallopavo, Parents: Phasianidae
-Charadriiformes, Parents: Aves
-Laridae, Parents: Charadriiformes
-Larus michahellis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Larus michahellis.jpg
-Larus michahellis, Parents: Laridae
-Accipitriformes, Parents: Aves
-Accipitridae, Parents: Accipitriformes
-Gyps fulvus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Gyps fulvus.jpg
-Gyps fulvus, Parents: Accipitridae
-Passeriformes, Parents: Aves
-Passeri, Parents: Passeriformes
-Passer domesticus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Passer domesticus.jpg
-Passer domesticus, Parents: Passeridae
-Passeridae, Parents: Passeri
-Turdidae, Parents: Passeri
-Turdus merula, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Turdus merula.jpg
-Turdus merula, Parents: Turdidae
-Hirundinidae, Parents: Passeri
-Hirundo rustica, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Hirundo rustica.jpg
-Hirundo rustica, Parents: Hirundinidae
-Emberizidae, Parents: Passeri
-Paridae, Parents: Passeri
-Cyanistes caeruleus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Cyanistes caeruleus.jpg
-Cyanistes caeruleus, Parents: Paridae
-Muscicapidae, Parents: Passeri
-Luscinia megarhynchos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Luscinia megarhynchos.jpg
-Luscinia megarhynchos, Parents: Muscicapidae
-Corvidae, Parents: Passeri
-Corvus corax, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Corvus corax.jpg
-Corvus corax, Parents: Corvidae
-Corvus cornix, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Corvus cornix.jpg
-Corvus cornix, Parents: Corvidae
-Garrulus glandarius, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Garrulus glandarius.jpg
-Garrulus glandarius, Parents: Corvidae
-Corvus corone, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Corvus corone.jpg
-Corvus corone, Parents: Corvidae
-Suliformes, Parents: Aves
-Phalacrocoracidae, Parents: Suliformes
-Phalacrocorax aristotelis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Phalacrocorax aristotelis.jpg
-Phalacrocorax aristotelis, Parents: Phalacrocoracidae
-Columbiformes, Parents: Aves
-Columbidae, Parents: Columbiformes
-Columba livia, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Columba livia.jpg
-Columba livia, Parents: Columbidae
-Strigiformes, Parents: Aves
-Strigidae, Parents: Strigiformes
-Otus scops, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Otus scops.jpg
-Otus scops, Parents: Strigidae
-Anseriformes, Parents: Aves
-Anatidae, Parents: Anseriformes
-Cygnus olor, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Cygnus olor.jpg
-Cygnus olor, Parents: Anatidae
-Anas platyrhynchos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Anas platyrhynchos.jpg
-Anas platyrhynchos, Parents: Anatidae
-Anser anser, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Anser anser.jpg
-Anser anser, Parents: Anatidae
-Apodiformes, Parents: Aves
-Apodidae, Parents: Apodiformes
-Apus apus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\birds\Apus apus.jpg
-Apus apus, Parents: Apodidae
-Squamata, Parents: Reptilia
-Lacertidae, Parents: Squamata
-Podarcis sicula, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\reptiles\Podarcis sicula.jpg
-Podarcis sicula, Parents: Lacertidae
-Colubridae, Parents: Squamata
-Natrix natrix, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\reptiles\Natrix natrix.jpg
-Natrix natrix, Parents: Colubridae
-Testudinidae, Parents: Testudines
-Testudo hermanni, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\reptiles\Testudo hermanni.jpg
-Testudo hermanni, Parents: Testudinidae
-Trachemys scripta, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\animals\reptiles\Trachemys scripta elegans.jpg
-Trachemys scripta, Parents: Emydidae
+Phaethon, Parents: Klymene (Okeanid)/Helios
+Helios, Parents: Hyperion/Theia
+Helios, Consort: Perse (Okeanid)
+Hyperion, Parents: Ouranos/Gaia
+Hyperion, Consort: Theia
+Ouranos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Ouranos.jpg
+Ouranos, Parents: Gaia
+Ouranos, Consort: Gaia
+Gaia, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Gaia.jpg
+Gaia, Parents: Chaos
+Gaia, Consort: {'Ouranos', 'Pontos'}
+Kronos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Kronos.png
+Kronos, Parents: Ouranos/Gaia
+Kronos, Consort: Rhea
+Rhea, Parents: Ouranos/Gaia
+Zeus, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Zeus.jpg
+Zeus, Parents: Rhea/Kronos
+Zeus, Consort: {'Hera (offspring: Ares, Hephaistos, and Hebe)', 'Maia (Hermes)', 'Leda (in the form of a swan; offspring: Helen of Troy and Polydeukes (Pollux))', 'Europa (in the form of a bull; offspring: Minos, Rhadamanthys, and Sarpedon)', 'Semele (offspring: Dionysos)', 'Alkmene (disguised as her husband Amphitryon; offspring: Herakles)', 'Leto (offspring: Apollo and Artemis)', 'Danae (in the form of golden rain; offspring: Perseus)', 'Demeter (offspring: Persephone)'}
+Muses, Parents: Mnemosyne/Zeus
+Mnemosyne, Parents: Ouranos/Gaia
+Dionysos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Dionysos.jpg
+Dionysos, Parents: Semele (mortal)/Zeus
+Dionysos, Consort: Ariadne (mortal)
+Artemis, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Diana.jpg
+Artemis, Parents: Leto/Zeus
+Artemis, Consort: None (virgin)
+Hephaistos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hephaistos.jpg
+Hephaistos, Parents: Hera (In Hesiod's cosmology, Hera brought him to birth alone, as revenge at Zeus for his asexual birthing of Athena)/Zeus
+Hephaistos, Consort: Aphrodite (the Theogony points to another union of opposites, stating that he was married to Aglaia, the youngest of the Graces, and the Iliad suggests similarly that he was married to Charis (Grace personified))
+Ares, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Ares.jpg
+Ares, Parents: Hera/Zeus
+Ares, Consort: Aphrodite
+Hera, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hera.jpg
+Hera, Parents: Rhea/Kronos
+Aphrodite, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Venus.jpg
+Aphrodite, Parents: Ouranos
+Aphrodite, Consort: {'Adonis (mortal)', 'Nerites', 'Ares', 'Hephaistos', 'Anchises (mortal; father of Aeneas)'}
+Hermes, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hermes.jpg
+Hermes, Parents: Maia (Pleiad)/Zeus
+Herakles, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Herakles.jpg
+Herakles, Parents: Alkmene (mortal)/Zeus
+Herakles, Consort: {'Hebe (goddess of youth; daughter of Zeus and Hera)', 'Omphale (queen of Lydia who bought him as a slave, which was his punishment for a murder)', "Deinaeira (the centaur Nessus tried to rape her but Herakles shot him with his poisoned arrows; as the centaur lay dying he tricked Deinaeira into mixing his blood and semen into a love potion that she later applied to Herakles's robes when she suspected he was unfaithful; since the centaur's blood was tainted by the arrows' poison it began to burn into Herakles's skin and bones; the agony being unendurable, he chose death in a pyre, but was instead transformed into an immortal and carried to Olympos)", 'Megara (daughter of Creon, king of Thebes; Herakles killed their children in a fit of madness induced by Hera; to atone for this act, and to achieve immortality, the oracle at Delphi told him to perform 12 labors for Eurystheus, king of Mycenae)'}
+Apollo, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Apollo.jpg
+Apollo, Parents: Leto/Zeus
+Apollo, Consort: {'Marpessa (mortal princess; chose a mortal suitor over Apollo)', 'Kassandra (mortal; daughter of king Priam of Troy; to seduce her Apollo promised her the gift of prophecy, but after she rejected him he cursed his gift so that nobody would believe her)', 'Koronis (mortal; after conceiving Asklepios she agreed to marry a mortal so Apollo sent Artemis to kill her)', 'Hyakinthos (mortal man; accidently killed by Apollo with a discus)', 'Kyrene (mortal, fierce huntress; eponym of Cyrene; mother of the rustic god Aristaios)', "Daphne (mortal or naiad; while she was fleeing Apollo's unwanted advances she prayed for divine aid and was transformed into a laurel plant)"}
+Asklepios, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Asklepios.jpg
+Asklepios, Parents: Koronis/Apollo
+Persephone, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Proserpine.jpg
+Persephone, Parents: Demeter/Zeus
+Persephone, Consort: Hades
+Demeter, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Ceres.jpg
+Demeter, Parents: Rhea/Kronos
+Hades, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hades.jpg
+Hades, Parents: Rhea/Kronos
+Eirene, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Eirene.jpg
+Eirene, Parents: Themis/Zeus
+Themis, Parents: Ouranos/Gaia
+Hestia, Parents: Rhea/Kronos
+Hestia, Consort: None (virgin)
+Poseidon, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Poseidon.jpg
+Poseidon, Parents: Rhea/Kronos
+Poseidon, Consort: Amphitrite
+Amphitrite, Parents: Doris/Nereus
+Nereus, Parents: Gaia/Pontos
+Nereus, Consort: Doris (Okeanid)
+Pontos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Pontos.jpg
+Pontos, Parents: Gaia
+Thetis, Parents: Doris/Nereus
+Thetis, Consort: Peleus (Mortal hero (Argonaut))
+Triton, Parents: Amphitrite/Poseidon
+Okeanos, Parents: Ouranos/Gaia
+Okeanos, Consort: Tethys
+Tethys, Parents: Ouranos/Gaia
+Theia, Parents: Ouranos/Gaia
+Selene, Parents: Hyperion/Theia
+Selene, Consort: Endymion
+Eos, Parents: Hyperion/Theia
+Eos, Consort: Astraios (Starry)
+Typhon, Parents: Tartaros/Gaia
+Typhon, Consort: Echidna
+Echidna, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Echidna.jpg
+Echidna, Parents: Keto/Phorkys
+Lernaian hydra, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Hydra.jpg
+Lernaian hydra, Parents: Typhon/Echidna
+Orthos, Parents: Typhon/Echidna
+Sphinx, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Sphinx.jpg
+Sphinx, Parents: Orthos/Echidna (or Chimaira)
+Nemean Lion, Parents: Orthos/Echidna (or Chimaira)
+Kerberos, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Kerberos.jpg
+Kerberos, Parents: Typhon/Echidna
+Chimaira, Appearance: C:\dev\scripts\Alot of Knowledge\dat knowledge\!IMAGES\mythology\Greek\Chimaira.jpg
+Chimaira, Parents: Typhon/Echidna

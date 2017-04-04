@@ -958,10 +958,6 @@ Appenzell
 POINT
 9,4167, 47,33331
 10
-Ros Comain
-POINT
--8,183333, 53,63334
-10
 Cacheu
 POINT
 -16,165, 12,269
@@ -1029,14 +1025,6 @@ POINT
 Aosta
 POINT
 7,315002, 45,737
-10
-Diekirch
-POINT
-6,166702, 49,8833
-10
-Grevenmacher
-POINT
-6,333301, 49,7
 10
 Kangar
 POINT
@@ -1473,10 +1461,6 @@ POINT
 Kinkala
 POINT
 14,762, -4,356
-10
-Muineachan
-POINT
--6,966667, 54,25
 10
 Vejle
 POINT
@@ -4786,17 +4770,9 @@ Pakhachi
 POINT
 169,05, 60,58158
 8
-Shannon (City)
-POINT
--8,864146, 52,70385
-8
 Waterford
 POINT
 -7,111928, 52,25829
-8
-Tralee
-POINT
--9,716653, 52,26669
 8
 Donegal
 POINT
@@ -13401,14 +13377,6 @@ POINT
 Kilkenny
 POINT
 -7,252255, 52,65455
-7
-Killarney
-POINT
--9,516665, 52,0504
-7
-Sligo
-POINT
--8,483317, 54,26706
 7
 Bolama
 POINT
@@ -29502,3 +29470,7 @@ Poole (City)
 POINT
 -1,983333, 50,716667
 8
+Winterthur (City)
+POINT
+8,75, 47,5
+7

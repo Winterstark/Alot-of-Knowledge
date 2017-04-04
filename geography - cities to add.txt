@@ -2349,8 +2349,6 @@
 	"Moshi": {"GEO:City/Moshi", "Country": "United Republic of Tanzania"},
 	"Musoma": {"GEO:City/Musoma", "Country": "United Republic of Tanzania"},
 	"Korogwe": {"GEO:City/Korogwe", "Country": "United Republic of Tanzania"},
-	"Lausanne": {"GEO:City/Lausanne", "Country": "Switzerland"},
-	"Basel": {"GEO:City/Basel", "Country": "Switzerland"},
 	"Trollhtttan": {"GEO:City/Trollhtttan", "Country": "Sweden"},
 	"Borus": {"GEO:City/Borus", "Country": "Sweden"},
 	"Kristianstad": {"GEO:City/Kristianstad", "Country": "Sweden"},

@@ -431,7 +431,7 @@ def getChildrenNodes(catalot, key):
 
 	for k in catalot:
 		if k != key and getType(catalot[k]) is Type.Class:
-			if key in getAttribute(catalot[k], FTREE_VERTICAL_ATTRIBUTES, defaultValue={}):
+			if key == getAttribute(catalot[k], FTREE_VERTICAL_ATTRIBUTES, defaultValue={}):
 				children += [k] + getChildrenNodes(catalot, k)
 
 	return children

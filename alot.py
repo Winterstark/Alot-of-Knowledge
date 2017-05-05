@@ -1898,6 +1898,8 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 
 
 def qType_FillString(q, s, difficulty, color):
+	s = str(s)
+
 	#split string into parts
 	parts = s.replace("\n", " __NEWLINE__ ").split()
 	

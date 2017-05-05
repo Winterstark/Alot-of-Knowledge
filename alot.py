@@ -999,21 +999,24 @@ def toString(answer, makeMoreReadable=True, hideDates=False):
 		return str(answer)
 
 
-def makeNumberMoreReadable(num):
+def makeNumberMoreReadable(num, representsDecimalPlaces=False):
 	s = str(num)
+	if '.' in s:
+		return makeNumberMoreReadable(s[:s.index('.')]) + '.' + makeNumberMoreReadable(s[s.index('.')+1:], representsDecimalPlaces=True)
 
-	if s[-12:] == "000000000000":
-		return s[:-12] + " trillion"
-	elif s[-9:] == "000000000":
-		return s[:-9] + " billion"
-	elif s[-6:] == "000000":
-		return s[:-6] + " million"
-	else:
-		#insert a space every 3 digits
-		for i in range(len(s)-3, 0, -3):
-			s = s[:i] + ' ' + s[i:]
+	if not representsDecimalPlaces:
+		if s[-12:] == "000000000000":
+			return s[:-12] + " trillion"
+		elif s[-9:] == "000000000":
+			return s[:-9] + " billion"
+		elif s[-6:] == "000000":
+			return s[:-6] + " million"
+	
+	#insert a space every 3 digits
+	for i in range(len(s)-3, 0, -3):
+		s = s[:i] + ' ' + s[i:]
 
-		return s
+	return s
 
 
 def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
@@ -1713,12 +1716,12 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
 					answer = convertToFullNumber(answer)
-
+					
 					#check if the user's answer is relatively close to the correct Number
 					try:
 						answer = int(answer)
 						relativeError = abs(answer - a) / a
-
+						
 						if relativeError < 0.05:
 							#close enough; accept the answer
 							print('\t'*indentLevel + "Exact number: " + aStr)

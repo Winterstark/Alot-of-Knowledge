@@ -2777,11 +2777,12 @@ def quiz(category, catalot, metacatalot):
 			if entryType is Type.Number or entryType is Type.NumberRange or entryType is Type.DateRange:
 				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
 			elif entryType is Type.Date:
-				if random.randint(0, 1) == 0:
-					correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
-				else:
-					correct, exit, immediately = qType_Timeline(key)
-					usedGUI = True
+				#no longer using qType_Timeline()
+				#if random.randint(0, 1) == 0:
+				correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color)
+				#else:
+					#correct, exit, immediately = qType_Timeline(key)
+					#usedGUI = True
 			elif entryType is Type.Diagram:
 				msgGUI("I {}".format(fullPath(entry[0])))
 				usedGUI = True
@@ -2814,9 +2815,10 @@ def quiz(category, catalot, metacatalot):
 
 				if random.randint(0, len(entry)) == 0:
 					correct, exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
-				elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
-					correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
-					usedGUI = True
+				#no longer using qType_FamilyTree()
+				#elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
+					#correct, exit, immediately = qType_FamilyTree(catalot, key, otherNames=otherNames)
+					#usedGUI = True
 				else:
 					attribute = random.choice(list(entry.keys()))
 					attributeType = getType(entry[attribute])
@@ -2867,11 +2869,12 @@ def quiz(category, catalot, metacatalot):
 
 						correct, exit, immediately = quizNumber(catalot, key, qType, color, attribute, otherNames=otherNames)
 					elif attributeType is Type.Date or attributeType is Type.DateRange:
-						if random.randint(0, 1) == 0:
-							correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
-						else:
-							correct, exit, immediately = qType_Timeline(key, otherNames=otherNames)
-							usedGUI = True
+						#no longer using qType_Timeline()
+						#if random.randint(0, 1) == 0:
+						correct, exit, immediately = quizNumber(catalot, key, random.randint(1, 4), color, attribute, otherNames=otherNames)
+						#else:
+							#correct, exit, immediately = qType_Timeline(key, otherNames=otherNames)
+							#usedGUI = True
 					elif attributeType is Type.Diagram:
 						msgGUI("I {}".format(fullPath(entry[attribute][0])))
 						usedGUI = True

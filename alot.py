@@ -1716,10 +1716,10 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 								firstAttempt = False
 				elif getType(originalA) is Type.Number:
 					answer = convertToFullNumber(answer)
-					
+
 					#check if the user's answer is relatively close to the correct Number
 					try:
-						answer = int(answer)
+						answer = float(answer)
 						relativeError = abs(answer - a) / a
 						
 						if relativeError < 0.05:
@@ -1740,7 +1740,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 
 					#check if the user's answer is relatively close to the correct NumberRange
 					try:
-						answerRange = [int(answerRange[0]), int(answerRange[1])]
+						answerRange = [float(answerRange[0]), float(answerRange[1])]
 						maxRelativeError = max(abs(answerRange[0] - a) / a, abs(answerRange[1] - a) / a)
 
 						if maxRelativeError < 0.05:

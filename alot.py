@@ -1971,6 +1971,11 @@ def qType_FillString(q, s, difficulty, color):
 	colorPrint(q + ":", color)
 	print("> ", end="")
 
+	#if the answer is inside parentheses, the user doesn't need to answer it
+	if len(s) > 2 and s[0] == '(' and s[-1] == ')':
+		print(s)
+		return True, False, False
+
 	#print hint
 	for i in range(len(parts)):
 		if i not in blanks:

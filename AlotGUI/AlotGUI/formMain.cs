@@ -1544,12 +1544,16 @@ namespace AlotGUI
                                 string dir = unvisitedFolders.Dequeue();
 
                                 foreach (string file in Directory.GetFiles(dir))
-                                    if (!arrayContainsString(multipleChoiceImages, file))
+                                    if (!audioPaths.Contains(file))
                                         audioPaths.Add(file);
 
                                 foreach (string subDir in Directory.GetDirectories(dir))
                                     unvisitedFolders.Enqueue(subDir);
                             }
+
+                            //keep 5 random sounds
+                            while (audioPaths.Count > 5)
+                                audioPaths.RemoveAt(rand.Next(audioPaths.Count));
 
                             //insert correct sound
                             correctAnswer = rand.Next(audioPaths.Count);
@@ -1664,7 +1668,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("I C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\city maps\\Venezia.jpg");
+            //processMsg("audio C C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\musical instruments\\wind\\pan flutes.mp3");
         }
 
         protected override void OnPaint(PaintEventArgs e)

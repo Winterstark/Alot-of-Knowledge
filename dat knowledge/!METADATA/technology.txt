@@ -1,1 +1,1 @@
-{'Pan flutes': {'step': {'Apperance': 1, 'Other names': 1, 'Made from': 1, 'Date': 1, 'Sound': 1}, 'learned': False, 'nextTest': datetime(2017, 4, 17, 11, 26, 41, 320137), 'lastTest': datetime(2017, 4, 16, 13, 26, 41, 320137)}}
+{'Pan flutes': {'lastTest': datetime(2017, 4, 16, 13, 26, 41, 320137), 'step': {'Date': 1, 'Apperance': 1, 'Sound': 1, 'Made from': 1, 'Other names': 1}, 'learned': False, 'nextTest': datetime(2017, 4, 17, 11, 26, 41, 320137)}}

@@ -146,7 +146,7 @@ class Date:
 
 	def totalDays(self):
 		if self.M != -1:
-			year = self.c * 1000
+			year = self.M * 1000
 			month = 6
 			day = 15
 		elif self.c != -1:

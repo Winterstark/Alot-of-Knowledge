@@ -414,7 +414,11 @@ namespace AlotGUI
 
                 foreach (string file in Directory.GetFiles(dir))
                     if (!arrayContainsString(multipleChoiceImages, file))
+                    {
                         multipleChoiceImages[i++] = file;
+                        if (i == 6)
+                            break;
+                    }
 
                 foreach (string subDir in Directory.GetDirectories(dir))
                     unvisitedFolders.Enqueue(subDir);
@@ -1668,7 +1672,7 @@ namespace AlotGUI
             initAudio();
             viz = new Visualizer(this.ClientSize, GEO_DIR, ForceDraw);
 
-            //processMsg("audio C C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!SOUNDS\\musical instruments\\wind\\pan flutes.mp3");
+            //processMsg("C6 C:\\dev\\scripts\\Alot of Knowledge\\dat knowledge\\!IMAGES\\history\\technology\\misc\\Clepsydra.jpg");
         }
 
         protected override void OnPaint(PaintEventArgs e)

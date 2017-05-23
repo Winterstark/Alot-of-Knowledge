@@ -1650,7 +1650,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 								break
 					else:
 						for key in catalot:
-							if key != a and attribute in catalot[key]:
+							if key != a and getType(catalot[key]) is Type.Class and attribute in catalot[key]:
 								#check if entry contains the items in question
 								entryContainsAllTimes = True
 								for item in items:
@@ -2837,7 +2837,8 @@ def quiz(category, catalot, metacatalot):
 					if fTreeAttribute in entry:
 						nFTreeAttributes += 1
 
-				if random.randint(0, len(entry)) == 0:
+				#if random.randint(0, len(entry)) == 0:
+				if False: #DEBUG
 					correct, exit, immediately, usedGUI = qType_RecognizeClass(catalot, key, color, otherNames, geoType)
 				#no longer using qType_FamilyTree()
 				#elif random.randint(0, len(entry)-1) < nFTreeAttributes and random.randint(0, 1) == 0:
@@ -2845,6 +2846,7 @@ def quiz(category, catalot, metacatalot):
 					#usedGUI = True
 				else:
 					attribute = random.choice(list(entry.keys()))
+					attribute = "Notes" #DEBUG
 					attributeType = getType(entry[attribute])
 
 					showTimeline = False
@@ -2943,7 +2945,8 @@ def quiz(category, catalot, metacatalot):
 						else:
 							correct, exit, immediately = qType(key + ", " + attribute, entry[attribute], color)
 					elif attributeType is Type.Set:
-						if random.randint(0, 1) == 0:
+						#if random.randint(0, 1) == 0:
+						if False: #DEBUG
 							correct, exit, immediately = quizSet(key + ", " + attribute, entry[attribute], 1, color, geoType=geoType)
 						else:
 							acceptOtherNames = attribute != "Other names" #don't accept other names as answers if they are displayed to the user

@@ -1,0 +1,6 @@
+{
+	'Bank of England': {'Notes': {"(Founded by the subscribers that loaned money to) King William III's Government (for its involvement in the Nine Years' War against France under King Louis XIV)", "The second oldest central bank (in operation today, after the Sveriges Riksbank; and the world's 8th oldest bank)"}, 'Date': '1690s', 'Governor': 'Mark Carney'},
+	'Federal Reserve (System)': {'Notes': {'(Created in response to the) Panic of 1907 (and other financial panics that showed the need for central control of the monetary system if crises are to be avoided)'}, 'Chair': 'Janet Yellen', 'Date': '1910s', 'Other names': {'Fed'}},
+	'European Central Bank': {'President': 'Mario Draghi', 'Date': '1998', 'Headquarters': 'Frankfurt'},
+	'Quantitative easing': '(A monetary policy in which a) Central bank creates new electronic money (in order to) buy government bonds (or other financial assets) to stimulate the economy.',
+}

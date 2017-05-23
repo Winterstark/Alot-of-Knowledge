@@ -1978,8 +1978,22 @@ def qType_FillString(q, s, difficulty, color):
 
 	#if the answer is inside parentheses, the user doesn't need to answer it
 	if len(s) > 2 and s[0] == '(' and s[-1] == ')':
-		print(s)
-		return True, False, False
+		#check that there is no text in the middle of the string that is outside the parentheses
+		parenthesesDepth = 1
+		allTextIsInsideParentheses = True
+
+		for c in s[1:-1]:
+			if c == '(':
+				parenthesesDepth += 1
+			elif c == ')':
+				parenthesesDepth -= 1
+			if parenthesesDepth == 0:
+				allTextIsInsideParentheses = False
+				break
+
+		if allTextIsInsideParentheses:
+			print(s)
+			return True, False, False
 
 	#print hint
 	for i in range(len(parts)):
@@ -2469,7 +2483,7 @@ def quizSet(setKey, items, step, color, geoType=""):
 		else:
 			fillStringStep = 3
 		return qType_FillString(setKey, list(items)[0], fillStringStep, color)
-
+	
 	itemsCopy = [str(item) for item in list(items)] #convert every item to string
 	hasSubSets, itemsSets = unwrapSets(itemsCopy)
 

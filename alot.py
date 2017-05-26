@@ -1860,8 +1860,11 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 				ignoredWords.append("entrance")
 			elif geoType == "region":
 				ignoredWords.append("valley")
+				ignoredWords.append("lowland")
 				ignoredWords.append("plain")
 				ignoredWords.append("plains")
+			elif geoType == "plateau":
+				ignoredWords.append("upland")
 			elif geoType == "coast":
 				ignoredWords.append("land")
 

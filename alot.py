@@ -1376,6 +1376,8 @@ def toInt(x):
 
 
 def removeParentheses(s, concealContents=False):
+	s = str(s)
+
 	while True:
 		try:
 			lb = s.index('(')
@@ -1890,7 +1892,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 						return "try again"
 	
 	correct = answer == correctAnswer
-	
+
 	if correct and showFullAnswer and removeParentheses(aStr) != aStr:
 		print('\t'*indentLevel + "Full answer: " + aStr)
 

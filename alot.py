@@ -2990,6 +2990,8 @@ def quiz(category, catalot, metacatalot):
 
 								if attributeType is Type.List:
 									meta["step"][attribute] = len(entry[attribute]) + 1 #mark list as learned
+								elif attributeType is Type.Diagram:
+									meta["step"][attribute] = len(entry[attribute][1]) + 1 #mark diagram as learned
 								else:
 									meta["step"][attribute] += 1
 

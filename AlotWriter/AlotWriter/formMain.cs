@@ -34,7 +34,7 @@ namespace AlotWriter
                         if (!char.IsLetterOrDigit(this.Text[ub]))
                             break;
 
-                    if (lb != -1 && ub != this.Text.Length)
+                    if (lb != -1 && ub != this.Text.Length && lb != ub)
                     {
                         this.SelectionStart = lb + 1;
                         this.SelectionLength = ub - lb - 1;
@@ -222,30 +222,34 @@ namespace AlotWriter
                 string className = "class";
                 if (InputBox.Show("Save class", "Class name?", ref className) == DialogResult.OK)
                 {
-                    StreamWriter file = new StreamWriter(Application.StartupPath + "\\classes\\" + className + ".txt");
-                    file.Write(txtInput.Text);
-                    file.Close();
+                    string path = Application.StartupPath + "\\classes\\" + className + ".txt";
+                    bool existingClass = File.Exists(path);
 
-                    menuAddClass.DropDownItems.Insert(0, new ToolStripMenuItem(className));
+                    if (!existingClass || MessageBox.Show("Overwrite existing class?", "Class name already taken", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
+                    {
+                        StreamWriter file = new StreamWriter(path);
+                        file.Write(txtInput.Text);
+                        file.Close();
+
+                        if (existingClass)
+                            className = classes.First(c => c.Key.ToLower() == className.ToLower()).Key; //preserve original case
+                        else
+                            menuAddClass.DropDownItems.Insert(0, new ToolStripMenuItem(className));
+
+                        classes[className] = txtInput.Text;
+                    }
                 }
             }
             else
             {
-                string path = Application.StartupPath + "\\classes\\" + e.ClickedItem.ToString() + ".txt";
-                if (File.Exists(path))
-                {
-                    int prevLen = txtInput.TextLength;
+                int prevLen = txtInput.TextLength;
+                txtInput.Text += classes[e.ClickedItem.ToString()];
 
-                    StreamReader file = new StreamReader(path);
-                    txtInput.Text += file.ReadToEnd();
-                    file.Close();
-
-                    int classTitleInd = txtInput.Text.IndexOf("''", prevLen);
-                    if (classTitleInd == -1)
-                        classTitleInd = txtInput.Text.IndexOf("\"\"", prevLen);
-                    if (classTitleInd != -1)
-                        txtInput.SelectionStart = classTitleInd + 1;
-                }
+                int classTitleInd = txtInput.Text.IndexOf("''", prevLen);
+                if (classTitleInd == -1)
+                    classTitleInd = txtInput.Text.IndexOf("\"\"", prevLen);
+                if (classTitleInd != -1)
+                    txtInput.SelectionStart = classTitleInd + 1;
             }
         }
 
@@ -256,37 +260,42 @@ namespace AlotWriter
                 string attributeName = "attribute";
                 if (InputBox.Show("Save attribute", "Attribute name?", ref attributeName) == DialogResult.OK)
                 {
-                    StreamWriter file = new StreamWriter(Application.StartupPath + "\\attributes\\" + attributeName + ".txt");
-                    file.Write(txtInput.Text);
-                    file.Close();
+                    string path = Application.StartupPath + "\\attributes\\" + attributeName + ".txt";
+                    bool existingAttribute = File.Exists(path);
 
-                    menuAddAttribute.DropDownItems.Insert(0, new ToolStripMenuItem(attributeName));
+                    if (!existingAttribute || MessageBox.Show("Overwrite existing attribute?", "Attribute name already taken", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
+                    {
+                        StreamWriter file = new StreamWriter(Application.StartupPath + "\\attributes\\" + attributeName + ".txt");
+                        file.Write(txtInput.Text);
+                        file.Close();
+
+                        if (existingAttribute)
+                            attributeName = attributes.First(a => a.Key.ToLower() == attributeName.ToLower()).Key; //preserve original case
+                        else
+                            menuAddAttribute.DropDownItems.Insert(0, new ToolStripMenuItem(attributeName));
+
+                        attributes[attributeName] = txtInput.Text;
+                    }
                 }
             }
             else
             {
-                string path = Application.StartupPath + "\\attributes\\" + e.ClickedItem.ToString() + ".txt";
-                if (File.Exists(path))
+                int ind = txtInput.Text.IndexOf('}', txtInput.SelectionStart);
+                if (ind == -1)
+                    ind = txtInput.TextLength;
+                else
                 {
-                    int ind = txtInput.Text.IndexOf('}', txtInput.SelectionStart);
-                    if (ind == -1)
-                        ind = txtInput.TextLength;
-                    else
-                    {
-                        txtInput.Text = txtInput.Text.Insert(ind - 1, Environment.NewLine + "\t" + Environment.NewLine);
-                        ind += Environment.NewLine.Length;
-                    }
-
-                    StreamReader file = new StreamReader(path);
-                    txtInput.Text = txtInput.Text.Insert(ind, file.ReadToEnd());
-                    file.Close();
-
-                    int attributeTitleInd = txtInput.Text.IndexOf("''", ind);
-                    if (attributeTitleInd == -1)
-                        attributeTitleInd = txtInput.Text.IndexOf("\"\"", ind);
-                    if (attributeTitleInd != -1)
-                        txtInput.SelectionStart = attributeTitleInd + 1;
+                    txtInput.Text = txtInput.Text.Insert(ind - Environment.NewLine.Length, Environment.NewLine + "\t");
+                    ind++;
                 }
+
+                txtInput.Text = txtInput.Text.Insert(ind, attributes[e.ClickedItem.ToString()]);
+
+                int attributeTitleInd = txtInput.Text.IndexOf("''", ind);
+                if (attributeTitleInd == -1)
+                    attributeTitleInd = txtInput.Text.IndexOf("\"\"", ind);
+                if (attributeTitleInd != -1)
+                    txtInput.SelectionStart = attributeTitleInd + 1;
             }
         }
 
@@ -521,6 +530,7 @@ namespace AlotWriter
 
                 if (extension == ".ogg")
                     extension = ".mp3"; //mp3 should be the default sound format
+
                 if (extension == ".mp3")
                     dir = SOUNDS_DIR + "\\";
                 else
@@ -529,9 +539,9 @@ namespace AlotWriter
                     dir = IMG_DIR + "\\";
                 }
 
-                int index = txtInput.Text.IndexOf(extension, txtInput.SelectionStart); //first search right
+                int index = txtInput.Text.IndexOf("*" + extension, txtInput.SelectionStart); //first search right
                 if (index == -1)
-                    index = txtInput.Text.LastIndexOf(extension, txtInput.SelectionStart); //then search left
+                    index = txtInput.Text.LastIndexOf("*" + extension, txtInput.SelectionStart); //then search left
 
                 if (index != -1)
                 {
@@ -542,23 +552,21 @@ namespace AlotWriter
                     {
                         lb++;
                         dir += txtInput.Text.Substring(lb, ub - lb).Replace("\\\\", "\\");
-                        if (dir.Contains(@"\\"))
+
+                        saveDialog.InitialDirectory = dir.Substring(0, dir.IndexOf(@"\*") + 1);
+                        saveDialog.FileName = Path.GetFileName(path);
+
+                        if (saveDialog.ShowDialog() == DialogResult.OK)
                         {
-                            saveDialog.InitialDirectory = dir.Substring(0, dir.IndexOf(@"\\"));
-                            saveDialog.FileName = Path.GetFileName(path);
+                            string destPath = saveDialog.FileName;
+                            File.Move(path, destPath);
 
-                            if (saveDialog.ShowDialog() == DialogResult.OK)
-                            {
-                                string destPath = saveDialog.FileName;
-                                File.Move(path, destPath);
+                            if (extension == ".jpg")
+                                destPath = destPath.Replace(IMG_DIR + "\\", "");
+                            else
+                                destPath = destPath.Replace(SOUNDS_DIR + "\\", "");
 
-                                if (extension == ".jpg")
-                                    destPath = destPath.Replace(IMG_DIR + "\\", "");
-                                else
-                                    destPath = destPath.Replace(SOUNDS_DIR + "\\", "");
-
-                                txtInput.Text = txtInput.Text.Remove(lb, ub - lb).Insert(lb, destPath.Replace("\\", "\\\\"));
-                            }
+                            txtInput.Text = txtInput.Text.Remove(lb, ub - lb).Insert(lb, destPath.Replace("\\", "\\\\"));
                         }
                     }
                 }

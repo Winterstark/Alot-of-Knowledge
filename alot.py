@@ -65,9 +65,9 @@ class Date:
 
 	def __str__(self):
 		if self.M != -1:
-			s = self.prefix + Date.convertToOrdinal(self.M) + " millennium"
+			s = Date.convertToOrdinal(self.M) + " millennium"
 		elif self.c != -1:
-			s = self.prefix + Date.convertToOrdinal(self.c) + " century"
+			s = Date.convertToOrdinal(self.c) + " century"
 		else:
 			s = str(self.y)
 
@@ -81,7 +81,7 @@ class Date:
 		if self.bc:
 			s += " BC"
 
-		return s
+		return self.prefix + s
 
 
 	def __repr__(self):

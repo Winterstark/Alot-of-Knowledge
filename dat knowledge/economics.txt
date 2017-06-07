@@ -1,6 +1,6 @@
 {
-	'Federal Reserve (System)': {'Chair': 'Janet Yellen', 'Other names': {'Fed'}, 'Date': '1910s', 'Notes': {'(Created in response to the) Panic of 1907 (and other financial panics that showed the need for central control of the monetary system if crises are to be avoided)'}},
-	'European Central Bank': {'President': 'Mario Draghi', 'Headquarters': 'Frankfurt', 'Date': '1998'},
-	'Bank of England': {'Governor': 'Mark Carney', 'Date': '1690s', 'Notes': {"(Founded by the subscribers that loaned money to) King William III's Government (for its involvement in the Nine Years' War against France under King Louis XIV)", "The second oldest central bank (in operation today, after the Sveriges Riksbank; and the world's 8th oldest bank)"}},
+	'Federal Reserve (System)': {'Other names': {'Fed'}, 'Chair': 'Janet Yellen', 'Notes': {'(Created in response to the) Panic of 1907 (and other financial panics that showed the need for central control of the monetary system if crises are to be avoided)'}, 'Date': '1910s'},
+	'Bank of England': {'Date': '1690s', 'Notes': {"(Founded by the subscribers that loaned money to) King William III's Government (for its involvement in the Nine Years' War against France under King Louis XIV)", "The second oldest central bank (in operation today, after the Sveriges Riksbank; and the world's 8th oldest bank)"}, 'Governor': 'Mark Carney'},
 	'Quantitative easing': '(A monetary policy in which a) Central bank creates new electronic money (in order to) buy government bonds (or other financial assets) to stimulate the economy.',
+	'European Central Bank': {'Headquarters': 'Frankfurt', 'President': 'Mario Draghi', 'Date': '1998'},
 }

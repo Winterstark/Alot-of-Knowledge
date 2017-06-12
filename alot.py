@@ -1870,6 +1870,8 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 				ignoredWords.append("upland")
 			elif geoType == "coast":
 				ignoredWords.append("land")
+			elif geoType == "river":
+				ignoredWords.append("rio")
 
 			for ignoredWord in ignoredWords:
 				tmpAnswer = tmpAnswer.replace(ignoredWord, "")

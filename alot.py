@@ -1578,7 +1578,7 @@ def qType_MultipleChoice(catalot, q, a, answers, color):
 	return correct, exit, immediately
 
 
-def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysShowHint=False, indentLevel=0, validAnswers=set(), otherNames=set(), acceptOtherNames=True, geoType=""):
+def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=False, indentLevel=0, validAnswers=set(), otherNames=set(), acceptOtherNames=True, geoType=""):
 	if type(q) is not str:
 		q = str(q)
 	
@@ -1655,23 +1655,14 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", items=[], alwaysS
 								break
 					else:
 						for key in catalot:
-							if key != a and getType(catalot[key]) is Type.Class and attribute in catalot[key]:
-								#check if entry contains the items in question
-								entryContainsAllTimes = True
-								for item in items:
-									if item not in catalot[key][attribute]:
-										entryContainsAllTimes = False
-										break
-
-								#is this the user's answer?
-								if entryContainsAllTimes and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):
-									if color == COLOR_UNLEARNED:
-										print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
-										tryAgain = True
-									else:
-										print('\t'*indentLevel + "Expected answer:", a)
-										correct = True
-									break
+							if key != a and getType(catalot[key]) is Type.Class and attribute in catalot[key] and catalot[key][attribute] == catalot[a][attribute] and isAnswerCorrect(answer, key, aIsDate=aIsDate, showFullAnswer=not showHint, otherNames=otherNames, acceptOtherNames=acceptOtherNames):	
+								if color == COLOR_UNLEARNED:
+									print('\t'*indentLevel + "Your answer is not wrong, but another entry is the expected answer. Please try again.")
+									tryAgain = True
+								else:
+									print('\t'*indentLevel + "Expected answer:", a)
+									correct = True
+								break
 
 			if "correct" in locals() and correct:
 				break
@@ -2108,7 +2099,7 @@ def qType_RecognizeList(listKey, items, color, catalot=None, attribute="", other
 	else:
 		attributeName = ""
 
-	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, items=randomItems, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType)
+	return qType_EnterAnswer("What {} do these {}items belong to? ".format(itemsType, attributeName), listKey, color, catalot=catalot, attribute=attribute, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType)
 
 
 def qType_RecognizeItem(listKey, items, color):

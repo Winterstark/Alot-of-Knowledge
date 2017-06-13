@@ -273,13 +273,22 @@ class Date:
 		else:
 			return False
 
+		if self.bc:
+			selfPrefix = -1
+		else:
+			selfPrefix = 1
+		if answerDate.bc:
+			answerPrefix = -1
+		else:
+			answerPrefix = 1
+
 		precision = self.precision()
 		if precision == "M":
 			if self.M < 10:
 				marginForError = 1
 			else:
 				marginForError = 2
-			return abs(self.c - answerDate.c) <= marginForError
+			return abs(selfPrefix * self.M - answerPrefix * answerDate.M) <= marginForError
 		elif precision == "c":
 			if not self.bc:
 				marginForError = 1
@@ -287,7 +296,7 @@ class Date:
 				marginForError = 2
 			else:
 				marginForError = 4
-			return abs(self.c - answerDate.c) <= marginForError
+			return abs(selfPrefix * self.c - answerPrefix * answerDate.c) <= marginForError
 		elif precision == "dec":
 			return abs(self.y - answerDate.y) <= 10
 		else:
@@ -1796,10 +1805,17 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		#ensure the same format
 		answer = answer.replace("-0", "-")
 		correctAnswer = correctAnswer.replace("-0", "-")
+
+		bc = correctAnswer[0] == '-' or correctAnswer[0] == "'" and correctAnswer[1] == '-' #check if the date is BC
+	else:
+		bc = False
 	
 	#ignore punctuation
 	answer = ''.join(e for e in answer.lower() if e.isalnum())
 	correctAnswer = ''.join(e for e in correctAnswer.lower() if e.isalnum())
+
+	if bc:
+		correctAnswer = "-" + correctAnswer
 
 	#check answer
 	if aIsDate:

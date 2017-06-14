@@ -389,6 +389,13 @@ def msgGUI(msg):
 	pipe.seek(0)
 
 
+def showTimelineGUI(key, question=False):
+	if question:
+		msgGUI("timeline " + key.replace("'", "").replace('"', '') + " ?")
+	else:
+		msgGUI("timeline " + key.replace("'", "").replace('"', ''))
+
+
 def getFeedbackFromGUI(catalot={}):
 	while "pipe" not in locals():
 		try:
@@ -2287,7 +2294,7 @@ def qType_Sound(soundKey, path, learned=False, otherNames=set()):
 
 
 def qType_Timeline(key, otherNames=set()):
-	msgGUI("timeline " + key.replace("'", "").replace('"', '') + " ?")
+	showTimelineGUI(key, True)
 	colorPrint("What event (???) is highlighted on the timeline?", COLOR_LEARNED)
 	answer, quit, immediately = checkForExit(input("> "))
 
@@ -2753,7 +2760,7 @@ def quiz(category, catalot, metacatalot):
 								learnedDateAttribute = True
 
 					if not usedGUI and learnedDateAttribute:
-						msgGUI("timeline " + key)
+						showTimelineGUI(key)
 						usedGUI = usedGUIVisually = keepGUIActive = True
 					elif not usedGUIVisually:
 						usedGUI = usedGUIVisually = displayChildrenNodeImages(catalot, key)
@@ -2904,9 +2911,9 @@ def quiz(category, catalot, metacatalot):
 
 						if showTimeline:
 							if qType == 2 or qType == 4:
-								msgGUI("timeline " + key + " ?")
+								showTimelineGUI(key, True)
 							else:
-								msgGUI("timeline " + key)
+								showTimelineGUI(key)
 							usedGUI = True
 
 						correct, exit, immediately = quizNumber(catalot, key, qType, color, attribute, otherNames=otherNames)
@@ -2935,9 +2942,9 @@ def quiz(category, catalot, metacatalot):
 
 						if showTimeline:
 							if qType == 2:
-								msgGUI("timeline " + key + " ?")
+								showTimelineGUI(key, True)
 							else:
-								msgGUI("timeline " + key)
+								showTimelineGUI(key)
 							usedGUI = True
 
 						correct, exit, immediately = quizString(catalot, key, qType, color, attribute)
@@ -2949,9 +2956,9 @@ def quiz(category, catalot, metacatalot):
 
 						if showTimeline:
 							if qType == qType_RecognizeList:
-								msgGUI("timeline " + key + " ?")
+								showTimelineGUI(key, True)
 							else:
-								msgGUI("timeline " + key)
+								showTimelineGUI(key)
 							usedGUI = True
 
 						if qType is quizList:

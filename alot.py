@@ -1679,15 +1679,10 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=Fa
 				if aIsDate and firstAttempt:
 					if getType(originalA) is Type.Date:
 						#check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
-						if len(answer) == 3 and answer[2] == 's':
-							if answer[:2] == "00" or answer[:2] == "10":
-								answer = "20" + answer[:2] + "s"
-							else:
-								answer = "19" + answer[:2] + "s"
-
-							if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
-								correct = True
-								break
+						answer = convertToFullDecade(answer)
+						if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
+							correct = True
+							break
 
 						#check if the user's answer is relatively close to the correct Date
 						if originalA.isAlmostCorrect(answer):
@@ -1712,8 +1707,16 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=Fa
 								if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
 									correct = True
 									break
+						elif len(answerRange) == 2:
+							#check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
+							answerRange[0] = convertToFullDecade(answerRange[0])
+							answerRange[1] = convertToFullDecade(answerRange[1])
+							answer = answerRange[0] + " - " + answerRange[1]
 
-						if len(answerRange) == 2:
+							if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
+								correct = True
+								break
+
 							#check if the user's answer is relatively close to the correct DateRange
 							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
 								print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
@@ -1793,6 +1796,16 @@ def convertToFullNumber(answer):
 	return answer
 
 
+def convertToFullDecade(answer):
+	if len(answer) == 3 and answer[2] == 's':
+		if answer[:2] == "00" or answer[:2] == "10":
+			answer = "20" + answer[:2] + "s"
+		else:
+			answer = "19" + answer[:2] + "s"
+
+	return answer
+
+
 def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames=set(), acceptOtherNames=True, geoType=""):
 	originalAnswer = answer
 	aStr = toString(a, False)
@@ -1818,22 +1831,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		correctAnswer = "-" + correctAnswer
 
 	#check answer
-	if aIsDate:
-		#if wrong -> check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
-		if answer != correctAnswer:
-			if len(answer) == 3 and answer[2] == 's':
-				if answer[:2] == "00" or answer[:2] == "10":
-					answer = "20" + answer[:2] + "s"
-				else:
-					answer = "19" + answer[:2] + "s"
-
-		#TODO move to this function: if wrong -> check if the user's answer is relatively close to the correct Date
-		#if answer != correctAnswer:
-			#if originalA.isAlmostCorrect(answer):
-				#print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
-				#tryAgain = True
-				#firstAttempt = False
-	elif getType(a) is Type.String:
+	if getType(a) is Type.String:
 		originalAnswer = answer
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 

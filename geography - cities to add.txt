@@ -2269,7 +2269,6 @@
 	"Moroto": {"GEO:City/Moroto", "Country": "Uganda"},
 	"Kaposvar": {"GEO:City/Kaposvar", "Country": "Hungary"},
 	"Vac": {"GEO:City/Vac", "Country": "Hungary"},
-	"Debrecen": {"GEO:City/Debrecen", "Country": "Hungary"},
 	"Szolnok": {"GEO:City/Szolnok", "Country": "Hungary"},
 	"Tunduma": {"GEO:City/Tunduma", "Country": "United Republic of Tanzania"},
 	"Tukuyu": {"GEO:City/Tukuyu", "Country": "United Republic of Tanzania"},

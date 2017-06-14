@@ -1031,16 +1031,19 @@ def makeNumberMoreReadable(num, representsDecimalPlaces=False):
 def isAcceptableAltAnswer(catalot, answers, targetKey, key, attribute):
 	if key != targetKey and catalot[key] != catalot[targetKey] and catalot[key] not in answers.values() and getType(catalot[key]) is getType(catalot[targetKey]):
 		if attribute == "":
-			if getType(catalot[key]) is not Type.Image:
-				return True
-			else:
+			if getType(catalot[key]) is Type.Image:
 				return False
+			else:
+				return True
 		else:
 			if attribute in catalot[key] and catalot[key][attribute] != catalot[targetKey][attribute]:
-				for k in answers: #don't accept the answer if its value is already in answers, or if it's an Image
-					if catalot[key][attribute] == answers[k][attribute] or getType(catalot[key][attribute]) is Type.Image:
-						return False
-				return True
+				if getType(catalot[key][attribute]) is Type.Image:
+					return False #don't accept the answer if it's an Image
+				else:
+					for k in answers: #don't accept the answer if its value is already in answers
+						if catalot[key][attribute] == answers[k][attribute]:
+							return False
+					return True
 			else:
 				return False
 	else:

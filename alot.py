@@ -2415,6 +2415,9 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			correct, exit, immediately, usedGUIInSublist = quizList("", items[step-1], subStep, indentLevel=indentLevel+1, learned=learned)
 			usedGUI = usedGUI or usedGUIInSublist
 			stepOffset -= 1
+
+			if not finalStep:
+				subStep = 1
 			
 			if immediately:
 				break

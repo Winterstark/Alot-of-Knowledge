@@ -2518,8 +2518,9 @@ def quizSet(setKey, items, step, color, geoType=""):
 			fillStringStep = 3
 		return qType_FillString(setKey, list(items)[0], fillStringStep, color)
 	
-	itemsCopy = [str(item) for item in list(items)] #convert every item to string
+	itemsCopy = list(items) #copy items
 	hasSubSets, itemsSets = unwrapSets(itemsCopy)
+	itemsCopy = [toString(item) for item in itemsCopy] #convert every item to string
 
 	nSubSets = max(itemsSets)
 	if 0 in itemsSets: #0 represents items that don't belong to sub sets

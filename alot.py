@@ -1807,13 +1807,19 @@ def convertToFullNumber(answer):
 
 
 def convertToFullDecade(answer):
+	if ' ' in answer:
+		prefix = answer[:answer.rfind(' ')]
+		answer = answer[answer.rfind(' ')+1:]
+	else:
+		prefix = ""
+
 	if len(answer) == 3 and answer[2] == 's':
 		if answer[:2] == "00" or answer[:2] == "10":
 			answer = "20" + answer[:2] + "s"
 		else:
 			answer = "19" + answer[:2] + "s"
 
-	return answer
+	return prefix + " " + answer
 
 
 def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=0, otherNames=set(), acceptOtherNames=True, geoType=""):

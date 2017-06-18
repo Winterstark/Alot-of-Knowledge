@@ -2434,6 +2434,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				if abs(correct) == len(items[step-1]) + 1 or not finalStep and correct == -1:
 					correct = True #sublist answered successfully
 				else:
+					printList(items, len(items) + 1, indentLevel, color, step+1, True) #print the rest of the list
 					step = [step] + [correct]
 		elif type(items[step-1]) is set:
 			if not finalStep:

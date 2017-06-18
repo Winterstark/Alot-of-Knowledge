@@ -1,9 +1,4 @@
 {
-	"Baia Mare": "GEO:City/Baia Mare",
-	"Cluj(-Napoca)": "GEO:City/Cluj-Napoca",
-
-
-	
 	"Qasigiannguit": {"GEO:City/Qasigiannguit",
 	"Svendborg": {"GEO:City/Svendborg",
 	"Esbjerg": {"GEO:City/Esbjerg",
@@ -871,7 +866,6 @@
 	"San Juan del Sur": {"GEO:City/San Juan del Sur", "Country": "Nicaragua"},
 	"Drobeta-Turnu Severin": {"GEO:City/Drobeta-Turnu Severin", "Country": "Romania"},
 	"Tulcea": {"GEO:City/Tulcea", "Country": "Romania"},
-	"Sibiu": {"GEO:City/Sibiu", "Country": "Romania"},
 	"Suceava": {"GEO:City/Suceava", "Country": "Romania"},
 	"Buzau": {"GEO:City/Buzau", "Country": "Romania"},
 	"Galati": {"GEO:City/Galati", "Country": "Romania"},
@@ -2340,11 +2334,9 @@
 	"Ayorou": {"GEO:City/Ayorou", "Country": "Niger"},
 	"Birni Nkonni": {"GEO:City/Birni Nkonni", "Country": "Niger"},
 	"Madaoua": {"GEO:City/Madaoua", "Country": "Niger"},
-	"Craiova": {"GEO:City/Craiova", "Country": "Romania"},
 	"Calarasi": {"GEO:City/Calarasi", "Country": "Romania"},
 	"Resita": {"GEO:City/Resita", "Country": "Romania"},
 	"Botosani": {"GEO:City/Botosani", "Country": "Romania"},
-	"Tirgu Mures": {"GEO:City/Tirgu Mures", "Country": "Romania"},
 	"Pitesti": {"GEO:City/Pitesti", "Country": "Romania"},
 	"Brasov": {"GEO:City/Brasov", "Country": "Romania"},
 	"Ploiesti": {"GEO:City/Ploiesti", "Country": "Romania"},

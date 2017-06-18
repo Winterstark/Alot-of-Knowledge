@@ -1686,10 +1686,11 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=Fa
 			if "correct" in locals() and correct:
 				break
 			elif not tryAgain:
-				if aIsDate and firstAttempt:
+				if aIsDate:
 					if getType(originalA) is Type.Date:
 						#check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
 						answer = convertToFullDecade(answer)
+						print("answer after converting decade:")
 						if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
 							correct = True
 							break

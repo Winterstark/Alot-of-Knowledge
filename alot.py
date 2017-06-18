@@ -1690,7 +1690,6 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=Fa
 					if getType(originalA) is Type.Date:
 						#check if the user entered the decade in short form (e.g. '60s' instead of '1960s')
 						answer = convertToFullDecade(answer)
-						print("answer after converting decade:")
 						if isAnswerCorrect(answer, a, aIsDate=aIsDate, showFullAnswer=not showHint, indentLevel=indentLevel, otherNames=otherNames, acceptOtherNames=acceptOtherNames, geoType=geoType):
 							correct = True
 							break
@@ -1848,7 +1847,7 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		correctAnswer = "-" + correctAnswer
 
 	#check answer
-	if getType(a) is Type.String:
+	if getType(a) is Type.String and not aIsDate:
 		originalAnswer = answer
 		answer = removeTypos(answer, correctAnswer, originalCorrectAnswer=aStr, indentLevel=indentLevel)
 

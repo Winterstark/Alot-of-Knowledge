@@ -1695,7 +1695,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=Fa
 							break
 
 						#check if the user's answer is relatively close to the correct Date
-						if originalA.isAlmostCorrect(answer):
+						if firstAttempt and originalA.isAlmostCorrect(answer):
 							print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
 							tryAgain = True
 							firstAttempt = False
@@ -1728,7 +1728,7 @@ def qType_EnterAnswer(q, a, color, catalot=None, attribute="", alwaysShowHint=Fa
 								break
 
 							#check if the user's answer is relatively close to the correct DateRange
-							if originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
+							if firstAttempt and originalA[0].isAlmostCorrect(answerRange[0]) and originalA[1].isAlmostCorrect(answerRange[1]):
 								print('\t'*indentLevel + "Your answer is almost correct. You have one more attempt.")
 								tryAgain = True
 								firstAttempt = False

@@ -22,7 +22,7 @@ Type = Enum("Type", "Number NumberRange Date DateRange String Image Sound Diagra
 #a custom class instead of DateTime allows for greater flexibility, e.g. 11 November 1918, 322 BC, 5th century, 3rd millennium BC, 60s
 class Date:
 	ZERO = datetime(1, 1, 1)
-	PREFIXES = [("early ", "Early "), ("mid ", "Mid "), ("late ", "Late "), ("1. half ", "First half of the "), ("2. half ", "Second half of the ")]
+	PREFIXES = [("early ", "Early "), ("mid ", "Mid "), ("late ", "Late "), ("1. half ", "First half of the "), ("2. half ", "Second half of the "), ("spring ", "Spring "), ("summer ", "Summer "), ("autumn ", "Autumn "), ("winter ", "Winter ")]
 
 	def __init__(self, value):
 		#init fields
@@ -40,14 +40,14 @@ class Date:
 				value = value[1:]
 				self.bc = True
 
+			self.prefix, value = Date.extractPrefix(value)
+
 			if value[-2:] == "m.":
-				self.prefix, value = Date.extractPrefix(value)
 				self.M = int(value[:-2])
 			elif value[-2:] == "c.":
-				self.prefix, value = Date.extractPrefix(value)
 				self.c = int(value[:-2])
 			elif value[-1] == 's':
-				self.prefix, value = Date.extractPrefix(value[:-1])
+				value = value[:-1]
 				self.isDecade = True
 				self.y = int(value)
 			else:
@@ -81,6 +81,9 @@ class Date:
 		if self.bc:
 			s += " BC"
 
+		if self.prefix == "Winter ":
+			s += "-" + str(self.y+1)[2:] #when the season is winter, specify both years that time period spans
+
 		return self.prefix + s
 
 
@@ -89,26 +92,26 @@ class Date:
 			s = "--"
 		else:
 			if self.prefix == "":
-				outputPrefix = ""
+				s = ""
 			else:
 				#convert prefix back to short form
 				for prefix in Date.PREFIXES:
 					if prefix[1] == self.prefix:
-						outputPrefix = prefix[0]
+						s = prefix[0]
 						break
 
 			if self.M != -1:
-				s = outputPrefix + str(self.M) + "m."
+				s += str(self.M) + "m."
 			elif self.c != -1:
-				s = outputPrefix + str(self.c) + "c."
+				s += str(self.c) + "c."
 			else:
-				s = str(self.y)
+				s += str(self.y)
 				if self.m != -1:
 					s += "-" + str(self.m)
 				if self.d != -1:
 					s += "-" + str(self.d)
 				if self.isDecade:
-					s = outputPrefix + s + 's'
+					s += 's'
 
 			if self.bc:
 				s = "-" + s

@@ -1838,15 +1838,20 @@ def isAnswerCorrect(answer, a, aIsDate=False, showFullAnswer=False, indentLevel=
 		answer = answer.replace("-0", "-")
 		correctAnswer = correctAnswer.replace("-0", "-")
 
-		bc = correctAnswer[0] == '-' or correctAnswer[0] == "'" and correctAnswer[1] == '-' #check if the date is BC
+		#check if the dates are BC
+		bcAnswer = answer[0] == '-' or answer[0] == "'" and answer[1] == '-'
+		bcCorrectAnswer = correctAnswer[0] == '-' or correctAnswer[0] == "'" and correctAnswer[1] == '-'
 	else:
-		bc = False
+		bcAnswer = False
+		bcCorrectAnswer = False
 	
 	#ignore punctuation
 	answer = ''.join(e for e in answer.lower() if e.isalnum())
 	correctAnswer = ''.join(e for e in correctAnswer.lower() if e.isalnum())
 
-	if bc:
+	if bcAnswer:
+		answer = "-" + answer
+	if bcCorrectAnswer:
 		correctAnswer = "-" + correctAnswer
 
 	#check answer

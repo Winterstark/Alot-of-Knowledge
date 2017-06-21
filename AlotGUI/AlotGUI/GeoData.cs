@@ -955,7 +955,7 @@ namespace AlotGUI
             Color.LightGreen, //landmass color
             Color.FromArgb(232, 185, 81), Color.FromArgb(166, 156, 84), Color.FromArgb(131, 165, 91), Color.FromArgb(245, 241, 150), Color.FromArgb(79, 132, 126), Color.FromArgb(191, 203, 95), Color.FromArgb(231, 162, 129), //country colors
             Color.GhostWhite, //Greenland and Antarctica
-            Color.ForestGreen, Color.OliveDrab, Color.DarkOrange, Color.OrangeRed, Color.Snow, Color.SaddleBrown, Color.ForestGreen }; //physical regions colors (peninsula, island, desert, canyon, mountain, plateau, archipelago)
+            Color.ForestGreen, Color.OliveDrab, Color.DarkOrange, Color.OrangeRed, Color.Snow, Color.SaddleBrown, Color.ForestGreen }; //physical regions colors (peninsula, island (no longer used; now switched to the archipelago color), desert, canyon, mountain, plateau, archipelago)
 
         public Brush MainBrush, HighlightedBrush;
         
@@ -964,7 +964,11 @@ namespace AlotGUI
         {
             int color = int.Parse(file.ReadLine());
             if (geoType != Visualizer.GeoType.Region)
+            {
                 color /= 100;
+                if (color == 10)
+                    color = 15; //islands and archipelagos now use the same color
+            }
 
             switch (GeoType)
             {

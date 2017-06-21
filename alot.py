@@ -2451,7 +2451,8 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 			correct, exit, immediately = quizSet("", items[step-1], subSetStep, [], [], color)
 		elif type(items[step-1]) is tuple:
 			correct = True
-			for item in items[step-1]:
+			for i in range(len(items[step-1])):
+				item = items[step-1][i]
 				iType = getType(item)
 				if iType is Type.Date or iType is Type.DateRange:
 					itemCorrect, exit, immediately = qType_EnterAnswer("{}.".format(step + stepOffset), item, color, alwaysShowHint=not finalStep, indentLevel=indentLevel) #pass Dates without converting them to string
@@ -2469,6 +2470,9 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 
 				if type(itemCorrect) is not bool:
 					correct = itemCorrect
+					#add the rest of this tuple
+					for j in range(i+1, len(items[step-1])):
+						correct += ", " + toString(items[step-1][j])
 					break
 				if exit:
 					break
@@ -2705,6 +2709,7 @@ def quiz(category, catalot, metacatalot):
 		meta = metacatalot[key]
 		step = meta["step"]
 		usedGUI = False
+		attribute = ""
 
 		if not meta["learned"]:
 			color = COLOR_UNLEARNED
@@ -3142,6 +3147,13 @@ def quiz(category, catalot, metacatalot):
 				else:
 					if type(correct) is bool:
 						feedback("Correct!")
+
+						#print the rest of the class (to refresh the user's memory)
+						if entryType is Type.Class and attribute != "": #if attribute is "" don't print anything because that means the class was tested using qType_RecognizeClass() which already showed the user every attribute
+							for attr in entry:
+								if attr != attribute and getType(entry[attr]) is not Type.Image and getType(entry[attr]) is not Type.Sound and getType(entry[attr]) is not Type.Geo:
+									print(attr + ": " + toString(entry[attr]))
+
 						nCorrect += 1
 						meta["nextTest"] = datetime.now() + (meta["nextTest"] - meta["lastTest"]) + timedelta(days=6, hours=22)
 					else:

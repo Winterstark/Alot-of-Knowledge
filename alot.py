@@ -2472,7 +2472,8 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 					correct = itemCorrect
 					#add the rest of this tuple
 					for j in range(i+1, len(items[step-1])):
-						correct += ", " + toString(items[step-1][j])
+						if getType(items[step-1][j]) is not Type.Image and getType(items[step-1][j]) is not Type.Sound and getType(items[step-1][j]) is not Type.Geo:
+							correct += ", " + toString(items[step-1][j])
 					break
 				if exit:
 					break

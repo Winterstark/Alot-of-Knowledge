@@ -592,4 +592,22 @@
 	'Gruiformes': {'Class': 'Aves'},
 	'Coccothraustes coccothraustes': {'Other names': {'Hawfinch', 'Batokljun (Croatian)'}, 'Picture': 'biology\\animals\\birds\\Coccothraustes coccothraustes.jpg', 'Family': 'Fringillidae', 'Sound': 'animals\\birdsongs\\Coccothraustes coccothraustes.mp3'},
 	'Fringillidae': {'Other names': {'True finches', 'Zebe (Croatian)'}, 'Suborder': 'Passeri'},
+	'Castor fiber': {
+		'Other names': {'Eurasian beaver'},
+		'Picture': 'biology\\animals\\mammals\\Castor fiber.jpg',
+		'Family': 'Castoridae',
+	},
+	'Castor canadensis': {
+		'Other names': {'North American beaver'},
+		'Picture': 'biology\\animals\\mammals\\Castor canadensis.jpgaa',
+		'Family': 'Castoridae',
+	},
+	'Castoridae': {'Order': 'Rodentia'},
+	'Motacilla alba': {
+		'Other names': {'White wagtail', 'Bijela pastirica (Croatian)'},
+		'Picture': 'biology\\animals\\birds\\Motacilla alba.jpg',
+		'Family': 'Motacillidae',
+		'Sound': 'animals\\birdsongs\\Motacilla alba.mp3',
+	},
+	'Motacillidae': {'Suborder': 'Passeri'},
 }

@@ -89,6 +89,7 @@ namespace AlotWriter
 
             txtInput.Text = txtInput.Text.Insert(selectionStart + selectionLength, closingChar.ToString()).Insert(selectionStart, openingChar.ToString());
             txtInput.Select(selectionStart + 1, selectionLength);
+            txtInput.ScrollToCaret();
         }
 
         char matchingClosingChar(char openingChar)
@@ -148,8 +149,22 @@ namespace AlotWriter
         void replaceCharsSurroundingCursor(string replacement, int selectionStartOffset = 0)
         {
             int selectionStart = txtInput.SelectionStart;
-            txtInput.Text = txtInput.Text.Remove(selectionStart - 1, 2).Insert(selectionStart - 1, replacement);
-            txtInput.SelectionStart = selectionStart + selectionStartOffset;
+            int nCharsToReplace = Math.Min(Math.Max(replacement.Length, 2), txtInput.TextLength - selectionStart + 1); //always replace at least the 2 closest surrounding chars, and also check if the string is long enough to remove the replacement.Length chars
+
+            txtInput.Text = txtInput.Text.Remove(selectionStart - 1, nCharsToReplace).Insert(selectionStart - 1, replacement);
+            setSelectionStart(selectionStart + selectionStartOffset);
+        }
+
+        void setSelectionStart(int selectionStart)
+        {
+            txtInput.SelectionStart = selectionStart;
+            txtInput.ScrollToCaret();
+        }
+
+        void ensureTextEndsWitheNewline()
+        {
+            if (txtInput.Text != "" && (txtInput.TextLength < Environment.NewLine.Length || txtInput.Text.Substring(txtInput.TextLength - Environment.NewLine.Length, Environment.NewLine.Length) != Environment.NewLine))
+                txtInput.AppendText(Environment.NewLine);
         }
 
 
@@ -248,6 +263,8 @@ namespace AlotWriter
             }
             else
             {
+                ensureTextEndsWitheNewline();
+
                 int prevLen = txtInput.TextLength;
                 txtInput.AppendText(classes[e.ClickedItem.ToString()]);
 
@@ -300,9 +317,11 @@ namespace AlotWriter
                 int attributeTitleInd = txtInput.Text.IndexOf("''", ind);
                 if (attributeTitleInd == -1)
                     attributeTitleInd = txtInput.Text.IndexOf("\"\"", ind);
+
                 if (attributeTitleInd != -1)
-                    txtInput.SelectionStart = attributeTitleInd + 1;
-                txtInput.ScrollToCaret();
+                    setSelectionStart(attributeTitleInd + 1);
+                else
+                    setSelectionStart(ind);
             }
         }
 
@@ -320,6 +339,8 @@ namespace AlotWriter
             int index = contents.LastIndexOf("," + Environment.NewLine) + 1 + Environment.NewLine.Length;
             if (index != -1)
             {
+                ensureTextEndsWitheNewline();
+
                 //add a tab char at the beginning of every line (except the last)
                 txtInput.Text = "\t" + txtInput.Text.Replace(Environment.NewLine, Environment.NewLine + '\t');
                 txtInput.Text = txtInput.Text.Substring(0, txtInput.TextLength - 1);
@@ -353,18 +374,18 @@ namespace AlotWriter
                     //the final result should look like any of the following:    "Key": ''    or    "Key": ""    or    "Key": {} or    "Key": []
                     if (getCharsSurroundingCursor() == "''" || getCharsSurroundingCursor() == "\"\"")
                     {
-                        replaceCharsSurroundingCursor("{}");
+                        replaceCharsSurroundingCursor("{},");
                         e.SuppressKeyPress = true;
                     }
                     else if (getCharsSurroundingCursor() == "{}")
                     {
-                        replaceCharsSurroundingCursor("[]");
+                        replaceCharsSurroundingCursor("[],");
                         e.SuppressKeyPress = true;
 
                     }
                     else if (getCharsSurroundingCursor() == "[]")
                     {
-                        replaceCharsSurroundingCursor(getPreviousStringDelimiterPair());
+                        replaceCharsSurroundingCursor(getPreviousStringDelimiterPair() + ",");
                         e.SuppressKeyPress = true;
                     }
                     else if (selectionStart != 0)
@@ -380,7 +401,7 @@ namespace AlotWriter
 
                         if (lb != -1 && ub != txtInput.TextLength && txtInput.Text[lb] == txtInput.Text[ub])
                         {
-                            txtInput.Text = txtInput.Text.Insert(ub + 1, ": " + txtInput.Text[lb] + txtInput.Text[lb]);
+                            txtInput.Text = txtInput.Text.Insert(ub + 1, ": " + txtInput.Text[lb] + txtInput.Text[lb] + ",");
                             txtInput.SelectionStart = ub + 4;
                             e.SuppressKeyPress = true;
                         }
@@ -390,18 +411,18 @@ namespace AlotWriter
                     if (getCharPrecedingCursor() == '"' || getCharPrecedingCursor() == '\'' || getCharPrecedingCursor() == ')' || getCharPrecedingCursor() == ']' || getCharPrecedingCursor() == '}')
                     {
                         txtInput.Text = txtInput.Text.Insert(selectionStart, ",");
-                        txtInput.SelectionStart = selectionStart + 1;
+                        setSelectionStart(selectionStart + 1);
                     }
                     else if (getCharPrecedingCursor() == ',' && txtInput.Text.LastIndexOf('{', selectionStart - 1) != -1 && txtInput.Text.IndexOf('}', selectionStart) != -1)
                     {
                         txtInput.Text = txtInput.Text.Insert(selectionStart, Environment.NewLine + "\t" + getPreviousStringDelimiterPair() + ": " + getPreviousStringDelimiterPair() + ",");
-                        txtInput.SelectionStart = selectionStart + 4;
+                        setSelectionStart(selectionStart + 4);
                         e.SuppressKeyPress = true;
                     }
                     else if (getCharsSurroundingCursor() == "{}")
                     {
                         txtInput.Text = txtInput.Text.Insert(selectionStart, Environment.NewLine + "\t" + getPreviousStringDelimiterPair() + ": " + getPreviousStringDelimiterPair() + "," + Environment.NewLine);
-                        txtInput.SelectionStart = selectionStart + 4;
+                        setSelectionStart(selectionStart + 4);
                         e.SuppressKeyPress = true;
                     }
                     break;

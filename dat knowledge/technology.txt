@@ -23,4 +23,46 @@
 	'Water clock': {'Picture': 'history\\technology\\misc\\Clepsydra.jpg', 'Date': 'Ancient', 'Other names': {'Clepsydra'}},
 	'Giffard dirigible': {'Prerequisites': {'Steam engine', 'Hydrogen balloon'}, 'Picture': 'history\\technology\\transportation\\air\\Giffard dirigible.jpg', 'Date': 'mid 19c.', 'Other names': {'Giffard airship'}, 'Inventor': 'Henri Giffard'},
 	'Lautenwerck': {'Date': '16c.', 'Made from': '(Strings) Gut', 'Sound': 'musical instruments\\keyboard\\Lautenwerck.ogg', 'Prerequisites': {'Harpsichord'}, 'Picture': 'history\\technology\\musical instruments\\keyboard\\Lautenwerck.jpg', 'Other names': {'Lute-harpsichord'}},
+	'Halberd': {
+		'Date': '14c.',
+		'Prerequisites': {'Axe', 'Spear'},
+		'Picture': 'history\\technology\\military\\melee\\Halberd.jpg',
+		'Other names': {'Glaive (single-edged blade)', 'Bill (hooked blade)', 'Guisarme', 'Bardiche (very long axe blade, short shaft)', 'Voulge'},
+	},
+	'Pollaxe': {
+		'Date': '14c.',
+		'Prerequisites': {'Axe', 'War hammer', 'Spear'},
+		'Picture': 'history\\technology\\military\\melee\\Pollaxe.jpg',
+	},
+	'Axe': {
+		'Appearance': 'history\\technology\\military\\melee\\Axe.jpg',
+		'Date': 'Prehistoric',
+		'Prerequisites': {'Hand axe'},
+	},
+	'Hand axe': {
+		'Appearance': 'history\\technology\\tools\\Hand axe.jpg',
+		'Date': 'Prehistoric',
+		'Notes': {'Longest-used tool in human history'},
+	},
+	'War hammer': {
+		'Appearance': 'history\\technology\\military\\melee\\War hammer.jpg',
+		'Date': 'Medieval',
+		'Notes': {'Designed to deal with (heavy plate) armor'},
+	},
+	'Hammer': {
+		'Appearance': 'history\\technology\\tools\\Hammer.jpg',
+		'Date': 'Prehistoric',
+	},
+	'Spear': {
+		'Appearance': 'history\\technology\\military\\melee\\Spear.png',
+		'Date': 'Prehistoric',
+		'Other names': {'Javelin (when designed for throwing)', 'Dory (the chief armament of hoplites in Ancient Greece)'},
+	},
+	'Pike': {
+		'Appearance': 'history\\technology\\military\\melee\\Pike.jpg',
+		'Date': 'Ancient',
+		'Prerequisites': {'Spear'},
+		'Notes': {'(Generally, a spear becomes a pike when it is) Too long to be wielded with one hand (in combat)'},
+		'Other names': {'Sarissa (introduced by Philip II of Macedon and was used in his phalanxes)'},
+	},
 }

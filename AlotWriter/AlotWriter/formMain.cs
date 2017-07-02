@@ -215,6 +215,12 @@ namespace AlotWriter
                 menuSaveTo.DropDownItems.Add(Path.GetFileNameWithoutExtension(path));
         }
 
+        private void formMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtInput.Text) && MessageBox.Show("Exit anyway?", "Your text is not saved", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+                e.Cancel = true;
+        }
+
         private void menuAddClass_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem.ToString() == "Save class...")
@@ -243,7 +249,7 @@ namespace AlotWriter
             else
             {
                 int prevLen = txtInput.TextLength;
-                txtInput.Text += classes[e.ClickedItem.ToString()];
+                txtInput.AppendText(classes[e.ClickedItem.ToString()]);
 
                 int classTitleInd = txtInput.Text.IndexOf("''", prevLen);
                 if (classTitleInd == -1)
@@ -296,6 +302,7 @@ namespace AlotWriter
                     attributeTitleInd = txtInput.Text.IndexOf("\"\"", ind);
                 if (attributeTitleInd != -1)
                     txtInput.SelectionStart = attributeTitleInd + 1;
+                txtInput.ScrollToCaret();
             }
         }
 
@@ -524,9 +531,25 @@ namespace AlotWriter
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string path = ((string[])(e.Data.GetData(DataFormats.FileDrop)))[0];
-
                 string extension = Path.GetExtension(path), dir;
-                saveDialog.Filter = "Original file type|*" + extension;
+
+                string[] dirFiles = null;
+                bool isDir;
+
+                if (Directory.Exists(path))
+                {
+                    isDir = true;
+                    saveDialog.Filter = "Folder|*.*";
+
+                    dirFiles = Directory.GetFiles(path);
+                    if (dirFiles.Length > 0)
+                        extension = Path.GetExtension(dirFiles[0]);
+                }
+                else
+                {
+                    isDir = false;
+                    saveDialog.Filter = "Original file type|*" + extension;
+                }
 
                 if (extension == ".ogg")
                     extension = ".mp3"; //mp3 should be the default sound format
@@ -547,11 +570,14 @@ namespace AlotWriter
                 {
                     int lb = Math.Max(txtInput.Text.LastIndexOf('"', index), txtInput.Text.LastIndexOf("'", index));
                     int ub = Math.Max(txtInput.Text.IndexOf('"', index), txtInput.Text.IndexOf("'", index));
-
+                    
                     if (lb != -1 && ub != -1)
                     {
                         lb++;
-                        dir += txtInput.Text.Substring(lb, ub - lb).Replace("\\\\", "\\");
+                        dir += txtInput.Text.Substring(lb, ub - lb);
+
+                        while (dir.Contains("\\\\"))
+                            dir = dir.Replace("\\\\", "\\");
 
                         saveDialog.InitialDirectory = dir.Substring(0, dir.IndexOf(@"\*") + 1);
                         saveDialog.FileName = Path.GetFileName(path);
@@ -559,7 +585,21 @@ namespace AlotWriter
                         if (saveDialog.ShowDialog() == DialogResult.OK)
                         {
                             string destPath = saveDialog.FileName;
-                            File.Move(path, destPath);
+
+                            if (isDir)
+                            {
+                                if (destPath[destPath.Length - 1] != '\\')
+                                    destPath += "\\";
+
+                                Directory.CreateDirectory(destPath);
+
+                                foreach (string file in dirFiles)
+                                    File.Move(file, destPath + Path.GetFileName(file));
+
+                                Directory.Delete(path);
+                            }
+                            else
+                                File.Move(path, destPath);
 
                             if (extension == ".jpg")
                                 destPath = destPath.Replace(IMG_DIR + "\\", "");

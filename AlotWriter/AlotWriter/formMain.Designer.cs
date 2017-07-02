@@ -33,10 +33,10 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuAddClassSaveClass = new System.Windows.Forms.ToolStripMenuItem();
             this.menuAddAttribute = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuAddAttributeSaveAttribute = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSaveTo = new System.Windows.Forms.ToolStripMenuItem();
             this.saveDialog = new System.Windows.Forms.SaveFileDialog();
-            this.menuAddAttributeSaveAttribute = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,12 +65,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(130, 6);
             // 
             // menuAddClassSaveClass
             // 
             this.menuAddClassSaveClass.Name = "menuAddClassSaveClass";
-            this.menuAddClassSaveClass.Size = new System.Drawing.Size(152, 22);
+            this.menuAddClassSaveClass.Size = new System.Drawing.Size(133, 22);
             this.menuAddClassSaveClass.Text = "Save class...";
             // 
             // menuAddAttribute
@@ -83,12 +83,10 @@
             this.menuAddAttribute.Text = "Add attribute";
             this.menuAddAttribute.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuAddAttribute_DropDownItemClicked);
             // 
-            // menuSaveTo
+            // toolStripSeparator2
             // 
-            this.menuSaveTo.Name = "menuSaveTo";
-            this.menuSaveTo.Size = new System.Drawing.Size(56, 20);
-            this.menuSaveTo.Text = "Save to";
-            this.menuSaveTo.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuSaveTo_DropDownItemClicked);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(151, 6);
             // 
             // menuAddAttributeSaveAttribute
             // 
@@ -96,10 +94,12 @@
             this.menuAddAttributeSaveAttribute.Size = new System.Drawing.Size(154, 22);
             this.menuAddAttributeSaveAttribute.Text = "Save attribute...";
             // 
-            // toolStripSeparator2
+            // menuSaveTo
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(151, 6);
+            this.menuSaveTo.Name = "menuSaveTo";
+            this.menuSaveTo.Size = new System.Drawing.Size(56, 20);
+            this.menuSaveTo.Text = "Save to";
+            this.menuSaveTo.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuSaveTo_DropDownItemClicked);
             // 
             // formMain
             // 
@@ -110,6 +110,7 @@
             this.MainMenuStrip = this.menuMain;
             this.Name = "formMain";
             this.Text = "AlotWriter";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formMain_FormClosing);
             this.Load += new System.EventHandler(this.formMain_Load);
             this.menuMain.ResumeLayout(false);
             this.menuMain.PerformLayout();

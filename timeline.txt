@@ -307,7 +307,7 @@ Willy Brandt :: 1960 - 1970 // Chancellors of the Federal Republic of Germany //
 Helmut Schmidt :: 1970 - 1980 // Chancellors of the Federal Republic of Germany // 
 Helmut Kohl :: 1980 - 1990 // Chancellors of the Federal Republic of Germany // 
 Gerhard Schroder :: 1990 - 2005 // Chancellors of the Federal Republic of Germany // 
-Angela Merkel :: 2005 - 2017.5013698630137 // Chancellors of the Federal Republic of Germany // 
+Angela Merkel :: 2005 - 2017.5671232876712 // Chancellors of the Federal Republic of Germany // 
 Herbert Spencer :: 1801 - 1901 // Herbert Spencer // history\portraits\19th century\Herbert Spencer.jpg
 Immanuel Kant :: 1701 - 1801 // Immanuel Kant // history\portraits\18th century\Immanuel Kant.jpg
 Battle of Marengo :: 1800 // War of the Second Coalition // 
@@ -328,8 +328,8 @@ Ivo Sanader :: 2003 - 2009 // Prime ministers of Croatia //
 Jadranka Kosor :: 2009 - 2011 // Prime ministers of Croatia // 
 Zoran Milanovic :: 2011 - 2016 // Prime ministers of Croatia // 
 Tihomir Oreskovic :: 2016 // Prime ministers of Croatia // 
-Andrej Plenkovic :: 2016 - 2017.5013698630137 // Prime ministers of Croatia // 
-Syrian Civil War :: 2011 - 2017.5013698630137 // Syrian Civil War // 
+Andrej Plenkovic :: 2016 - 2017.5671232876712 // Prime ministers of Croatia // 
+Syrian Civil War :: 2011 - 2017.5671232876712 // Syrian Civil War // 
 Ferdinand Maximilian (Joseph) :: 1801 - 1901 // Ferdinand Maximilian (Joseph) // history\portraits\19th century\Ferdinand Maximilian.jpg
 Augustus :: -27 - 14 // Julio-Claudian dynasty // 
 Tiberius :: 14 - 37 // Julio-Claudian dynasty // 
@@ -359,7 +359,7 @@ President Hindenburg appoints Hitler as chancellor after two parliamentary elect
 Reichstag fire and the Reichstag Fire Decree :: 1933.0876712328768 // Rise of Hitler // 
 NSDAP wins 44% of the vote in the Reichstag elections; the Reichstag passes the Enabling Act :: 1933.164383561644 // Rise of Hitler // 
 Crimean War :: 1853 - 1856 // Crimean War // 
-Yemeni Civil War :: 2015 - 2017.5013698630137 // Yemeni Civil War // 
+Yemeni Civil War :: 2015 - 2017.5671232876712 // Yemeni Civil War // 
 Baruch Spinoza :: 1601 - 1701 // Baruch Spinoza // history\portraits\early modern\Baruch Spinoza.jpg
 Gas lighting :: 1767 - 1800 // Gas lighting // 
 Battle of Cer :: 1914.5835616438355 // Serbian-Macedonian Front (of WWI) // 
@@ -427,7 +427,7 @@ George H. W. Bush :: 1989 - 1993 // Presidents of the U.S. //
 Bill Clinton :: 1993 - 2001 // Presidents of the U.S. // 
 George W. Bush :: 2001 - 2009 // Presidents of the U.S. // 
 Barack Obama :: 2009 - 2017 // Presidents of the U.S. // 
-Donald Trump :: 2017 - 2017.5013698630137 // Presidents of the U.S. // 
+Donald Trump :: 2017 - 2017.5671232876712 // Presidents of the U.S. // 
 Battle of Liege :: 1914.5835616438355 // Western Front (of WWI) // 
 Battles of the Frontiers :: 1914.5835616438355 - 1914.668493150685 // Western Front (of WWI) // 
 First Battle of the Marne :: 1914.668493150685 // Western Front (of WWI) // 
@@ -501,7 +501,7 @@ John Major :: 1990 - 1997 // Prime Ministers of the United Kingdom of Great Brit
 Tony Blair :: 1997 - 2007 // Prime Ministers of the United Kingdom of Great Britain and Northern Ireland // 
 Gordon Brown :: 2007 - 2010 // Prime Ministers of the United Kingdom of Great Britain and Northern Ireland // 
 David Cameron :: 2010 - 2016 // Prime Ministers of the United Kingdom of Great Britain and Northern Ireland // 
-Theresa May :: 2016 - 2017.5013698630137 // Prime Ministers of the United Kingdom of Great Britain and Northern Ireland // 
+Theresa May :: 2016 - 2017.5671232876712 // Prime Ministers of the United Kingdom of Great Britain and Northern Ireland // 
 Charles de Gaulle :: 1959 - 1969 // Presidents of the French Fifth Republic // 
 Georges Pompidou :: 1969 - 1970 // Presidents of the French Fifth Republic // 
 (Valery) Giscard (dEstaing) :: 1970 // Presidents of the French Fifth Republic // 
@@ -509,7 +509,7 @@ Francois Mitterrand :: 1980 - 1990 // Presidents of the French Fifth Republic //
 Jacques Chirac :: 1990 - 2007 // Presidents of the French Fifth Republic // 
 Nicolas Sarkozy :: 2007 - 2012 // Presidents of the French Fifth Republic // 
 Francois Hollande :: 2012 - 2017 // Presidents of the French Fifth Republic // 
-Emmanuel Macron :: 2017 - 2017.5013698630137 // Presidents of the French Fifth Republic // 
+Emmanuel Macron :: 2017 - 2017.5671232876712 // Presidents of the French Fifth Republic // 
 Thomas Becket :: 1101 - 1201 // Thomas Becket // 
 Battle of Aspern-Essling :: 1809.331506849315 // War of the Fifth Coalition // 
 Battle of Wagram :: 1809.4986301369863 // War of the Fifth Coalition // 
@@ -537,12 +537,12 @@ New Kingdom :: -1500 - -1000 // Ancient Egyptian periods //
 Late Period :: -667 - -334 // Ancient Egyptian periods // 
 Ptolemaic Kingdom :: -334 - -1 // Ancient Egyptian periods // 
 Benito Mussolini :: 1883 - 1945.323287671233 // Benito Mussolini // history\portraits\20th century\Benito Mussolini.jpg
-Aristotle :: -384 - -322 // Aristotle // history\portraits\ancient\Aristotle.jpg
+Aristotle :: -400 - -300 // Aristotle // history\portraits\ancient\Aristotle.jpg
 Invasion :: 2003 // Iraq War // 
 Sectarian violence :: 2006 - 2007 // Iraq War // 
 U.S. withdrawal :: 2011 // Iraq War // 
-Civil war :: 2013 - 2017.5013698630137 // Iraq War // 
-Iraq War :: 2003 - 2017.5013698630137 // Iraq War // 
+Civil war :: 2013 - 2017.5671232876712 // Iraq War // 
+Iraq War :: 2003 - 2017.5671232876712 // Iraq War // 
 Jan Hus :: 1383 - 1417 // Jan Hus // history\portraits\medieval\Jan Hus.jpg
 Suez canal :: 1869 //  // 
 Roman Kingdom :: -753 - -509 // Roman Kingdom // 
@@ -559,7 +559,7 @@ Louisiana Purchase :: 1803 // Louisiana Purchase //
 Alexander the Great :: -356 - -323 // Alexander the Great // history\portraits\ancient\Alexander the Great.jpg
 Franjo Tudman (after his death in 1999 the acting presidents were Vlatko Pavletic and then Zlatko Tomcic) :: 1990 - 1999 // Presidents of Croatia // 
 Ivo Josipovic :: 2010 - 2015 // Presidents of Croatia // 
-Kolinda Grabar-Kitarovic :: 2015 - 2017.5013698630137 // Presidents of Croatia // 
+Kolinda Grabar-Kitarovic :: 2015 - 2017.5671232876712 // Presidents of Croatia // 
 Martin Luther starts the Reformation by posting his 95 Theses on the church door in Wittenberg. :: 1517 //  // 
 Treaty of Paris :: 1951 // EU timeline // 
 Treaty of Rome :: 1957 // EU timeline // 
@@ -640,7 +640,7 @@ The Central Powers captured Bucharest and southern Romania (approximately two th
 Romania re-entered the war (on 10 November 1918, the day before it ended in Western Europe) :: 1918.835616438356 // Romanian Front (of WWI) // 
 Friedrich Nietzsche :: 1851 - 1901 // Friedrich Nietzsche // history\portraits\19th century\Friedrich Nietzsche.jpg
 Boris Yeltsin :: 1991 - 1999 // Presidents of Russia // 
-Vladimir Putin :: 2012 - 2017.5013698630137 // Presidents of Russia // 
+Vladimir Putin :: 2012 - 2017.5671232876712 // Presidents of Russia // 
 Dmitry Medvedev :: 2008 - 2012 // Presidents of Russia // 
 Goldbachs conjecture :: 1701 - 1801 // Goldbachs conjecture // 
 Collatz conjecture :: 1930 // Collatz conjecture // 
@@ -697,3 +697,11 @@ Hot air balloon :: 1767 - 1800 // Hot air balloon // history\technology\transpor
 Pipe organ :: 667 - 1000 // Pipe organ // history\technology\musical instruments\keyboard\Pipe organ.jpg
 Giffard dirigible :: 1834 - 1867 // Giffard dirigible // history\technology\transportation\air\Giffard dirigible.jpg
 Lautenwerck :: 1501 - 1601 // Lautenwerck // history\technology\musical instruments\keyboard\Lautenwerck.jpg
+Halberd :: 1301 - 1401 // Halberd // history\technology\military\melee\Halberd.jpg
+Poleaxe :: 1301 - 1401 // Poleaxe // history\technology\military\melee\Pollaxe.jpg
+Enclosed helmet :: 1101 - 1201 // Enclosed helmet // history\technology\military\armor & shields\Enclosed helmet.jpg
+Great helm :: 1201 - 1301 // Great helm // history\technology\military\armor & shields\Great helm.png
+Sugarloaf helm :: 1301 - 1401 // Sugarloaf helm // history\technology\military\armor & shields\Sugarloaf helm.jpg
+Brodie helmet :: 1910 // Brodie helmet // history\technology\military\armor & shields\Brodie helmet.jpg
+Sallet :: 1401 - 1501 // Sallet // history\technology\military\armor & shields\Sallet.jpg
+Bowie knife :: 1801 - 1834 // Bowie knife // history\technology\military\melee\Bowie knife.jpg

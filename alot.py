@@ -2448,7 +2448,7 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				subSetStep = 1
 			else:
 				subSetStep = 2
-			correct, exit, immediately = quizSet("", items[step-1], subSetStep, [], [], color)
+			correct, exit, immediately = quizSet("", items[step-1], subSetStep, color)
 		elif type(items[step-1]) is tuple:
 			correct = True
 			for i in range(len(items[step-1])):
@@ -2459,6 +2459,8 @@ def quizList(listKey, items, step, indentLevel=0, learned=False):
 				elif iType is Type.Image:
 					itemCorrect, exit, immediately = qType_Image(items[step-1][0], fullPath(item), learned=learned)
 					usedGUI = True
+				elif iType is Type.Set:
+					correct, exit, immediately = quizSet("", item, 1, color)
 				else:
 					if removeParentheses(item) == "": #skip items that only consist of parenthesized texts
 						print("{}. {}".format(step + stepOffset, item))
@@ -2547,10 +2549,11 @@ def quizSet(setKey, items, step, color, geoType=""):
 	itemsSetJumps = 0
 
 	#print heading and hints
-	if nSubSets == 1:
-		colorPrint(setKey, color)
-	else:
-		colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(nSubSets, "set")), color)
+	if setKey != "":
+		if nSubSets == 1:
+			colorPrint(setKey, color)
+		else:
+			colorPrint("{0} ({1} in {2}):".format(setKey, pluralizeIfNecessary(len(itemsCopy), "item"), pluralizeIfNecessary(nSubSets, "set")), color)
 
 	showFullAnswer = False
 	for item in itemsCopy:

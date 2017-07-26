@@ -44,5 +44,6 @@
 	'Cubit': {'Inches': 18, 'Notes': {'(Based on the length) From the tip of the middle finger to the bottom of the elbow.'}, 'Other names': {'Ell (originally, in later usage it was a longer unit; for example the English ell was usually 45 in [114.3 cm])'}, 'Centimeters': 45.72},
 	'Permutation': 'A way of selecting items from a collection, such that the order of selection does matter.',
 	'Supplementary angle': 'Either of two angles whose sum is 180 (degrees).',
-	'Combined gas law': {'Notes': {"Charles' law (V / T = k)", "Boyle's law (PV = k)", "Gay-Lussac's law (P / T = k)"}, 'Definition': 'PV / T = k'},
+	'Combined gas law': {'Notes': {"Gay-Lussac's law (P / T = k)", "Boyle's law (PV = k)", "Charles' law (V / T = k)"}, 'Definition': 'PV / T = k'},
+	'Kelvin-Helmholtz instability': {'Definition': 'A (hydrodynamic) instability that results from a turbulence of two air layers (lying close to each other), which move with different speed (and/or direction).', 'Picture': 'science\\Kelvin-Helmholtz instability.jpg'},
 }
